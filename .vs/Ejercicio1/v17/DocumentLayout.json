@@ -1,13 +1,17 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicio1\\",
+  "WorkspaceRootPath": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio1\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C914B593-EF6F-48C0-A697-825ADEF6B8E6}|Ejercicio1.csproj|c:\\users\\clona\\desktop\\programacion\\bootcam extrados\\csharp\\ejercicio1\\tablero.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C914B593-EF6F-48C0-A697-825ADEF6B8E6}|Ejercicio1.csproj|c:\\users\\clona\\desktop\\programacion\\bootcam extrados\\csharp\\ejercicios extrados\\ejercicio1\\readme.md||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{C914B593-EF6F-48C0-A697-825ADEF6B8E6}|Ejercicio1.csproj|solutionrelative:readme.md||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C914B593-EF6F-48C0-A697-825ADEF6B8E6}|Ejercicio1.csproj|c:\\users\\clona\\desktop\\programacion\\bootcam extrados\\csharp\\ejercicios extrados\\ejercicio1\\tablero.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C914B593-EF6F-48C0-A697-825ADEF6B8E6}|Ejercicio1.csproj|solutionrelative:tablero.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C914B593-EF6F-48C0-A697-825ADEF6B8E6}|Ejercicio1.csproj|c:\\users\\clona\\desktop\\programacion\\bootcam extrados\\csharp\\ejercicio1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C914B593-EF6F-48C0-A697-825ADEF6B8E6}|Ejercicio1.csproj|c:\\users\\clona\\desktop\\programacion\\bootcam extrados\\csharp\\ejercicios extrados\\ejercicio1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C914B593-EF6F-48C0-A697-825ADEF6B8E6}|Ejercicio1.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -18,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -37,34 +41,46 @@
               "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "README.md",
+              "DocumentMoniker": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio1\\README.md",
+              "RelativeDocumentMoniker": "README.md",
+              "ToolTip": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio1\\README.md",
+              "RelativeToolTip": "README.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2024-11-07T16:13:33.975Z",
+              "EditorCaption": ""
+            },
+            {
               "$type": "Bookmark",
               "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Tablero.cs",
-              "DocumentMoniker": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicio1\\Tablero.cs",
+              "DocumentMoniker": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio1\\Tablero.cs",
               "RelativeDocumentMoniker": "Tablero.cs",
-              "ToolTip": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicio1\\Tablero.cs",
+              "ToolTip": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio1\\Tablero.cs",
               "RelativeToolTip": "Tablero.cs",
-              "ViewState": "AgIAACUAAAAAAAAAAAAkwCkAAAANAAAAAAAAAA==",
+              "ViewState": "AgIAADYAAAAAAAAAAAAowEkAAABDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-05T21:30:03.352Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicio1\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio1\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicio1\\Program.cs",
+              "ToolTip": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio1\\Program.cs",
               "RelativeToolTip": "Program.cs",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAABEAAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-05T20:23:40.494Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-05T20:23:40.494Z"
             }
           ]
         }
