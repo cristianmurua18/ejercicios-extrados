@@ -1,0 +1,137 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio2\\Ejercicio2\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{8CBB66AF-7A52-4B3E-9EE7-69D53AF42014}|Ejercicio2.csproj|c:\\users\\clona\\desktop\\programacion\\bootcam extrados\\csharp\\ejercicios extrados\\ejercicio2\\ejercicio2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8CBB66AF-7A52-4B3E-9EE7-69D53AF42014}|Ejercicio2.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9EF8F5B9-CA10-485B-9D24-C6D84EF0672B}|..\\Libreria\\Libreria.csproj|c:\\users\\clona\\desktop\\programacion\\bootcam extrados\\csharp\\ejercicios extrados\\ejercicio2\\libreria\\reina.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9EF8F5B9-CA10-485B-9D24-C6D84EF0672B}|..\\Libreria\\Libreria.csproj|c:\\users\\clona\\desktop\\programacion\\bootcam extrados\\csharp\\ejercicios extrados\\ejercicio2\\libreria\\auto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9EF8F5B9-CA10-485B-9D24-C6D84EF0672B}|..\\Libreria\\Libreria.csproj|c:\\users\\clona\\desktop\\programacion\\bootcam extrados\\csharp\\ejercicios extrados\\ejercicio2\\libreria\\diagonal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9EF8F5B9-CA10-485B-9D24-C6D84EF0672B}|..\\Libreria\\Libreria.csproj|c:\\users\\clona\\desktop\\programacion\\bootcam extrados\\csharp\\ejercicios extrados\\ejercicio2\\libreria\\peon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9EF8F5B9-CA10-485B-9D24-C6D84EF0672B}|..\\Libreria\\Libreria.csproj|c:\\users\\clona\\desktop\\programacion\\bootcam extrados\\csharp\\ejercicios extrados\\ejercicio2\\libreria\\ipieza.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 10,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Auto.cs",
+              "DocumentMoniker": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio2\\Libreria\\Auto.cs",
+              "RelativeDocumentMoniker": "..\\Libreria\\Auto.cs",
+              "ToolTip": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio2\\Libreria\\Auto.cs",
+              "RelativeToolTip": "..\\Libreria\\Auto.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAkAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-10T16:47:01.242Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Diagonal.cs",
+              "DocumentMoniker": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio2\\Libreria\\Diagonal.cs",
+              "RelativeDocumentMoniker": "..\\Libreria\\Diagonal.cs",
+              "ToolTip": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio2\\Libreria\\Diagonal.cs",
+              "RelativeToolTip": "..\\Libreria\\Diagonal.cs",
+              "ViewState": "AgIAACcAAAAAAAAAAAA7wDoAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-08T17:22:59.514Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Reina.cs",
+              "DocumentMoniker": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio2\\Libreria\\Reina.cs",
+              "RelativeDocumentMoniker": "..\\Libreria\\Reina.cs",
+              "ToolTip": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio2\\Libreria\\Reina.cs",
+              "RelativeToolTip": "..\\Libreria\\Reina.cs",
+              "ViewState": "AgIAAFgAAAAAAAAAAAAkwBAAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-08T11:34:52.568Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "IPieza.cs",
+              "DocumentMoniker": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio2\\Libreria\\IPieza.cs",
+              "RelativeDocumentMoniker": "..\\Libreria\\IPieza.cs",
+              "ToolTip": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio2\\Libreria\\IPieza.cs",
+              "RelativeToolTip": "..\\Libreria\\IPieza.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAxwAkAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-08T01:35:06.397Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Peon.cs",
+              "DocumentMoniker": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio2\\Libreria\\Peon.cs",
+              "RelativeDocumentMoniker": "..\\Libreria\\Peon.cs",
+              "ToolTip": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio2\\Libreria\\Peon.cs",
+              "RelativeToolTip": "..\\Libreria\\Peon.cs",
+              "ViewState": "AgIAACIAAAAAAAAAAAAkwDEAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-08T01:29:48.75Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio2\\Ejercicio2\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\clona\\Desktop\\programacion\\Bootcam extrados\\csharp\\Ejercicios extrados\\Ejercicio2\\Ejercicio2\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-08T01:13:08.22Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+C:\Users\clona\Desktop\programacion\Bootcam extrados\csharp\Ejercicios extrados\Ejercicio2\Libreria\bin\Debug\net6.0\Libreria.deps.json
+C:\Users\clona\Desktop\programacion\Bootcam extrados\csharp\Ejercicios extrados\Ejercicio2\Libreria\bin\Debug\net6.0\Libreria.dll
+C:\Users\clona\Desktop\programacion\Bootcam extrados\csharp\Ejercicios extrados\Ejercicio2\Libreria\bin\Debug\net6.0\Libreria.pdb
+C:\Users\clona\Desktop\programacion\Bootcam extrados\csharp\Ejercicios extrados\Ejercicio2\Libreria\obj\Debug\net6.0\Libreria.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\clona\Desktop\programacion\Bootcam extrados\csharp\Ejercicios extrados\Ejercicio2\Libreria\obj\Debug\net6.0\Libreria.AssemblyInfoInputs.cache
+C:\Users\clona\Desktop\programacion\Bootcam extrados\csharp\Ejercicios extrados\Ejercicio2\Libreria\obj\Debug\net6.0\Libreria.AssemblyInfo.cs
+C:\Users\clona\Desktop\programacion\Bootcam extrados\csharp\Ejercicios extrados\Ejercicio2\Libreria\obj\Debug\net6.0\Libreria.csproj.CoreCompileInputs.cache
+C:\Users\clona\Desktop\programacion\Bootcam extrados\csharp\Ejercicios extrados\Ejercicio2\Libreria\obj\Debug\net6.0\Libreria.dll
+C:\Users\clona\Desktop\programacion\Bootcam extrados\csharp\Ejercicios extrados\Ejercicio2\Libreria\obj\Debug\net6.0\refint\Libreria.dll
+C:\Users\clona\Desktop\programacion\Bootcam extrados\csharp\Ejercicios extrados\Ejercicio2\Libreria\obj\Debug\net6.0\Libreria.pdb
+C:\Users\clona\Desktop\programacion\Bootcam extrados\csharp\Ejercicios extrados\Ejercicio2\Libreria\obj\Debug\net6.0\ref\Libreria.dll
