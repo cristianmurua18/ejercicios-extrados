@@ -29,7 +29,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 10,
+          "SelectedChildIndex": 9,
           "Children": [
             {
               "$type": "Bookmark",
@@ -48,10 +48,6 @@
               "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
-            },
-            {
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "Auto.cs",
@@ -61,8 +57,7 @@
               "RelativeToolTip": "..\\Libreria\\Auto.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAAkAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-10T16:47:01.242Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-10T16:47:01.242Z"
             },
             {
               "$type": "Document",
@@ -74,8 +69,7 @@
               "RelativeToolTip": "..\\Libreria\\Diagonal.cs",
               "ViewState": "AgIAACcAAAAAAAAAAAA7wDoAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-08T17:22:59.514Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-08T17:22:59.514Z"
             },
             {
               "$type": "Document",
@@ -87,8 +81,7 @@
               "RelativeToolTip": "..\\Libreria\\Reina.cs",
               "ViewState": "AgIAAFgAAAAAAAAAAAAkwBAAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-08T11:34:52.568Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-08T11:34:52.568Z"
             },
             {
               "$type": "Document",
@@ -100,8 +93,7 @@
               "RelativeToolTip": "..\\Libreria\\IPieza.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAAAxwAkAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-08T01:35:06.397Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-08T01:35:06.397Z"
             },
             {
               "$type": "Document",
@@ -113,8 +105,7 @@
               "RelativeToolTip": "..\\Libreria\\Peon.cs",
               "ViewState": "AgIAACIAAAAAAAAAAAAkwDEAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-08T01:29:48.75Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-08T01:29:48.75Z"
             },
             {
               "$type": "Document",
