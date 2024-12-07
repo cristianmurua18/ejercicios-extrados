@@ -16,8 +16,24 @@ namespace APP.Entities.DAOs
         }
 
 
+        public List<UserModel> ObtenerUsuariosParaLogin()
+        {
+
+            var sqlSelect = @"SELECT username,passwordhash FROM usuario";
+
+            var lst = _dbConnection.Query<UserModel>(sqlSelect);
+
+            return lst.ToList();
+
+        }
+
+
         public List<UserModel> ObtenerListadoUsuarios()
         {
+            //al loguear el usuario, o al requerir ver si la contraseña le pertenece al usuario, se debe hashear la contraseña que se ingreso,
+            //y comprar con el hash en la base de datos  - Metodo autenticacion
+
+
             var sqlSelect = @"SELECT * FROM usuario";
 
             var lst = _dbConnection.Query<UserModel>(sqlSelect);
@@ -29,8 +45,9 @@ namespace APP.Entities.DAOs
 
         public UserModel ObtenerUsuarioPorEmail(string email)
         {
+
             //Ver como recibir el parametro para la consulta. OK
-            var sqlSelect = @"SELECT * FROM usuario WHERE emailaddress = @email;";
+            var sqlSelect = @"SELECT id,username,passwordhash,emailaddress,rol,lastname,firstname,age FROM usuario WHERE emailaddress = @email;";
 
             var usr = _dbConnection.QueryFirstOrDefault<UserModel>(sqlSelect, new { EmailAddress = email });
 
@@ -38,8 +55,9 @@ namespace APP.Entities.DAOs
 
         }
 
-
-        public void AgregarUsuario(UserModel usuario)
+        //al guardar un nuevo usuario, se debe primero hashear la contraseña y lo que se guarda en la base de datos es el hash de la contraseña,
+        //no la contraseña en si
+        public string AgregarUsuario(UserModel usuario)
         {
             try
             {   //Validacion para que no me permita ingresar contraseña vacia
@@ -47,7 +65,7 @@ namespace APP.Entities.DAOs
                 {
                     throw new ArgumentException("La propiedad 'PasswordHash' no puede ser nula o vacía.");
                 }
-
+                
                 //Hago el HASEO de la contraseña. OK
                 HashPassword(usuario);
 
@@ -58,6 +76,8 @@ namespace APP.Entities.DAOs
 
                     var result = _dbConnection.Execute(sqlInsert, usuario);
 
+                    return $"{result} Usuario/s creado/s.";
+                    //Podria devolver el usuario directamente
                 }
                 else
                 {
@@ -67,7 +87,7 @@ namespace APP.Entities.DAOs
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                return $"{ex.Message}";
             }
         }
 
@@ -126,8 +146,12 @@ namespace APP.Entities.DAOs
             {
                 return ex.Message;
             }
-
+            
         }
 
+
+
+       
+      
     }
 }

@@ -21,7 +21,8 @@ namespace APIDAO.Controllers
         }
 
         //VER de limitar el alcance solo a usuarios logeados y con Rol establecido
-        [HttpGet("ObtenerUsuarios")]
+        [Authorize(Roles = "Administrador")]
+        [HttpGet("obtenerusuarios")]
         public IActionResult ObtenerUsuarios()
         {
             var result = _userService.GetAll();
@@ -33,7 +34,8 @@ namespace APIDAO.Controllers
 
 
         //Forma de pedir un parametro para la peticion? /{email}?
-        [HttpGet("ObtenerUsuarioPorEmail")]
+        [Authorize(Roles = "Administrador")]
+        [HttpGet("obtenerusuarioporemail")]
         public IActionResult ObtenerUsuarioPorEmail(string email)
         {
             var result = _userService.GetByEmailAddress(email);
@@ -43,6 +45,7 @@ namespace APIDAO.Controllers
 
         }
 
+        [Authorize(Roles = "Administrador")]
         [HttpPost("AgregarUsuario")]
         public IActionResult AgregarUsuario(UserModel usuario)
         {
@@ -53,6 +56,7 @@ namespace APIDAO.Controllers
 
         }
 
+        [Authorize(Roles = "Administrador")]
         [HttpPut("ActualizarUsuarioPorID")]
         public IActionResult ActualizarUsuarioPorID(UserModel usuario)
         {
@@ -61,6 +65,7 @@ namespace APIDAO.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Administrador")]
         [HttpDelete("BorrarUsuarioPorID")]
         public IActionResult BorrarUsuarioPorID(UserModel usuario)
         {

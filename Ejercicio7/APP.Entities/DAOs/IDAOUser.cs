@@ -1,15 +1,22 @@
 ﻿using APP.Entities.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace APP.Entities.DAOs
 {
     public interface IDAOUser
     {
 
+        public List<UserModel> ObtenerUsuariosParaLogin();
+
         public List<UserModel> ObtenerListadoUsuarios();
 
         public UserModel ObtenerUsuarioPorEmail(string email);
 
-        public void AgregarUsuario(UserModel usuario);
+        public string AgregarUsuario(UserModel usuario);
 
         public string ModificarUsuarioPorID(UserModel usuario);
 

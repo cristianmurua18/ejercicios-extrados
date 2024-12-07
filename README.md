@@ -16,7 +16,7 @@ DOS: (Ejercicio2)
 
 Siguiendo la linea del ejercicio anterior:
 
-REQUIRIMIENTOS:
+REQUERIMIENTOS:
 
 ->Generar un método “Resolver8Piezas(IPieza pieza)” o “Resolver8Piezas(Pieza pieza)” que pueda colocar 8 de la pieza indicada en un tablero de ajedrez sin que ninguna pieza pueda comerse a ninguna otra.
 ->Generar múltiples clases para piezas de ajedrez, que implementen la interfaz “IPieza” o que hereden de “Pieza”
@@ -28,7 +28,7 @@ REQUIRIMIENTOS:
 
 TRES: (Ejercicio3) - Uso de Dapper (como micro-ORM) y la clase MySqlConnection.
 
-REQUIRIMIENTOS: 
+REQUERIMIENTOS: 
 
 -> Crear una base de datos con una sola tabla: “Usuarios”
 -> Esta tabla deberá tener Id, Nombre y Edad
@@ -78,4 +78,4 @@ Crear una API con siguientes endpoints:
 
 SIETE: (Ejercicio7) - CORS y patron Options
 
-del ejercicio anterior, agregar CORS y mover las llaves del JWT al archivo appsettings.json y consumirlo desde allí, tanto en el program.cs como en el controlador
+Del ejercicio anterior, agregar CORS y mover las llaves del JWT al archivo appsettings.json y consumirlo desde allí, tanto en el program.cs como en el controlador
