@@ -1,47 +1,44 @@
-﻿using APP.Entities.DAOs;
+﻿using APP.Entities.Daos;
 using APP.Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace APP.Service.Services
+namespace APP.Services.Services
 {
-    public class UserService : IUserService
+    public class UsuarioService(IDAOUsuario daoUser, IConfiguration jwtconfig) : IUsuarioService
     {
-        //Aqui se debe consumir el DAO
 
-        private readonly IDAOUser _DaoUser;
+        private readonly IDAOUsuario _DaoUser = daoUser;
 
-        private readonly IConfiguration _configJwt;
-
-        public UserService(IDAOUser daoUser, IConfiguration jwtconfig)
-        {
-            _DaoUser = daoUser;
-
-            _configJwt = jwtconfig;
-        }
+        private readonly IConfiguration _configJwt = jwtconfig;
 
 
         //Implementacion de los metodos que luego se usan en los controladores
 
-        public List<UserModel> GetAll()
+        public List<Usuario> GetAll()
         {
             var lista = _DaoUser.ObtenerListadoUsuarios();
 
             return lista;
         }
 
-        public UserModel GetByEmailAddress(string email)
+        public Usuario GetByEmailAddress(string email)
         {
             var user = _DaoUser.ObtenerUsuarioPorEmail(email);
 
             return user;
         }
 
-        public string AddUser(UserModel usuario)
+        //Ver de hacerlos - a los 3 siguientes - void
+        public string AddUser(Usuario usuario)
         {
             _DaoUser.AgregarUsuario(usuario);
 
@@ -49,24 +46,23 @@ namespace APP.Service.Services
 
         }
 
-
-        public string UpdateUserByID(UserModel usuario)
+        public string UpdateUserByID(Usuario usuario)
         {
-            var update = _DaoUser.ModificarUsuarioPorID(usuario);
+            _DaoUser.ModificarUsuarioPorID(usuario);
 
-            return "";
+            return "Usuario Modificado.";
         }
 
 
-        public string DeleteUserByID(UserModel usuario)
+        public string DeleteUserByID(Usuario usuario)
         {
-            var delete = _DaoUser.BorrarUsuarioPorID(usuario);
+            _DaoUser.BorrarUsuarioPorID(usuario);
 
-            return "";
+            return "Usuario borrado.";
         }
 
         //Debe recibir el usuario Autenticado
-        public string GenerateJwt(UserModel user)
+        public string GenerateJwt(Usuario user)
         {
 
             //La llave se puede recibir del appsettings.json como una key - IMPORTANTE REVISAR COMO HACERLO y configurar
@@ -91,7 +87,7 @@ namespace APP.Service.Services
             var Sectoken = new JwtSecurityToken(_configJwt["Jwt:Issuer"], //Issuer
                 _configJwt["Jwt:Audience"], //Audiencia
                 claims: claims,  //Reclamaciones
-                expires: DateTime.Now.AddMinutes(120),  //Tiempo de expiracion del token
+                expires: DateTime.Now.AddMinutes(120),  //Tiempo de expiracion del token, puedo utilizar utcNow
                 signingCredentials: credentials  //Credenciales
                 );
 
@@ -105,35 +101,25 @@ namespace APP.Service.Services
         Ver de implementar un metodo de Authenticate(UserLogin usuarioLogin)? y comparar con los datos del usuario. Min 15:50 aprox
         Si pasa la autenticacion, entonces devuelver el token
         */
-        public bool Authenticate(UserModel loginUser, string password)
+        public bool Authenticate(Usuario loginUser, string password)
         {
             //Primero hacer el Hash de la contraseña de LoginUser, que recibi por parametro
-            //loginUser.PasswordHash = _DaoUser.HashPassword(loginUser);
             //NO ES EL MISMO HASH, no funciona
-
-            //Ver de acceder a User en la BD y comparar con loginUser
-            //var users = _DaoUser.ObtenerUsuariosParaLogin();
 
             var verif = VerifyPassword(loginUser, password);
 
-            return verif == true ? verif : false;
-            //var currentUser = users.FirstOrDefault(user => user.UserName == loginUser.UserName
-            //&& user.PasswordHash == loginUser.PasswordHash);
-
+            return verif == true && verif;
 
         }
 
-        //A lo mejor se puede mover al Servicio, para recien alli validar. OKA
-        public bool VerifyPassword(UserModel usuario, string password)
+        public bool VerifyPassword(Usuario usuario, string password)
         {
-            var pass = new PasswordHasher<UserModel>();
+            var pass = new PasswordHasher<Usuario>();
 
             var result = pass.VerifyHashedPassword(usuario, usuario.PasswordHash, password);
 
             return result == PasswordVerificationResult.Success;
         }
-
-
 
     }
 }

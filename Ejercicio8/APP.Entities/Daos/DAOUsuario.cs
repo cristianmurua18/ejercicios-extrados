@@ -1,45 +1,49 @@
 ﻿using APP.Entities.Models;
 using Dapper;
-using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
-namespace APP.Entities.DAOs
+
+
+namespace APP.Entities.Daos
 {
-    public class DAOUser : IDAOUser
+    public class DAOUsuario(IDbConnection dbConnection) : IDAOUsuario
     {
 
-        private readonly IDbConnection _dbConnection;
+        private readonly IDbConnection _dbConnection = dbConnection;
 
-        public DAOUser(IDbConnection dbConnection)
-        {
-            _dbConnection = dbConnection;
-        }
-
-
-        public List<UserModel> ObtenerListadoUsuarios()
+        
+        public List<Usuario> ObtenerListadoUsuarios()
         {
             var sqlSelect = @"SELECT * FROM usuario";
 
-            var lst = _dbConnection.Query<UserModel>(sqlSelect);
+            var lst = _dbConnection.Query<Usuario>(sqlSelect);
 
             return lst.ToList();
             //Si no hay usuarios me devulve lista vacia
+
+            
         }
 
 
-        public UserModel ObtenerUsuarioPorEmail(string email)
+        public Usuario ObtenerUsuarioPorEmail(string email)
         {
             //Ver como recibir el parametro para la consulta. OK
             var sqlSelect = @"SELECT * FROM usuario WHERE emailaddress = @email;";
 
-            var usr = _dbConnection.QueryFirstOrDefault<UserModel>(sqlSelect, new { EmailAddress = email });
-
+            var usr = _dbConnection.QueryFirstOrDefault<Usuario>(sqlSelect, new { EmailAddress = email });
+            
             return usr;
 
         }
 
 
-        public void AgregarUsuario(UserModel usuario)
+        public void AgregarUsuario(Usuario usuario)
         {
             try
             {   //Validacion para que no me permita ingresar contraseña vacia
@@ -72,13 +76,13 @@ namespace APP.Entities.DAOs
         }
 
 
-        public string ModificarUsuarioPorID(UserModel usuario)
+        public string ModificarUsuarioPorID(Usuario usuario)
         {
 
-            //HashPassword(usuario);
+            HashPassword(usuario);
 
-            var sqlUpdate = @"UPDATE usuario SET username=@UserName, passwordHash=@PasswordHash, emailAddress=@EmailAddress, rol=@Rol, lastname=@LastName, firstname=@FirstName, age=@Age WHERE Id=@Id;";
-            //OJO que deberia hashear la contraseña
+            var sqlUpdate = @"UPDATE usuario SET UserName=@username, PasswordHash=@passwordhash, EmailAdrress=@emailadrress, Rol=@rol, LastName=@lastname, FirstName@firstname, Age=@edad WHERE Id=@Id;";
+            //OJO que deberia hashear la nueva contraseña
             var res = _dbConnection.Execute(sqlUpdate, usuario);
 
             return $"{res} Usuario/s modificado/s.";
@@ -87,7 +91,7 @@ namespace APP.Entities.DAOs
 
 
 
-        public string BorrarUsuarioPorID(UserModel usuario)
+        public string BorrarUsuarioPorID(Usuario usuario)
         {
 
             var sqlDelete = @"DELETE FROM usuario WHERE Id=@Id;";
@@ -117,10 +121,10 @@ namespace APP.Entities.DAOs
 
                 //Hash de la contraseña, y sobreescribo valor
 
-                var hashedpassword = pass.HashPassword(usuario, currentPassword);
-                property.SetValue(usuario, hashedpassword);
+                var hashedPassword = pass.HashPassword(usuario, currentPassword);
+                property.SetValue(usuario, hashedPassword);
 
-                return hashedpassword;
+                return hashedPassword;
             }
             catch (Exception ex)
             {

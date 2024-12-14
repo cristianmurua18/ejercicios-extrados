@@ -1,0 +1,6 @@
+@API.Ppal_HostAddress = http://localhost:5279
+
+GET {{API.Ppal_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
