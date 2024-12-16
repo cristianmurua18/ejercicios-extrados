@@ -28,7 +28,7 @@ namespace APP.Entities.Daos
 
         public string NuevoPrestamo(Prestamo prestamo)
         {
-            //Ver de ubicar el libro y modificar algunas propiedades
+            //Solo se debe cargar el usuarioID y libroID
             var sqlInsert = @"INSERT INTO prestamos(fechaPrestamo,fechaDevolucion,usuarioId,libroId) VALUES(@FechaPrestamo,@FechaDevolucion,@UsuarioId,@LibroId);";
 
             _dbConnection.Execute(sqlInsert, prestamo);
@@ -69,10 +69,10 @@ namespace APP.Entities.Daos
 
         }
 
-        public string ModificarLibro(int id)
+        public string UpdateLibro(int id)
         {
-            var sqlUpdate = @"UPDATE libros SET Disponible='false' WHERE Id=@Id;";
-            //Ver que funciona
+            var sqlUpdate = @"UPDATE libros SET disponible='false' WHERE id=@id;";
+            //Ver si funciona, NO modifica
             var res = _dbConnection.Execute(sqlUpdate);
 
             return $"{res} Libro/s modificado/s.";

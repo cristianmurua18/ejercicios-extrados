@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,11 +19,11 @@ namespace APP.Services.Services
 
         public List<Usuario> ObtenerUsuarios();
 
-        public string GenerateJwt(Usuario user);
+        public (string Token, List<Claim> Claims) GenerateJwt(Usuario user);
 
         public List<Prestamo> Prestamos();
 
-        public string ModificarLibro(int id);
+        public string ModifLibro(int id);
 
 
 

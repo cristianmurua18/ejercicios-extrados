@@ -79,3 +79,31 @@ Crear una API con siguientes endpoints:
 SIETE: (Ejercicio7) - CORS y patron Options
 
 Del ejercicio anterior, agregar CORS y mover las llaves del JWT al archivo appsettings.json y consumirlo desde allí, tanto en el program.cs como en el controlador
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+OCHO: (Ejercicio8) - DI y otras configuraciones
+
+
+-> agregar al ejercicio de la clase pasada:
+-un endpoint para que un usuario pueda pedir un libro
+-se debe ingresar a este endpoint una hora/fecha en la que se le da al usuario el libro, un nombre del libro y un id del usuario al que se le esta prestando el libro
+-el endpoint debe dar una fecha de vencimiento del alquiler del libro, que sera 5 días después de la fecha de préstamo
+-el endpoint debe recibir un token de usuario con un id
+-el endpoint debe revisar que el usuario que esta pidiendo el libro, y el usuario al que se esta dando el préstamo sean el mismo
+-el endpoint solo debe poder ser accedido por el rol “usuario”
+
+-modificar la creación del jwt para que obtenga los datos desde configuración (tanto en el program.cs como en el controlador)
+-modificar la conexión a la bd para que obtenga el connectionstring desde configuración
+
+-aplicar inyección de dependencias al obtener el DAO
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+NUEVE: (Ejercicio9) - Refresh token y Cookies
+
+-modificar el ejercicio anterior, para que expida y acepte refresh tokens.
+-crear un endpoint de logout
+-enviar el refresh token por cookies.
+

@@ -52,7 +52,7 @@ namespace APP.Services.Services
 
 
         //Debe recibir el usuario Autenticado
-        public string GenerateJwt(Usuario user)
+        public (string Token, List<Claim> Claims) GenerateJwt(Usuario user)
         {
 
             //La llave se puede recibir del appsettings.json como una key - IMPORTANTE REVISAR COMO HACERLO y configurar
@@ -65,11 +65,11 @@ namespace APP.Services.Services
             //Creo los Claims o reclamaciones - Se devuelven como parte del token en Paylood
             var claims = new List<Claim>
             {   //Reclamaciones
-                new(ClaimTypes.NameIdentifier, user.UserName),
+                new("UsuarioID", user.Id.ToString()), //Aca deberia ir el Id del usuario obtenido de la BD
+                new(ClaimTypes.NameIdentifier, user.UserName),  
                 new(ClaimTypes.Email, user.EmailAddress),
                 new(ClaimTypes.GivenName, user.FirstName),
                 new(ClaimTypes.Surname, user.LastName),
-                //new Claim("Id", user.Id),  //Aca deberia ir el Id del usuario obtenido de la BD
                 new(ClaimTypes.Role, user.Rol)  //Aca deberia ir el rol del usario obtenido de la BD
             };
 
@@ -84,12 +84,12 @@ namespace APP.Services.Services
             //Escribe el token en texto plano
             var token = new JwtSecurityTokenHandler().WriteToken(Sectoken);
 
-            return token;
+            return (token, claims);
         }
 
-        public string ModificarLibro(int id)
+        public string ModifLibro(int id)
         {
-            return _DaoLibro.ModificarLibro(id);
+            return _DaoLibro.UpdateLibro(id);
         }
 
 

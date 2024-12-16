@@ -25,24 +25,20 @@ namespace APP.Services.Services
 
         public List<Usuario> GetAll()
         {
-            var lista = _DaoUser.ObtenerListadoUsuarios();
-
-            return lista;
+            return _DaoUser.ObtenerListadoUsuarios();
+ 
         }
 
         public Usuario GetByEmailAddress(string email)
         {
-            var user = _DaoUser.ObtenerUsuarioPorEmail(email);
+            return  _DaoUser.ObtenerUsuarioPorEmail(email);
 
-            return user;
         }
 
         //Ver de hacerlos - a los 3 siguientes - void
-        public string AddUser(Usuario usuario)
+        public void AddUser(Usuario usuario)
         {
             _DaoUser.AgregarUsuario(usuario);
-
-            return "Usuario agregado.";
 
         }
 

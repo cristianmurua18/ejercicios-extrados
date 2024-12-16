@@ -20,7 +20,7 @@ namespace APP.Entities.Daos
 
         public List<Prestamo> GetListPrestamos();
 
-        public string ModificarLibro(int id);
+        public string UpdateLibro(int id);
 
 
     }

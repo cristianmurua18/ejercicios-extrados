@@ -62,6 +62,7 @@ namespace APP.Entities.Daos
 
                     var result = _dbConnection.Execute(sqlInsert, usuario);
 
+                    Console.WriteLine($"{result}: Usuario/s agregado/s.");
                 }
                 else
                 {
@@ -102,7 +103,7 @@ namespace APP.Entities.Daos
 
         }
 
-
+        //Metodo con genericos
         public string HashPassword<T>(T usuario) where T : class
         {
             try

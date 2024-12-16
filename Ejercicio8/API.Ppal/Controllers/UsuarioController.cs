@@ -18,11 +18,7 @@ namespace API.Ppal.Controllers
         [HttpGet("obtenerusuarios")]
         public IActionResult ObtenerUsuarios()
         {
-            var result = _userService.GetAll();
-
-            var lista = result.ToList();
-
-            return Ok(lista);
+            return Ok(_userService.GetAll());
         }
 
 
@@ -31,10 +27,10 @@ namespace API.Ppal.Controllers
         [HttpGet("obtenerusuarioporemail")]
         public IActionResult ObtenerUsuarioPorEmail(string email)
         {
-            var result = _userService.GetByEmailAddress(email);
+            var user = _userService.GetByEmailAddress(email);
 
             //Capaz pueda mandar un BadRequest() si no se encuentra el email - REVISAR
-            return result == null ? NotFound("Usuario no encontrado") : Ok(result);
+            return user == null ? NotFound("Usuario no encontrado") : Ok(user);
 
         }
 
@@ -42,10 +38,8 @@ namespace API.Ppal.Controllers
         [HttpPost("AgregarUsuario")]
         public IActionResult AgregarUsuario(Usuario usuario)
         {
-
-            var usr = _userService.AddUser(usuario);
-
-            return Ok(usr);
+            _userService.AddUser(usuario);
+            return Ok();
 
         }
 
@@ -69,6 +63,7 @@ namespace API.Ppal.Controllers
 
 
         //Paso 3. Hacer un endpoint de login, para poder generar token de autorizacion y generar el jwt
+        //Hacer login solo de usuario?
         [HttpPost("Login")]
         public IActionResult Login(string user, string password)
         {                         //recibir usuario y contraseña por parametro o body. OK
@@ -81,9 +76,9 @@ namespace API.Ppal.Controllers
                 var actual = users.FirstOrDefault(us => us.UserName == user) ?? throw new Exception("Usuario no encontrado.");
 
 
-                //Para que necesito recibir un UserModel? Por el metodo autenticacion
+                //Para que necesito recibir un Userio? Por el metodo autenticacion
                 var result = _userService.Authenticate(actual, password);
-                //revisar que la contra sea correcta y luego devolver la informacion del usuario
+                //revisar que la contra sea correcta para recien poder devolver el token
 
                 if (result)
                 {
@@ -105,7 +100,7 @@ namespace API.Ppal.Controllers
         //Marca del metodo para que solo se puede mostrar si pasa la autorizacion con el token,
         //para mayor seguridad se puede agregar que un determinado rol solo tenga permiso para acceder
 
-        //Authorize(Roles = ("Administrador"))
+        
         [Authorize(Roles = "Administrador")]
         [HttpGet("ObtenerInformacionSecreta")]
         public string GetUsuario()

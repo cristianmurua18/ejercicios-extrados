@@ -22,7 +22,7 @@ namespace APP.Services.Services
 
         public Usuario GetByEmailAddress(string email);
 
-        public string AddUser(Usuario usuario);
+        public void AddUser(Usuario usuario);
 
         public string UpdateUserByID(Usuario usuario);
 
