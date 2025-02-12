@@ -1,9 +1,7 @@
 ﻿using APP.Entities.Models;
 using APP.Services.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace API.Ppal.Controllers
 {
@@ -33,13 +31,13 @@ namespace API.Ppal.Controllers
         //Obtener token para retirar libro, solo los usuarios puede retirar libros
         [HttpPost("obtenertoken")]
         //[Authorize(Roles = "usuario")]
-        public IActionResult Login(int userID)
+        public IActionResult Autenticar(int userID)
         {                         //recibir UserID, que debe coincidir con el Usuario.Id y con el prestamo.UserID 
 
             try
             {
 
-                //Intento ubicar el usuario, por su Id en los claims
+                //Intento ubicar el usuario, por su Id
                 var users = _libroService.ObtenerUsuarios();
                 //revisar que el usuario es correcto
                 var usuario = users.FirstOrDefault(us => us.Id == userID) ?? throw new Exception("Usuario no encontrado.");
@@ -55,7 +53,7 @@ namespace API.Ppal.Controllers
                 if (result != null)
                 {
                     var (Token, Claims) = _libroService.GenerateJwt(usuario);
-                    
+                    //Intento ubicar el usuario, por su Id en los claims
                     var claim = Claims.FirstOrDefault(c => c.Type == "UsuarioID");
 
                     if (claim != null && int.Parse(claim.Value) == usuario.Id)
@@ -78,12 +76,12 @@ namespace API.Ppal.Controllers
         }
 
         //Es PUT para modificar informacion
-        //[HttpPut("retirarlibro")]
-        //[Authorize(Roles = "usuario")]
-        //public IActionResult RetirarLibro(int libroId)
-        //{
-        //    return Ok(_libroService.ModifLibro(libroId)); //Cambia la propiedad disponible del libro por false
-        //}
+        [HttpPut("retirarlibro")]
+        [Authorize(Roles = "usuario")]
+        public IActionResult RetirarLibro(int libroId)
+        {
+            return Ok(_libroService.ModifLibro(libroId)); //Cambia la propiedad disponible del libro por false
+        }
 
 
         //Post agrega un recurso al servidor
@@ -104,5 +102,32 @@ namespace API.Ppal.Controllers
         {
             return Ok(_libroService.Prestamos());
         }
+
+
+
+        [HttpGet]
+        [Route("cookie")]
+        public IActionResult Cookies()
+        {
+            //Orden de crear una cookie, en la respuesta del servicio 
+            Response.Cookies.Append("Nombre", "DATO A GUARDAR", new CookieOptions()
+            {
+                Secure = true,  //En true solo se va a enviar a un servidor por HTTPS
+                Expires = DateTime.UtcNow.AddMinutes(60), //En cuanto tiempo debe ser eliminada del cliente
+                HttpOnly = true, //Asi no es accesible por el front (javascript)
+                SameSite = SameSiteMode.None //Solo se envia al mismo servicio o pagina que la creo
+            });
+
+            //Forma de pedir una cookie
+            //var cookie = Request.Cookies["Nombre"];
+
+            //Se puede sobreescribir una cokie para borrarla en el momento con Expires = Datetime.Now;
+
+            return Ok();
+
+        }
+
+
+
     }
 }

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.12" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AccesoDatos\AccesoDatos.csproj" />
+    <ProjectReference Include="..\Entidades\Entidades.csproj" />
+    <ProjectReference Include="..\Servicios\Servicios.csproj" />
+    <ProjectReference Include="..\Utilidades\Utilidades.csproj" />
+    <ProjectReference Include="..\Validaciones\Validaciones.csproj" />
+  </ItemGroup>
+
+</Project>

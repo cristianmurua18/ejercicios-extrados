@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+//Agregar la cadena de conexion al servicio
 builder.Services.AddSingleton<IDbConnection>(sp =>
 {
     return new MySqlConnection(builder.Configuration.GetConnectionString("MySqlConnection"));
@@ -23,6 +24,10 @@ builder.Services.AddSingleton<IUsuarioService, UsuarioService>();
 builder.Services.AddSingleton<IDAOLibro, DAOLibro>();
 
 builder.Services.AddSingleton<ILibroService, LibroService>();
+
+//DI del servicio de Autorizacion
+
+
 
 //Configuro Cors, no olvidar agregar el middleware
 builder.Services.AddCors(op =>

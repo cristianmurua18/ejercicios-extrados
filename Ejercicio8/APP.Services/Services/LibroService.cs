@@ -77,12 +77,15 @@ namespace APP.Services.Services
             var Sectoken = new JwtSecurityToken(_configJwt["Jwt:Issuer"], //Issuer
                 _configJwt["Jwt:Audience"], //Audiencia
                 claims: claims,  //Reclamaciones
-                expires: DateTime.Now.AddMinutes(120),  //Tiempo de expiracion del token
+                expires: DateTime.Now.AddMinutes(1),  //Tiempo de expiracion del token - Ver UtcNow
                 signingCredentials: credentials  //Credenciales
                 );
 
             //Escribe el token en texto plano
             var token = new JwtSecurityTokenHandler().WriteToken(Sectoken);
+
+            //Forma de generar el refresh
+            var refresh = GenerarRefreshToken();
 
             return (token, claims);
         }

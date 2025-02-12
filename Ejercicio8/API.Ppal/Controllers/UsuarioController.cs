@@ -76,7 +76,7 @@ namespace API.Ppal.Controllers
                 var actual = users.FirstOrDefault(us => us.UserName == user) ?? throw new Exception("Usuario no encontrado.");
 
 
-                //Para que necesito recibir un Userio? Por el metodo autenticacion
+                //Para que necesito recibir un Usuario? Por el metodo autenticacion
                 var result = _userService.Authenticate(actual, password);
                 //revisar que la contra sea correcta para recien poder devolver el token
 
