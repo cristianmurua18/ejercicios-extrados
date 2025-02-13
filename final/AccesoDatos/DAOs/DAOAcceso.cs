@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Net.Http;
 using Entidades.DTOs.Jugadores;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Utilidades.Utilidades;
 
 namespace AccesoDatos.DAOs
 {
@@ -36,31 +37,48 @@ namespace AccesoDatos.DAOs
 
         public async Task<int> RellenarCartaSerie(CartaSerieDTO cartaSerie)
         {
-            var nombre = "";
-            var idSerie = ObtenerIdSerie(nombre);
+            var count = 0;
 
-            var sqlInsert = @"INSERT
-                            INTO CartaSerie(IdCarta,IdSerie) 
-                            VALUES(@IdCarta,@IdSerie);";
+            var idSerie = 0;
 
-            //Por cada pais, hago un insert
-            var res = await _dbConnection.ExecuteAsync(sqlInsert, new
+            foreach (var item in cartaSerie.types)
             {
+                idSerie = item.type!.name switch
+                {
+                    "normal" => Convert.ToInt32(SeriesEnum.normal),
+                    "fire" => Convert.ToInt32(SeriesEnum.fire),
+                    "water" => Convert.ToInt32(SeriesEnum.water),
+                    "grass" => Convert.ToInt32(SeriesEnum.grass),
+                    "electric" => Convert.ToInt32(SeriesEnum.electric),
+                    "ice" => Convert.ToInt32(SeriesEnum.ice),
+                    "fighting" => Convert.ToInt32(SeriesEnum.fighting),
+                    "poison" => Convert.ToInt32(SeriesEnum.poison),
+                    "ground" => Convert.ToInt32(SeriesEnum.ground),
+                    "flying" => Convert.ToInt32(SeriesEnum.flying),
+                    "psychic" => Convert.ToInt32(SeriesEnum.psychic),
+                    "bug" => Convert.ToInt32(SeriesEnum.bug),
+                    "rock" => Convert.ToInt32(SeriesEnum.rock),
+                    "ghost" => Convert.ToInt32(SeriesEnum.ghost),
+                    "dark" => Convert.ToInt32(SeriesEnum.dark),
+                    "dragon" => Convert.ToInt32(SeriesEnum.dragon),
+                    "steel" => Convert.ToInt32(SeriesEnum.steel),
+                    "fairy" => Convert.ToInt32(SeriesEnum.fairy),
+                    _ => 0,
+                };
+
+                var sqlInsert = @"INSERT
+                            INTO CartaSerie(IdCarta,IdSerie) 
+                            VALUES(@id,@idSerie);";
+
+                //Por cada pais, hago un insert
+                count += await _dbConnection.ExecuteAsync(sqlInsert, new
+                {
+                    cartaSerie.id, idSerie
+                });
                 
-            });
-            return res;
+            }
+            return count;
         }
-        public async Task<int> ObtenerIdSerie(string nombreSerie)
-        {
-            var sqlSelect = @"SELECT IdSerie FROM Series 
-                WHERE NombreSerie Like @nombreSerie;";
-
-            var consulta = await _dbConnection.ExecuteScalarAsync<int>(sqlSelect, new { NombreSerie = "%" + nombreSerie + "%" });
-
-            return consulta;
-        }
-
-
 
         public async Task<int> ObtenerIdPais(string nombre)
         {

@@ -8,24 +8,24 @@ namespace Utilidades.Utilidades
 {
     public enum SeriesEnum
     {
-        Normal = 1,
-        Fire = 2,
-        Water = 3,
-        Grass = 4,
-        Electric = 5,
-        Ice = 6,
-        Fighting = 7,
-        Poison = 8,
-        Ground = 9,
-        Flaying = 10,
-        Psychic = 11,
-        Bug = 12,
-        Rock = 13,
-        Ghost = 14,
-        Dark = 15,
-        Dragon = 16,
-        Steel = 17,
-        Fairy = 18
+        normal = 1,
+        fire = 2,
+        water = 3,
+        grass = 4,
+        electric = 5,
+        ice = 6,
+        fighting = 7,
+        poison = 8,
+        ground = 9,
+        flying = 10,
+        psychic = 11,
+        bug = 12,
+        rock = 13,
+        ghost = 14,
+        dark = 15,
+        dragon = 16,
+        steel = 17,
+        fairy = 18
 
     }
 }
