@@ -31,7 +31,7 @@ namespace Servicios.Servicios
             //Esperar que se ejecuta de Forma asincrona y que espere el resultado
 
             var i = 251;
-            //FALTA EJECUTAR PARA TRAER DEL 215 al 300
+            //FALTA EJECUTAR PARA TRAER DEL 251 al 300
             while (i < 301)
             {
                 var res = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/pokemon/{i}");
@@ -62,9 +62,9 @@ namespace Servicios.Servicios
 
             //Esperar que se ejecuta de Forma asincrona y que espere el resultado
 
-            var i = 201;
-            //Traigo del 201 al 250. OKA
-            while (i < 251)
+            var i = 251;
+            //Traer del 251 al 300
+            while (i < 301)
             {
                 var res = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/pokemon/{i}");
 

@@ -50,7 +50,7 @@ namespace Juego.Controllers
 
         }
 
-
+        //IDEA REVISAR EL ESTADO DE UN TORNEO Y QUE EN BASE A ESO TE DEJE INSCRIBIR O NO
         [HttpPost]
         [Route("RegistroJugador")]
         public async Task<IActionResult> RegistroJugador(InscripcionJugadorDTO jugador)
@@ -62,8 +62,8 @@ namespace Juego.Controllers
             return BadRequest("Registro fallido. Revise informacion");
 
             //FALTA ver como registrar los mazos de cartas que tiene al sistema
-
             //Inscripcion de mazo al torneo, ver que cumplan con las series de cartas permitidas
+           //Cuando el organizador haga la inscripcion
         }
 
 
@@ -74,10 +74,5 @@ namespace Juego.Controllers
             return Ok(await _accesoServicio.ObtenerAutenticacion(usuario));
 
         }
-
-        //EL Problema puede estar en que login esta en este controlador? NO LO CREO.
-
-
-
     }
 }

@@ -12,7 +12,7 @@ namespace Entidades.Modelos
         public DateTime FyHInicioT { get; set; }
         public DateTime FyHFinT { get; set; }
         public string? Estado { get; set; }
-        public int IdPais { get; set; }
+        public int IdPaisRealizacion { get; set; }
         public int PartidaActual { get; set; }
         public int JugadorGanador { get; set; }
         public int Organizador { get; set; }

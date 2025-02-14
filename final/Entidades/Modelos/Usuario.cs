@@ -13,7 +13,7 @@ namespace Entidades.Modelos
         public int UsuarioID { get; set; }
         public string? NombreApellido { get; set; }
         public string? Alias { get; set; }
-        public int IdPais { get; set; }
+        public int IdPaisOrigen { get; set; }
         public string? Email { get; set; }
         public string? NombreUsuario { get; set; }
         public string? Contraseña { get; set; }
