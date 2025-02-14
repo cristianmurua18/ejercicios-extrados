@@ -1,4 +1,4 @@
-﻿using AccesoDatos.DAOs;
+﻿using AccesoDatos.DAOs.Organizador;
 using Entidades.DTOs;
 using Entidades.DTOs.Cruds;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Servicios.Servicios
+namespace Servicios.Servicios.Organizador
 {
     public class OrganizadorServicio(IDAOOrganizador daoOrganizador) : IOrganizadorServicio
     {

@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AccesoDatos.DAOs
+namespace Servicios.Servicios.Organizador
 {
-    public interface IDAOOrganizador
+    public interface IOrganizadorServicio
     {
         public Task<bool> RegistrarJuez(CrudUsuarioDTO usuario);
         public Task<bool> CrearTorneo(CrudTorneoDTO torneo);
@@ -16,6 +16,5 @@ namespace AccesoDatos.DAOs
         public Task<bool> CancelarTorneo(int idtorneo, string estado);
         public Task<bool> CrearPartida(PartidaDTO partida);
         public Task<bool> ModificarPartida(PartidaDTO partida);
-
     }
 }

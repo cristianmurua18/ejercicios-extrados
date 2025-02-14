@@ -8,11 +8,12 @@ namespace Entidades.DTOs.Cruds
 {
     public class CrudTorneoDTO
     {
-        public DateTime FyHInicio { get; set; }
-        public DateTime FyHFin { get; set; }
-        public string? Pais { get; set; }
-        public string? Fase { get; set; }
-        public int RondaActual { get; set; }
+        public int TorneoID { get; set; }
+        public DateTime FyHInicioT { get; set; }
+        public DateTime FyHFinT { get; set; }
+        public string? Estado { get; set; }
+        public string? IdPaisRealizacion { get; set; }
+        public int PartidaActual { get; set; }
         public int JugadorGanador { get; set; }
         public int Organizador { get; set; }
 

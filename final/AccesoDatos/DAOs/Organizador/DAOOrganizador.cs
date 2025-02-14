@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Entidades.Modelos;
 using Entidades.DTOs.Cruds;
 
-namespace AccesoDatos.DAOs
+namespace AccesoDatos.DAOs.Organizador
 {
     public class DAOOrganizador(IDbConnection dbConnection) : IDAOOrganizador
     {
@@ -24,8 +24,8 @@ namespace AccesoDatos.DAOs
         public async Task<bool> RegistrarJuez(CrudUsuarioDTO usuario)
         {
             var sqlInsert = @"INSERT
-                INTO Usuarios(NombreApellido,Alias,IdPais,Email,NombreUsuario,Contraseña,FotoAvatar,Rol,CreadorPor,Activo) 
-                VALUES(@NombreApellido,@Alias,@IdPais,@Email,@NombreUsuario,@Contraseña,@FotoAvatar,@Rol,@CreadoPor,@Activo);";
+                INTO Usuarios(NombreApellido,Alias,IdPaisOrigen,Email,NombreUsuario,Contraseña,FotoAvatar,Rol,CreadorPor,Activo) 
+                VALUES(@NombreApellido,@Alias,@IdPaisOrigen,@Email,@NombreUsuario,@Contraseña,@FotoAvatar,@Rol,@CreadoPor,@Activo);";
 
             var result = await _dbConnection.ExecuteAsync(sqlInsert, usuario);
 
@@ -37,8 +37,8 @@ namespace AccesoDatos.DAOs
 
         public async Task<bool> CrearTorneo(CrudTorneoDTO torneo)
         {
-            var sqlInsert = @"INSERT INTO Torneos(FyHInicio,FyHFin,Pais,Fase,RondaActual,JugadorGanador,Organizador) 
-                                     VALUES(@FyHInicio,@FyHFin,@Pais,@Fase,@RondaActual,@JugadorGanador,@Organizador);";
+            var sqlInsert = @"INSERT INTO Torneos(FyHInicioT,FyHFinT,Estado,IdPaisRealizacion,PartidaActual,JugadorGanador,Organizador) 
+                                     VALUES(@FyHInicioT,@FyHFinT,@Estado,@IdPaisRealizacion,@PartidaActual,@JugadorGanador,@Organizador);";
 
             var resultado = await _dbConnection.ExecuteAsync(sqlInsert, torneo);
 
@@ -50,7 +50,7 @@ namespace AccesoDatos.DAOs
         {
             var sqlUpdate =
                 @"UPDATE Torneos 
-                SET FyHInicio=@FyHInicio, FyHFin=@FyHFin, Pais=@Pais, Fase=@Fase, RondaActual=@RondaActual, 
+                SET FyHInicioT=@FyHInicioT, FyHFinT=@FyHFinT, Estado=@Estado, IdPaisRealizacion=@IdPaisRealizacion, PartidaActual=@PartidaActual, 
                 JugadorGanador=@JugadorGanador, Organizador=@Organizador 
                 WHERE TorneoID=@TorneoID;";
 
@@ -75,8 +75,8 @@ namespace AccesoDatos.DAOs
 
         public async Task<bool> CrearPartida(PartidaDTO partida)
         {
-            var sqlInsert = @"INSERT INTO Partidas(FyHInicio,FyHFin,HsDiarias,Ronda,JugadorUno,JugadorDos,JugadorVencedor) 
-                                     VALUES(@FyHInicio,@FyHFin,@HsDiarias,@Ronda,@JugadorUno,@JugadorDos,@JugadorVencedor);";
+            var sqlInsert = @"INSERT INTO Partidas(FyHInicioP,FyHFinP,Ronda,JugadorDerrotado,JugadorVencedor) 
+                                     VALUES(@FyHInicioP,@FyHFinP,@Ronda,@JugadorDerrotado,@JugadorVencedor);";
 
             var resultado = await _dbConnection.ExecuteAsync(sqlInsert, partida);
 
@@ -89,9 +89,8 @@ namespace AccesoDatos.DAOs
         {
             var sqlUpdate =
                 @"UPDATE Partidas 
-                SET FyHInicio=@FyHInicio, FyHFin=@FyHFin, HsDiarias=@HsDiarias, Ronda=@Ronda, JugadorUno=@JugadorUno, 
-                JugadorDos=@JugadorDos, JugadorVencedor=@JugadorVencedor 
-                WHERE PartidaID=@PartidaID;";
+                SET FyHInicioP=@FyHInicioP, FyHFinP=@FyHFinP, Ronda=@Ronda, JugadorDerrotado=@JugadorDerrotado, 
+                JugadorVencedor=@JugadorVencedor WHERE PartidaID=@PartidaID;";
 
             var resultado = await _dbConnection.ExecuteAsync(sqlUpdate, partida);
 

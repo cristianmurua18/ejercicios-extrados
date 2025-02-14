@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Servicios.Servicios
+namespace Servicios.Servicios.Administrador
 {
     public interface IAdministradorServicio
     {

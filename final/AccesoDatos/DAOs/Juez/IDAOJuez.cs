@@ -5,12 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Servicios.Servicios
+namespace AccesoDatos.DAOs.Juez
 {
-    public interface IJuezServicio
+    public interface IDAOJuez
     {
         public Task<bool> OficializarResultados();
         public Task<bool> DescalificarJugador(JugadorDescalificadoDTO jugadorDescalificado);
 
     }
+
 }

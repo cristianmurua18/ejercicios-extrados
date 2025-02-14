@@ -4,7 +4,7 @@ using Entidades.DTOs.Cruds;
 using Microsoft.IdentityModel.Tokens;
 using System.Data;
 
-namespace AccesoDatos.DAOs
+namespace AccesoDatos.DAOs.Administrador
 {
     public class DAOAdministrador(IDbConnection dbConnection) : IDAOAdministrador
     {
@@ -42,8 +42,8 @@ namespace AccesoDatos.DAOs
         public async Task<bool> RegistrarUsuario(CrudUsuarioDTO usuario)
         {
             var sqlInsert = @"INSERT
-                INTO Usuarios(NombreApellido,Alias,IdPais,Email,NombreUsuario,Contraseña,FotoAvatar,Rol,CreadoPor, Activo) 
-                VALUES(@NombreApellido,@Alias,@IdPais,@Email,@NombreUsuario,@Contraseña,@FotoAvatar,@Rol,@CreadoPor,@Activo);";
+                INTO Usuarios(NombreApellido,Alias,IdPaisOrigen,Email,NombreUsuario,Contraseña,FotoAvatar,Rol,CreadoPor, Activo) 
+                VALUES(@NombreApellido,@Alias,@IdPaisOrigen,@Email,@NombreUsuario,@Contraseña,@FotoAvatar,@Rol,@CreadoPor,@Activo);";
 
             var result = await _dbConnection.ExecuteAsync(sqlInsert, usuario);
 
@@ -55,7 +55,7 @@ namespace AccesoDatos.DAOs
         {       //SIN tocar contraseña
             var sqlUpdate =
                 @"UPDATE Usuarios 
-                SET NombreApellido=@NombreApellido, Alias=@Alias, IdPais=@IdPais, Email=@Email, NombreUsuario=@NombreUsuario, 
+                SET NombreApellido=@NombreApellido, Alias=@Alias, IdPaisOrigen=@IdPaisOrigen, Email=@Email, NombreUsuario=@NombreUsuario, 
                 FotoAvatar=@FotoAvatar, Rol=@Rol, CreadoPor=@CreadoPor, Activo=@Activo
                 WHERE UsuarioID=@UsuarioID;";
 

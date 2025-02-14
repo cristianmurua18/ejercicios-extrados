@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Entidades.DTOs.Jugadores;
 
-namespace AccesoDatos.DAOs
+namespace AccesoDatos.DAOs.Juez
 {
     public class DAOJuez(IDbConnection dbConnection) : IDAOJuez
     {

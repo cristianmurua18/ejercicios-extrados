@@ -1,4 +1,4 @@
-﻿using AccesoDatos.DAOs;
+﻿using AccesoDatos.DAOs.Acceso;
 using Azure.Identity;
 using Entidades.DTOs;
 using Entidades.DTOs.Jugadores;
@@ -8,7 +8,7 @@ using System.Net.Http.Headers;
 using Utilidades.Utilidades;
 using static System.Net.WebRequestMethods;
 
-namespace Servicios.Servicios
+namespace Servicios.Servicios.Acceso
 {
     public class AccesoServicio(IDAOAcceso daoacceso, IComunes common, HttpClient httpClient) : IAccesoServicio
     {
@@ -30,9 +30,9 @@ namespace Servicios.Servicios
 
             //Esperar que se ejecuta de Forma asincrona y que espere el resultado
 
-            var i = 251;
-            //FALTA EJECUTAR PARA TRAER DEL 251 al 300
-            while (i < 301)
+            var i = 401;
+            //Traer del 401 al 500
+            while (i < 501)
             {
                 var res = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/pokemon/{i}");
 
@@ -62,9 +62,9 @@ namespace Servicios.Servicios
 
             //Esperar que se ejecuta de Forma asincrona y que espere el resultado
 
-            var i = 251;
-            //Traer del 251 al 300
-            while (i < 301)
+            var i = 401;
+            //Traer del 401 al 500. OKA
+            while (i < 501)
             {
                 var res = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/pokemon/{i}");
 

@@ -2,7 +2,7 @@
 using Entidades.DTOs.Jugadores;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Servicios.Servicios;
+using Servicios.Servicios.Acceso;
 
 namespace Juego.Controllers
 {

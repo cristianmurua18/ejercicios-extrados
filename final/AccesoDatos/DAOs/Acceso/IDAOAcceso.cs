@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AccesoDatos.DAOs
+namespace AccesoDatos.DAOs.Acceso
 {
     public interface IDAOAcceso
     {

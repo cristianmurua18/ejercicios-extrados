@@ -1,4 +1,4 @@
-﻿using AccesoDatos.DAOs;
+﻿using AccesoDatos.DAOs.Jugador;
 using Entidades.DTOs.Cruds;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Servicios.Servicios
+namespace Servicios.Servicios.Jugador
 {
     public class JugadorServicio(IDAOJugador daoJugador) : IJugadorServicio
     {

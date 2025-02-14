@@ -1,11 +1,18 @@
-
-using AccesoDatos.DAOs;
+using AccesoDatos.DAOs.Acceso;
+using AccesoDatos.DAOs.Administrador;
+using AccesoDatos.DAOs.Juez;
+using AccesoDatos.DAOs.Jugador;
+using AccesoDatos.DAOs.Organizador;
 using Entidades.DTOs;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
-using Servicios.Servicios;
+using Servicios.Servicios.Acceso;
+using Servicios.Servicios.Administrador;
+using Servicios.Servicios.Juez;
+using Servicios.Servicios.Jugador;
+using Servicios.Servicios.Organizador;
 using System.Data;
 using System.Text;
 using Utilidades.Utilidades;

@@ -1,7 +1,7 @@
 ﻿using Entidades.DTOs;
 using Entidades.DTOs.Cruds;
 
-namespace AccesoDatos.DAOs
+namespace AccesoDatos.DAOs.Administrador
 {
     public interface IDAOAdministrador
     {

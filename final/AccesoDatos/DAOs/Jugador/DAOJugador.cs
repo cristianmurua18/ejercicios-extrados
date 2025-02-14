@@ -9,7 +9,7 @@ using Dapper;
 using Entidades.Modelos;
 using Entidades.DTOs.Cruds;
 
-namespace AccesoDatos.DAOs
+namespace AccesoDatos.DAOs.Jugador
 {
     public class DAOJugador(IDbConnection dbConnection) : IDAOJugador
     {

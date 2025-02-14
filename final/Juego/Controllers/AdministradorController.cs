@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Servicios.Servicios;
 using System.Runtime.ConstrainedExecution;
 using System;
 using Utilidades.Utilidades;
@@ -8,6 +7,7 @@ using System.Diagnostics.Eventing.Reader;
 using FluentValidation;
 using Validaciones.Validacion;
 using Entidades.DTOs.Cruds;
+using Servicios.Servicios.Administrador;
 
 namespace Juego.Controllers
 {

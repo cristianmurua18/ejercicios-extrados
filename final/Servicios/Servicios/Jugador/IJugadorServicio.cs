@@ -5,13 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AccesoDatos.DAOs
+namespace Servicios.Servicios.Jugador
 {
-    public interface IDAOJugador
+    public interface IJugadorServicio
     {
         public Task<int> CrearMazo(CrudMazoDTO mazo);
         public Task<bool> RegistrarCartas(CrudMazoCartasDTO cartas);
-
-
+        
     }
 }

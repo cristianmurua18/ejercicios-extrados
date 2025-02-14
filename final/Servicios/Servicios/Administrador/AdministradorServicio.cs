@@ -1,5 +1,4 @@
-﻿using AccesoDatos.DAOs;
-using Entidades.DTOs;
+﻿using Entidades.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +9,10 @@ using System.Threading.Tasks;
 using static Azure.Core.HttpHeader;
 using Utilidades.Utilidades;
 using Entidades.DTOs.Cruds;
+using AccesoDatos.DAOs.Administrador;
 
 
-namespace Servicios.Servicios
+namespace Servicios.Servicios.Administrador
 {
     public class AdministradorServicio(IDAOAdministrador daoAdministrador, IComunes common) : IAdministradorServicio
     {

@@ -7,7 +7,7 @@ using Entidades.DTOs.Jugadores;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Utilidades.Utilidades;
 
-namespace AccesoDatos.DAOs
+namespace AccesoDatos.DAOs.Acceso
 {
     public class DAOAcceso(IDbConnection dbConnection) : IDAOAcceso
     {
@@ -70,7 +70,7 @@ namespace AccesoDatos.DAOs
                             INTO CartaSerie(IdCarta,IdSerie) 
                             VALUES(@id,@idSerie);";
 
-                //Por cada pais, hago un insert
+                //Por cada tipo de pokemon, hago un insert
                 count += await _dbConnection.ExecuteAsync(sqlInsert, new
                 {
                     cartaSerie.id, idSerie
@@ -92,12 +92,12 @@ namespace AccesoDatos.DAOs
             //Ver exepciones por problemas con el servidor
 
         }
-
+        //VER COMO LIMITAR EL REGISTRO EN ALGUN MOMENTO
         public async Task<bool> RegistroJugador(InscripcionJugadorDTO jugador)
         {
             var sqlInsert = @"INSERT
-                INTO Usuarios(NombreApellido,Alias,IdPais,Email,NombreUsuario,Contraseña,FotoAvatar,Rol,CreadorPor,Activo) 
-                VALUES(@NombreApellido,@Alias,@IdPais,@Email,@NombreUsuario,@Contraseña,@FotoAvatar,@Rol,@CreadoPor,@Activo);";
+                INTO Usuarios(NombreApellido,Alias,IdPaisOrigen,Email,NombreUsuario,Contraseña,FotoAvatar,Rol,CreadorPor,Activo) 
+                VALUES(@NombreApellido,@Alias,@IdPaisOrigen,@Email,@NombreUsuario,@Contraseña,@FotoAvatar,@Rol,@CreadoPor,@Activo);";
 
             var result = await _dbConnection.ExecuteAsync(sqlInsert, jugador);
 
