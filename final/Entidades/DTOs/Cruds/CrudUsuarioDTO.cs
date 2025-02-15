@@ -26,7 +26,7 @@ namespace Entidades.DTOs.Cruds
 
         [Required(ErrorMessage = "El IdPais es requerido.")]
         [Range(1, 250, ErrorMessage = "Debe estar entre 1 y 250")]
-        public int IdPais { get; set; }
+        public int IdPaisOrigen { get; set; }
 
         [Required(ErrorMessage = "El email es requerido")]
         [EmailAddress(ErrorMessage = "El correo es invalido, revise formato")]

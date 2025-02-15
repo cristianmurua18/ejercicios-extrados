@@ -11,16 +11,32 @@ namespace AccesoDatos.DAOs.Administrador
         //Propiedad para recibir la conexion a la base de datos
         private readonly IDbConnection _dbConnection = dbConnection;
 
-        public async Task<List<UsuarioDTO>> ObtenerUsuariosPorNombre(string patron)
+        public async Task<List<UsuarioDTO>> ObtenerUsuariosPorRol(string rol)
         {
             string sqlJoin =
                 @"SELECT *
                 FROM Usuarios us
                 INNER JOIN Paises pa
-                ON us.IdPais = pa.PaisID
-                WHERE NombreApellido LIKE @patron;";
-            //PROBAR
-            var usuarios = await _dbConnection.QueryAsync<UsuarioDTO>(sqlJoin, new { NombreApellido = "%" + patron + "%" });
+                ON us.IdPaisOrigen = pa.PaisID
+                WHERE Rol LIKE CONCAT('%', @Rol, '%');";
+
+            var usuarios = await _dbConnection.QueryAsync<UsuarioDTO>(sqlJoin, new { Rol = rol });
+
+            return usuarios.ToList();
+        }
+
+
+
+        public async Task<List<UsuarioDTO>> ObtenerUsuariosPorNombre(string nombre)
+        {
+            string sqlJoin =
+                @"SELECT *
+                FROM Usuarios us
+                INNER JOIN Paises pa
+                ON us.IdPaisOrigen = pa.PaisID
+                WHERE NombreApellido LIKE CONCAT('%', @NombreApellido, '%');";
+                                       //Mejora de Codigo ->
+            var usuarios = await _dbConnection.QueryAsync<UsuarioDTO>(sqlJoin, new { NombreApellido = nombre});
 
             return usuarios.ToList();
         }
@@ -31,10 +47,10 @@ namespace AccesoDatos.DAOs.Administrador
                 @"SELECT *
                 FROM Usuarios us
                 INNER JOIN Paises pa
-                ON us.IdPais = pa.PaisID
-                WHERE us.UsuarioID=@id;";
-            //PROBAR
-            var usuario = await _dbConnection.QuerySingleOrDefaultAsync<UsuarioDTO>(sqlJoin, new { });
+                ON us.IdPaisOrigen = pa.PaisID
+                WHERE us.UsuarioID=@UsuarioID;";
+
+            var usuario = await _dbConnection.QuerySingleOrDefaultAsync<UsuarioDTO>(sqlJoin, new { UsuarioID = id });
 
             return usuario!;
         }
@@ -60,16 +76,16 @@ namespace AccesoDatos.DAOs.Administrador
                 WHERE UsuarioID=@UsuarioID;";
 
             var resultado = await _dbConnection.ExecuteAsync(sqlUpdate, usuario);
-            //QuerySingleOrDefaultAsync
+            //QuerySingleOrDefaultAsync?
             return resultado > 0;
         }
 
-        public async Task<bool> BorrarUsuarioPorID(CrudUsuarioDTO usuario)
-        {       //Implementacion de borrado logico
+        public async Task<bool> BorrarUsuarioPorID(int id)
+        {       //Implementacion de borrado logico, capaz mejor sola reciba un id
             var sqlDelete =
                 @"DELETE Usuarios WHERE UsuarioID=@UsuarioID AND Activo=0;";
 
-            var resultado = await _dbConnection.ExecuteAsync(sqlDelete, usuario);
+            var resultado = await _dbConnection.ExecuteAsync(sqlDelete, new { UsuarioID = id });
 
             return resultado > 0;
         }
@@ -78,9 +94,9 @@ namespace AccesoDatos.DAOs.Administrador
         {
             string sqlJoin =
                 @"SELECT *
-                FROM Torneos to
+                FROM Torneos tor
                 INNER JOIN Partidas par
-                ON to.PartidaActual = pa.PartidaID;";
+                ON tor.PartidaActual = par.PartidaID;";
             //PARA VER TORNEOS Y PARTIDAS
             var torneos = await _dbConnection.QueryAsync<TorneoDTO>(sqlJoin, new { });
 

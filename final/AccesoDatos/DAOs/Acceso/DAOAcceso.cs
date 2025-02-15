@@ -6,6 +6,8 @@ using System.Net.Http;
 using Entidades.DTOs.Jugadores;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Utilidades.Utilidades;
+using Entidades.DTOs.Respuestas;
+using Entidades.DTOs.Cruds;
 
 namespace AccesoDatos.DAOs.Acceso
 {
@@ -80,20 +82,20 @@ namespace AccesoDatos.DAOs.Acceso
             return count;
         }
 
-        public async Task<int> ObtenerIdPais(string nombre)
+        public async Task<List<RespuestaPaisDTO>> ObtenerIdPais(string nombre)
         {
-            var sqlSelect = @"SELECT PaisID FROM Paises 
+            var sqlSelect = @"SELECT NombrePais, PaisID FROM Paises 
                 WHERE NombrePais Like @NombrePais;";
 
-            var consulta = await _dbConnection.ExecuteScalarAsync<int>(sqlSelect, new { NombrePais = "%" + nombre + "%" });
+            var consulta = await _dbConnection.QueryAsync<RespuestaPaisDTO>(sqlSelect, new { NombrePais = "%" + nombre + "%" });
 
-            return consulta;
+            return consulta.ToList();
 
             //Ver exepciones por problemas con el servidor
 
         }
         //VER COMO LIMITAR EL REGISTRO EN ALGUN MOMENTO
-        public async Task<bool> RegistroJugador(InscripcionJugadorDTO jugador)
+        public async Task<bool> RegistroJugador(CrudUsuarioDTO jugador)
         {
             var sqlInsert = @"INSERT
                 INTO Usuarios(NombreApellido,Alias,IdPaisOrigen,Email,NombreUsuario,Contraseña,FotoAvatar,Rol,CreadorPor,Activo) 
@@ -101,9 +103,8 @@ namespace AccesoDatos.DAOs.Acceso
 
             var result = await _dbConnection.ExecuteAsync(sqlInsert, jugador);
 
-            if (result > 0)
-                return true;
-            return false;
+            return result > 0;
+
             //Ver exepciones por problemas con el servidor
 
         }
@@ -116,10 +117,10 @@ namespace AccesoDatos.DAOs.Acceso
                 @"SELECT *
                 FROM Usuarios us
                 INNER JOIN Paises pa
-                ON us.IdPais = pa.PaisID
+                ON us.IdPaisOrigen = pa.PaisID
                 WHERE us.NombreUsuario=@NombreUsuario AND us.Contraseña=@Contraseña;";
             //Seguir REVISAR
-            var registrado = await _dbConnection.QuerySingleOrDefaultAsync<UsuarioDTO>(sqlJoin, new { });
+            var registrado = await _dbConnection.QuerySingleOrDefaultAsync<UsuarioDTO>(sqlJoin, new { usuario.NombreUsuario, usuario.Contraseña});
 
             return registrado!;
         }

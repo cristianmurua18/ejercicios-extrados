@@ -1,4 +1,5 @@
 ﻿using Entidades.DTOs;
+using Entidades.DTOs.Cruds;
 using Entidades.DTOs.Jugadores;
 using Entidades.DTOs.Respuestas;
 using System;
@@ -14,8 +15,8 @@ namespace Servicios.Servicios.Acceso
         //Definicion de Metodos
         public Task<bool> ObtenerPokemones();
         public Task<bool> RellenarCartaSerie();
-        public Task<int> ObtenerIdPais(string nombre);
-        public Task<bool> RegistroJugador(InscripcionJugadorDTO jugador);
+        public Task<List<RespuestaPaisDTO>> ObtenerIdPais(string nombre);
+        public Task<bool> RegistroJugador(CrudUsuarioDTO jugador);
         public Task<AutorizacionRespuestaDTO> ObtenerAutenticacion(LoginDTO login);
 
 

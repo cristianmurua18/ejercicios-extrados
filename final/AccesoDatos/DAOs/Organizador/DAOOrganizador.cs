@@ -20,11 +20,25 @@ namespace AccesoDatos.DAOs.Organizador
 
         #region Uso general de Organizadores
 
+        public async Task<List<Usuario>> VerListadoUsuarios(string rol)
+        {                                           //ver de manejar estado 1 o 0
+            var sqlSelect = @"SELECT *u2.NombreApellido, u2.Alias, u2.IdPaisOrigen, u2.Email, 
+                            u2.NombreUsuario, u2.FotoAvatar, u2.Rol, u2.Activo
+                            FROM usuarios u1
+                            JOIN usuarios u2 ON u1.UsuarioID = u2.CreadoPor
+                            WHERE Rol=@rol;";
+
+            var listado = await _dbConnection.QueryAsync<Usuario>(sqlSelect, new { Rol = rol});
+
+            return [.. listado];
+
+        }
+
 
         public async Task<bool> RegistrarJuez(CrudUsuarioDTO usuario)
         {
             var sqlInsert = @"INSERT
-                INTO Usuarios(NombreApellido,Alias,IdPaisOrigen,Email,NombreUsuario,Contraseña,FotoAvatar,Rol,CreadorPor,Activo) 
+                INTO Usuarios(NombreApellido,Alias,IdPaisOrigen,Email,NombreUsuario,Contraseña,FotoAvatar,Rol,CreadoPor,Activo) 
                 VALUES(@NombreApellido,@Alias,@IdPaisOrigen,@Email,@NombreUsuario,@Contraseña,@FotoAvatar,@Rol,@CreadoPor,@Activo);";
 
             var result = await _dbConnection.ExecuteAsync(sqlInsert, usuario);
@@ -32,7 +46,6 @@ namespace AccesoDatos.DAOs.Organizador
             return result > 0;
 
         }
-
 
 
         public async Task<bool> CrearTorneo(CrudTorneoDTO torneo)

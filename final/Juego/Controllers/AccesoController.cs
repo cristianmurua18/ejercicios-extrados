@@ -1,4 +1,5 @@
 ﻿using Entidades.DTOs;
+using Entidades.DTOs.Cruds;
 using Entidades.DTOs.Jugadores;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -40,20 +41,30 @@ namespace Juego.Controllers
 
 
         [HttpGet]
-        [Route("ObtenerIdPais")]
+        [Route("ObtenerPais")]
         public async Task<IActionResult> ObtenerIdPais(string nombre)
         {
+            var mensaje = string.Empty;
 
-            var res = await _accesoServicio.ObtenerIdPais(nombre);
+            var paises = await _accesoServicio.ObtenerIdPais(nombre);
 
-            return res > 0 ? Ok($"IdPais: {res}") : BadRequest("No existe. Pruebe nuevamente");
+            if(paises == null)
+            {
+                BadRequest("No existe pais con ese nombre. Pruebe nuevamente");
+            }
+            
+            foreach (var pais in paises!)
+            {
+                mensaje += $"Nombre Pais: {pais.NombrePais}, IdPais: {pais.PaisID} \n";
+            }
+            return Ok(mensaje);
 
         }
 
         //IDEA REVISAR EL ESTADO DE UN TORNEO Y QUE EN BASE A ESO TE DEJE INSCRIBIR O NO
         [HttpPost]
         [Route("RegistroJugador")]
-        public async Task<IActionResult> RegistroJugador(InscripcionJugadorDTO jugador)
+        public async Task<IActionResult> RegistroJugador(CrudUsuarioDTO jugador)
         {
             if (await _accesoServicio.RegistroJugador(jugador))
             {

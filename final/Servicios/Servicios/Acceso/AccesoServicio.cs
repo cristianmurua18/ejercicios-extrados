@@ -1,6 +1,7 @@
 ﻿using AccesoDatos.DAOs.Acceso;
 using Azure.Identity;
 using Entidades.DTOs;
+using Entidades.DTOs.Cruds;
 using Entidades.DTOs.Jugadores;
 using Entidades.DTOs.Respuestas;
 using Newtonsoft.Json;
@@ -30,9 +31,9 @@ namespace Servicios.Servicios.Acceso
 
             //Esperar que se ejecuta de Forma asincrona y que espere el resultado
 
-            var i = 401;
-            //Traer del 401 al 500
-            while (i < 501)
+            var i = 501;
+            //Traer del 501 al 600
+            while (i < 601)
             {
                 var res = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/pokemon/{i}");
 
@@ -62,9 +63,9 @@ namespace Servicios.Servicios.Acceso
 
             //Esperar que se ejecuta de Forma asincrona y que espere el resultado
 
-            var i = 401;
-            //Traer del 401 al 500. OKA
-            while (i < 501)
+            var i = 501;
+            //Traer del 501 al 600
+            while (i < 601)
             {
                 var res = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/pokemon/{i}");
 
@@ -87,15 +88,15 @@ namespace Servicios.Servicios.Acceso
         }
 
 
-        public async Task<int> ObtenerIdPais(string nombre)
+        public async Task<List<RespuestaPaisDTO>> ObtenerIdPais(string nombre)
         {
-            var idPais = await _daoAcceso.ObtenerIdPais(nombre);
+            var paises = await _daoAcceso.ObtenerIdPais(nombre);
             
-                return idPais > 0 ? idPais : 0;
+            return paises;
 
         }
 
-        public async Task<bool> RegistroJugador(InscripcionJugadorDTO jugador)
+        public async Task<bool> RegistroJugador(CrudUsuarioDTO jugador)
         {
             if (jugador.Rol == "Jugador")
             {

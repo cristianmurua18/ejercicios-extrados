@@ -22,9 +22,15 @@ namespace Servicios.Servicios.Administrador
         private readonly IComunes _common = common;
 
         //METODOS
-        public async Task<List<UsuarioDTO>> ObtenerUsuariosPorNombre(string patron)
+
+        public async Task<List<UsuarioDTO>> ObtenerUsuariosPorRol(string rol)
         {
-            return await _daoAdministrador.ObtenerUsuariosPorNombre(patron);
+            return await _daoAdministrador.ObtenerUsuariosPorRol(rol);
+        }
+
+        public async Task<List<UsuarioDTO>> ObtenerUsuariosPorNombre(string nombre)
+        {
+            return await _daoAdministrador.ObtenerUsuariosPorNombre(nombre);
 
         }
 
@@ -48,9 +54,9 @@ namespace Servicios.Servicios.Administrador
 
         }
 
-        public async Task<bool> BorrarUsuarioPorID(CrudUsuarioDTO usuario)
+        public async Task<bool> BorrarUsuarioPorID(int id)
         {
-            return await _daoAdministrador.BorrarUsuarioPorID(usuario);
+            return await _daoAdministrador.BorrarUsuarioPorID(id);
 
         }
         public async Task<List<TorneoDTO>> VerTorneosYpartidas()

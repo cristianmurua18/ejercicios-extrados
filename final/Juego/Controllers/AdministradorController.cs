@@ -8,6 +8,7 @@ using FluentValidation;
 using Validaciones.Validacion;
 using Entidades.DTOs.Cruds;
 using Servicios.Servicios.Administrador;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Juego.Controllers
 {
@@ -24,28 +25,44 @@ namespace Juego.Controllers
         /// Pueden ver torneos y cancelarlos
         /// </summary>
 
-        [HttpGet("ObtenerUsuarios")]
-        public async Task<IActionResult> ObtenerUsuariosPorNombre(string nombre)
+        [HttpGet("ObtenerUsuariosRol")]
+        public async Task<IActionResult> ObtenerUsuariosPorRol(string rol)
         {
-            //return StatusCode(StatusCodes.Status200OK, new { Value = _usuarioServicio.ObtenerUsuarios() });
-            return Ok(new { Usuarios = await _administradorServicio.ObtenerUsuariosPorNombre(nombre) });
-            //FUNCIONA, agregar paginacion
+            var lista = await _administradorServicio.ObtenerUsuariosPorRol(rol);
+
+            if (lista.IsNullOrEmpty())
+                return NotFound("Usuario no encontrado.");
+            return Ok(new { Usuarios = lista });
+            //FUNCIONA, con esto agrego un cierto filtro para no traer todoooo. PROBADO
         }
 
-        [HttpGet("ObtenerUsuario/{id:int}")]
+
+
+
+        [HttpGet("ObtenerUsuariosNombre")]
+        public async Task<IActionResult> ObtenerUsuariosPorNombre(string nombre)
+        {
+            var lista = await _administradorServicio.ObtenerUsuariosPorNombre(nombre);
+
+            if (lista.IsNullOrEmpty())
+                return NotFound("Usuario no encontrado.");
+            return Ok(new { Usuarios = lista });
+            //FUNCIONA, con esto agrego un cierto filtro para no traer todoooo. PROBADO
+        }
+
+        [HttpGet("ObtenerUsuarioId")]
         public async Task<IActionResult> ObtenerUsuarioPorId(int id)
         {
             var user = await _administradorServicio.ObtenerUsuarioPorId(id);
 
             return user != null ? Ok(user): NotFound("Usuario no encontrado");
-
+            //FUNCIONA. PROBADO
         }
-        //FUNCIONA sin autenticacion. SEGUIR PROBANDO
 
         [HttpPost("RegistroUsuario")]
-        public async Task<IActionResult> RegistrarUsuario([FromBody] CrudUsuarioDTO usuario)
-        {
-            //Ver como implementar la validacion
+        public async Task<IActionResult> RegistrarUsuario(CrudUsuarioDTO usuario)
+        {   
+            //Validacion de modelos con DataAnotation
             if (await _administradorServicio.RegistrarUsuario(usuario))
             {   //Validaciones basicas
                 if (usuario == null) return BadRequest("Usuario no puede ser null");
@@ -54,7 +71,7 @@ namespace Juego.Controllers
                 return Ok("Registro exitoso");
             }
             return BadRequest("Registro fallido. Revisar informacion");
-            //REVISAR
+            //PROBADO, funciona
         }
 
         [HttpPut("ActualizarUsuarioPorId")]
@@ -64,16 +81,16 @@ namespace Juego.Controllers
         }
 
         [HttpDelete("BorrarUsuarioPorId")]
-        public async Task<IActionResult> BorrarUsuarioPorID(CrudUsuarioDTO usuario)
+        public async Task<IActionResult> BorrarUsuarioPorID(int id)
         {
-            return Ok(await _administradorServicio.BorrarUsuarioPorID(usuario)); //Borrado logico
+            return Ok(await _administradorServicio.BorrarUsuarioPorID(id));
         }
 
         [HttpGet("VerTorneos")]
         public async Task<IActionResult> VerTorneosYPartidas()
         {
             return Ok(await _administradorServicio.VerTorneosYpartidas());
-            //Funciona con Exito, ver paginacion
+            //Funciona con Exito?, ver paginacion
         }
 
         //Metodo para 

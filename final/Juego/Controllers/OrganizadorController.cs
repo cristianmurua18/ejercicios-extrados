@@ -1,4 +1,5 @@
 ﻿using Entidades.DTOs.Cruds;
+using Entidades.Modelos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,7 @@ namespace Juego.Controllers
         /// Los debe crear un Administrador, pueden crear Jueces
         /// </summary>
         /// 
+
         //[HttpGet("ObtenerTorneos")]
         //public async Task<IActionResult> ObtenerTorneos()
         //{
@@ -29,9 +31,39 @@ namespace Juego.Controllers
         //    return Ok(await _organizadorServicio.VerTorneos());
         //    //FUNCIONA, ver paginacion. Ver que sean solo sus torneos organizados
         //}
+        [HttpGet("ObtenerUsuariosPorRol")]
+        public async Task<IActionResult> VerListadoJugadores(string rol)
+        {
+            if (rol != "Jugador" || rol != "Juez")
+                return BadRequest("Solo puedes ver Jugadores o jueces creados por ti");
 
-        [HttpPost("CrearTorneo")]
-        public async Task<IActionResult> CrearTorneo(CrudTorneoDTO torneo)
+            return Ok(await _organizadorServicio.VerListadoUsuarios(rol));
+
+        }
+
+
+        [HttpPost("RegistroJuez")]
+        public async Task<IActionResult> RegistrarJuez(CrudUsuarioDTO usuario)
+        {
+            //Verificacion Inicial para que solo pueda crear Jueces, en que sea su torneo organizado?. 
+            if (usuario.Rol == "Juez")
+            {
+                //Validaciones basicas
+                if (usuario == null) return BadRequest();
+                //Si un modelo no es valido, valida estado del formulario, si alguna validacion no se cumple
+                if (!ModelState.IsValid) return BadRequest(ModelState);
+                //devolver un NoContent()?
+                return Ok(await _organizadorServicio.RegistrarJuez(usuario));
+                //FUNCIONO
+            }
+
+            return BadRequest("No es posible insertar otro tipo de usuario");
+
+        }
+
+
+        [HttpPost("OrganizarTorneo")]
+        public async Task<IActionResult> OrganizarTorneo(CrudTorneoDTO torneo)
         {
             //Ver que sean solo sus torneos organizados
             return Ok(await _organizadorServicio.CrearTorneo(torneo));
@@ -53,24 +85,6 @@ namespace Juego.Controllers
 
         }
 
-        [HttpPost("RegistroJuez")]
-        public async Task<IActionResult> RegistrarJuez(CrudUsuarioDTO usuario)
-        {                                                
-            //Verificacion Inicial para que solo pueda crear Jueces, en que sea su torneo organizado. 
-            if (usuario.Rol == "Juez")
-            {
-                //Validaciones basicas
-                if (usuario == null) return BadRequest();
-                //Si un modelo no es valido, valida estado del formulario, si alguna validacion no se cumple
-                if (!ModelState.IsValid) return BadRequest(ModelState);
-                //devolver un NoContent()?
-                return Ok(await _organizadorServicio.RegistrarJuez(usuario));
-                //FUNCIONO
-            }
-
-            return BadRequest("No es posible insertar otro tipo de usuario");
-
-        }
 
 
         //[HttpPost("CrearPartida")]

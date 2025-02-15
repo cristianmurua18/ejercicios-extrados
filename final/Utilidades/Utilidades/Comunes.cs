@@ -1,4 +1,5 @@
 ﻿using Entidades.DTOs;
+using Entidades.Modelos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -42,6 +43,7 @@ namespace Utilidades.Utilidades
             var userClaims = new[]
             {
                 //VER QUE DEVOLVER Y PARA QUE PUEDE SERVIR
+                new Claim("UsuarioID", usuario.UsuarioID.ToString()),
                 new Claim(ClaimTypes.NameIdentifier, usuario.NombreApellido!),
                 new Claim(ClaimTypes.Email, usuario.Email!),
                 new Claim(ClaimTypes.Role, usuario.Rol!),
