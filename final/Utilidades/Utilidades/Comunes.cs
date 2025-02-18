@@ -62,5 +62,38 @@ namespace Utilidades.Utilidades
 
             return new JwtSecurityTokenHandler().WriteToken(jwtConfig);
         }
+
+        //calcular diferencia de tiempo
+        public int CalcularCantidadPartidas(DateTime inicio, DateTime fin)
+        {
+            // Calcular la diferencia
+            TimeSpan diferencia = fin - inicio;
+
+            // Obtener días y horas
+            int dias = diferencia.Days;
+            int horas = diferencia.Hours;
+            int minutos = diferencia.Minutes;
+
+            // Mostrar resultado
+            string dif = $"Diferencia: {dias} días, {horas} horas, {minutos} minutos.";
+
+            //Diferencia: 3 días y 4 horas y 15 minutos.
+
+            //REGLAS: Maximo de 8hs por dia de juegos y 30 minutos de duracion por juego
+
+            //Para calcular cantidad de partidas hago, = 16 partidas en 8 hs como maximo x dias + partidas por hora X / 0.5(dos por hora)
+            var partidasDias = 16 * dias;
+            var partidasHoras = horas / 0.5;
+            var partidasMinutos = minutos >= 30 ? 1 : 0;
+
+            var cantPartidas = partidasDias + partidasHoras + partidasMinutos;
+
+            return Convert.ToInt32(cantPartidas);
+
+        }
+
     }
+
+
+
 }

@@ -16,6 +16,7 @@ namespace Servicios.Servicios.Acceso
         public Task<bool> ObtenerPokemones();
         public Task<bool> RellenarCartaSerie();
         public Task<List<RespuestaPaisDTO>> ObtenerIdPais(string nombre);
+        public Task<List<RespuestaPaisDTO>> ObtenerPaginacionPaises(int desdePagina, int cantRegistros);
         public Task<bool> RegistroJugador(CrudUsuarioDTO jugador);
         public Task<AutorizacionRespuestaDTO> ObtenerAutenticacion(LoginDTO login);
 

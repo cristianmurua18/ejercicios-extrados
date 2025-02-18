@@ -9,8 +9,8 @@ namespace Servicios.Servicios.Jugador
 {
     public interface IJugadorServicio
     {
-        public Task<int> CrearMazo(CrudMazoDTO mazo);
-        public Task<bool> RegistrarCartas(CrudMazoCartasDTO cartas);
+        public Task<int> CrearMazo(string nombreMazo);
+        public Task<bool> RegistrarCartas(CrudMazoCartasDTO cartas, int torneoID);
         
     }
 }

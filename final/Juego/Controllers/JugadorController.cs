@@ -1,4 +1,5 @@
 ﻿using Entidades.DTOs.Cruds;
+using Entidades.Modelos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,22 +25,27 @@ namespace Juego.Controllers
         //PRIMERO CREO EL MAZO, me devuelve el numero de MazoID
         //Con una transaccion recupero ese MazoID necesario para registrar cartas
         [HttpPost("CrearMazo")]
-        public async Task<IActionResult> CrearMazo(CrudMazoDTO mazo)
+        public async Task<IActionResult> CrearMazo(string nombreMazo)
         {
-            var res = await _jugadorServicio.CrearMazo(mazo);
+            var res = await _jugadorServicio.CrearMazo(nombreMazo);
             if (res > 0)
-                Ok($"MazoID: {res}. Recuerdala");
-            return BadRequest("No se posible crear el mazo.");
+                return Ok($"MazoID: {res}. Recuerdalo");
+            return BadRequest("No fue posible crear el mazo.");
 
         }
+
+
+
 
         //Voy al registro de cartas y agrego las cartas en la tabla MazoCartas
         [HttpPost("RegistroCartas")]
-        public async Task<IActionResult> RegistrarCartas(CrudMazoCartasDTO cartas)
+        public async Task<IActionResult> RegistrarCartas(CrudMazoCartasDTO cartas, int torneoID)
         {
-            return Ok(await _jugadorServicio.RegistrarCartas(cartas));
+            return Ok(await _jugadorServicio.RegistrarCartas(cartas, torneoID));
 
         }
+
+
 
 
 
@@ -52,5 +58,6 @@ namespace Juego.Controllers
 
 
         #endregion Fin Métodos de jugadores
+
     }
 }

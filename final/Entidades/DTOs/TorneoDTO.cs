@@ -18,12 +18,12 @@ namespace Entidades.DTOs
         public int Organizador { get; set; }
 
         //Une con tabla Partidas
-        public int PartidaID { get; set; }
-        public DateTime FyHInicioP { get; set; }
-        public DateTime FyHFinP { get; set; }
-        public string? Ronda { get; set; }
-        public int JugadorDerrotado { get; set; }
-        public int JugadorVencedor { get; set; }
+        //public int PartidaID { get; set; }
+        //public DateTime FyHInicioP { get; set; }
+        //public DateTime FyHFinP { get; set; }
+        //public string? Ronda { get; set; }
+        //public int JugadorDerrotado { get; set; }
+        //public int JugadorVencedor { get; set; }
 
     }
 }

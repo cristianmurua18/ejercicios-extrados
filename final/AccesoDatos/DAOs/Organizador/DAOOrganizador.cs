@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Entidades.Modelos;
 using Entidades.DTOs.Cruds;
+using System.Collections;
 
 namespace AccesoDatos.DAOs.Organizador
 {
@@ -20,6 +21,29 @@ namespace AccesoDatos.DAOs.Organizador
 
         #region Uso general de Organizadores
 
+        public async Task<int> ContarInscriptosActivos()
+        {
+            var sql = "SELECT COUNT(UsuarioID) FROM Usuarios WHERE Rol='Jugador' AND Activo=1;";
+
+            var cantidad = await _dbConnection.ExecuteScalarAsync<int>(sql);
+
+            return cantidad;
+
+        }
+
+
+        //Para Calcular Cantidad de partidas
+        public async Task<TorneoDTO> TraerTorneo(int organizador, int idTorneo)
+        {
+            var sqlSelect = @"SELECT * from Torneos WHERE Organizador=@organizador AND TorneoID=@idTorneo;";
+
+            var torneo = await _dbConnection.QueryFirstOrDefaultAsync<TorneoDTO>(sqlSelect, new { organizador, idTorneo});
+
+            return torneo!;
+
+        }
+
+
         public async Task<List<Usuario>> VerListadoUsuarios(string rol)
         {                                           //ver de manejar estado 1 o 0
             var sqlSelect = @"SELECT *u2.NombreApellido, u2.Alias, u2.IdPaisOrigen, u2.Email, 
@@ -27,7 +51,7 @@ namespace AccesoDatos.DAOs.Organizador
                             FROM usuarios u1
                             JOIN usuarios u2 ON u1.UsuarioID = u2.CreadoPor
                             WHERE Rol=@rol;";
-
+                            //SEGUIR REVISANDO, NO FUNCIONA BIEN
             var listado = await _dbConnection.QueryAsync<Usuario>(sqlSelect, new { Rol = rol});
 
             return [.. listado];
@@ -58,6 +82,18 @@ namespace AccesoDatos.DAOs.Organizador
             //Agrega un torneo con Exito?
             return resultado > 0;
         }
+
+        public async Task<bool> CrearTorneoSerieHabilitada(CrudTorneoSerieHabilitadaDTO serie)
+        {
+            var sqlInsert = @"INSERT INTO TorneoSerieHabilitada(IdTorneo,IdSerie) 
+                                     VALUES(@IdTorneo,@IdSerie);";
+
+            var resultado = await _dbConnection.ExecuteAsync(sqlInsert, new { serie.IdTorneo, serie.IdSerie});
+
+            //Agrega un torneo con Exito?
+            return resultado > 0;
+        }
+
 
         public async Task<bool> EditarTorneo(CrudTorneoDTO torneo)
         {
@@ -109,6 +145,10 @@ namespace AccesoDatos.DAOs.Organizador
 
             return resultado > 0;
         }
+
+
+
+
 
 
         #endregion

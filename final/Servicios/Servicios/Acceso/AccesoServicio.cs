@@ -31,9 +31,9 @@ namespace Servicios.Servicios.Acceso
 
             //Esperar que se ejecuta de Forma asincrona y que espere el resultado
 
-            var i = 501;
-            //Traer del 501 al 600
-            while (i < 601)
+            var i = 1;
+            //Traer del 1001 al 1025. No hay mas
+            while (i < 0)
             {
                 var res = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/pokemon/{i}");
 
@@ -63,9 +63,9 @@ namespace Servicios.Servicios.Acceso
 
             //Esperar que se ejecuta de Forma asincrona y que espere el resultado
 
-            var i = 501;
-            //Traer del 501 al 600
-            while (i < 601)
+            var i = 1001;
+            
+            while (i < 1026)
             {
                 var res = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/pokemon/{i}");
 
@@ -90,10 +90,13 @@ namespace Servicios.Servicios.Acceso
 
         public async Task<List<RespuestaPaisDTO>> ObtenerIdPais(string nombre)
         {
-            var paises = await _daoAcceso.ObtenerIdPais(nombre);
-            
-            return paises;
+            return await _daoAcceso.ObtenerIdPais(nombre);
 
+        }
+
+        public async Task<List<RespuestaPaisDTO>> ObtenerPaginacionPaises(int desdePagina, int cantRegistros)
+        {
+            return await _daoAcceso.ObtenerPaginacionPaises(desdePagina, cantRegistros);            
         }
 
         public async Task<bool> RegistroJugador(CrudUsuarioDTO jugador)

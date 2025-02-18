@@ -6,6 +6,7 @@ namespace Utilidades.Utilidades
     {
         public string EncriptarSHA256(string texto);
         public string GenerarJWT(UsuarioDTO usuario);
+        public int CalcularCantidadPartidas(DateTime inicio, DateTime fin);
 
     }
 }

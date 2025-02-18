@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Dapper;
 using Entidades.Modelos;
 using Entidades.DTOs.Cruds;
+using Entidades.DTOs.Respuestas;
 
 namespace AccesoDatos.DAOs.Jugador
 {
@@ -17,56 +18,38 @@ namespace AccesoDatos.DAOs.Jugador
         private readonly IDbConnection _dbConnection = dbConnection;
 
         //Creo un Mazo, le pongo nombre y jugador que lo creo
-        public async Task<int> CrearMazo(CrudMazoDTO mazo)
+        public async Task<int> CrearMazo(int userId, string nombreMazo)
         {
             var sqlInsert = @"INSERT
-                INTO Mazos(Nombre,JugadorCreador)
+                INTO Mazos(NombreMazo,JugadorCreador)
                 OUTPUT INSERTED.MazoID
-                VALUES(@Nombre,@JugadorCreador);"
+                VALUES(@NombreMazo,@JugadorCreador);"
             ;
             
-            var mazoID = await _dbConnection.ExecuteScalarAsync<int>(sqlInsert, mazo);
+            var mazoID = await _dbConnection.ExecuteScalarAsync<int>(sqlInsert, new { NombreMazo = nombreMazo, JugadorCreador = userId });
 
             return mazoID;
 
         }
         
         //Creo una lista de cartas, IdMazo y IdCarta - A una mazo le asigno cierta cantidad de cartas
-        //Esta cantidad de cartas no puede superar 15 - VER CHECK
-        public async Task<bool> RegistrarCartas(CrudMazoCartasDTO cartas)
+        //Esta cantidad de cartas no puede superar 15 - VER CHECK. OKA
+        //El proc debe pedir en que torneo sera utilizado el mazo y se debe chequear que la carta tenga una serie permitida en ese torneo
+        public async Task<dynamic> RegistrarCartas(CrudMazoCartasDTO cartas, int torneoID)
         {
-            var response = "";
-
-            var trans = _dbConnection.BeginTransaction();
-
-            var sqlInsert = @"INSERT
-                INTO MazoCartas(IdMazo, IdCarta) 
-                VALUES(@IdMazo,@IdCarta);"; //Revisar validacion si es correcta
-                
-            var result1 = await _dbConnection.ExecuteAsync(sqlInsert, cartas);
-
-            if (result1 == 1)
-                response = "OK";
-            else
-                response = "Error en el ingreso de datos";
-
-            if (response.Equals("OK"))
-            {
-                var sqlSelect = @"SELECT COUNT(IdCarta) AS Cantidad from MazoCartas;";
-
-                var result2 = await _dbConnection.ExecuteScalarAsync<int>(sqlSelect);
-
-                if (result2 <= 15)
-                {
-                    trans.Commit();
-                }
-            }
-            else
-                trans.Rollback();
-            
-            return result1 > 0;
+            var carta = await _dbConnection.QueryAsync(
+                sql: "dbo.RevisarCantCartas",
+                param: new { cartas.IdMazo, cartas.IdCarta, TorneoID = torneoID},
+                commandType: CommandType.StoredProcedure);
+         
+            return carta;
 
         }
+
+        
+
+
+
 
 
     }

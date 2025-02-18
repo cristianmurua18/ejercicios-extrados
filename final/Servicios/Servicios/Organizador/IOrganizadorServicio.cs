@@ -11,9 +11,11 @@ namespace Servicios.Servicios.Organizador
 {
     public interface IOrganizadorServicio
     {
+        public Task<(int, int)> CalcularPartidas(int idTorneo);
         public Task<List<Usuario>> VerListadoUsuarios(string rol);
         public Task<bool> RegistrarJuez(CrudUsuarioDTO usuario);
         public Task<bool> CrearTorneo(CrudTorneoDTO torneo);
+        public Task<bool> CrearTorneoSerieHabilitada(CrudTorneoSerieHabilitadaDTO serie);
         public Task<bool> EditarTorneo(CrudTorneoDTO torneo);
         public Task<bool> CancelarTorneo(int idtorneo, string estado);
         public Task<bool> CrearPartida(PartidaDTO partida);

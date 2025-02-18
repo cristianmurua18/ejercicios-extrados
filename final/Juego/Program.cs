@@ -70,7 +70,9 @@ namespace Juego
             //Inyeccion de depencia para las validaciones, falta la otra parte - SACAR
             builder.Services.AddScoped<IValidator<UsuarioDTO>,ValidadorUsuario>();
 
-            
+            //Haciendo una prueba de Obtener el Id del Usuario Jugador cuando ya hizo el logeo
+            builder.Services.AddHttpContextAccessor();
+
 
             //Agregando autenticacion y autorizacion
             builder.Services.AddAuthentication(config => {

@@ -17,6 +17,7 @@ namespace AccesoDatos.DAOs.Acceso
         public Task<int> ObtenerPokemones(PokemonDTO pokemon);
         public Task<int> RellenarCartaSerie(CartaSerieDTO cartaSerie);
         public Task<List<RespuestaPaisDTO>> ObtenerIdPais(string nombre);
+        public Task<List<RespuestaPaisDTO>> ObtenerPaginacionPaises(int desdePagina, int cantRegistros);
         public Task<bool> RegistroJugador(CrudUsuarioDTO jugador);
         public Task<UsuarioDTO> ObtenerAutenticacion(LoginDTO usuario);
 

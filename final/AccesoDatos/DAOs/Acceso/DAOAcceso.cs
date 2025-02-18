@@ -8,6 +8,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using Utilidades.Utilidades;
 using Entidades.DTOs.Respuestas;
 using Entidades.DTOs.Cruds;
+using System.Threading.Tasks.Dataflow;
 
 namespace AccesoDatos.DAOs.Acceso
 {
@@ -94,11 +95,27 @@ namespace AccesoDatos.DAOs.Acceso
             //Ver exepciones por problemas con el servidor
 
         }
+
+        public async Task<List<RespuestaPaisDTO>> ObtenerPaginacionPaises(int desdePagina, int cantRegistros)
+        {
+            var paginas = await _dbConnection.QueryAsync<RespuestaPaisDTO>( 
+                sql: "dbo.PaginacionPaises",
+                param: new { Pag = desdePagina, Reg = cantRegistros},
+                commandType: CommandType.StoredProcedure);
+
+            return paginas.ToList();
+
+
+        }
+
+
         //VER COMO LIMITAR EL REGISTRO EN ALGUN MOMENTO
         public async Task<bool> RegistroJugador(CrudUsuarioDTO jugador)
         {
+            var sqlSelect = "";
+
             var sqlInsert = @"INSERT
-                INTO Usuarios(NombreApellido,Alias,IdPaisOrigen,Email,NombreUsuario,Contraseña,FotoAvatar,Rol,CreadorPor,Activo) 
+                INTO Usuarios(NombreApellido,Alias,IdPaisOrigen,Email,NombreUsuario,Contraseña,FotoAvatar,Rol,CreadoPor,Activo) 
                 VALUES(@NombreApellido,@Alias,@IdPaisOrigen,@Email,@NombreUsuario,@Contraseña,@FotoAvatar,@Rol,@CreadoPor,@Activo);";
 
             var result = await _dbConnection.ExecuteAsync(sqlInsert, jugador);

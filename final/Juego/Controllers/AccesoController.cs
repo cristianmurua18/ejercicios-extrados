@@ -1,8 +1,10 @@
 ﻿using Entidades.DTOs;
 using Entidades.DTOs.Cruds;
 using Entidades.DTOs.Jugadores;
+using Entidades.DTOs.Respuestas;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Servicios.Servicios.Acceso;
 
 namespace Juego.Controllers
@@ -42,7 +44,7 @@ namespace Juego.Controllers
 
         [HttpGet]
         [Route("ObtenerPais")]
-        public async Task<IActionResult> ObtenerIdPais(string nombre)
+        public async Task<IActionResult> ObtenerPais(string nombre)
         {
             var mensaje = string.Empty;
 
@@ -61,6 +63,21 @@ namespace Juego.Controllers
 
         }
 
+        [HttpGet]
+        [Route("ObtenerPaginaPais")]
+        public async Task<IActionResult> ObtenerPaginacionPaises(int desdePagina, int cantRegistros)
+        {
+            var result = await _accesoServicio.ObtenerPaginacionPaises(desdePagina, cantRegistros);
+
+            if (result.IsNullOrEmpty())
+                return BadRequest("No fue posible obtener datos");
+
+            return Ok(result);
+
+        }
+
+
+
         //IDEA REVISAR EL ESTADO DE UN TORNEO Y QUE EN BASE A ESO TE DEJE INSCRIBIR O NO
         [HttpPost]
         [Route("RegistroJugador")]
@@ -68,7 +85,7 @@ namespace Juego.Controllers
         {
             if (await _accesoServicio.RegistroJugador(jugador))
             {
-                return Ok("Registro exitoso.");
+                return Ok($"Registro exitoso {jugador.Alias}. Bienvenido/a.");
             }
             return BadRequest("Registro fallido. Revise informacion");
 

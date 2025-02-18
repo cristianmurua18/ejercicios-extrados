@@ -12,10 +12,10 @@ namespace Entidades.DTOs.Cruds
         public DateTime FyHInicioT { get; set; }
         public DateTime FyHFinT { get; set; }
         public string? Estado { get; set; }
-        public string? IdPaisRealizacion { get; set; }
-        public int PartidaActual { get; set; }
-        public int JugadorGanador { get; set; }
-        public int Organizador { get; set; }
+        public int? IdPaisRealizacion { get; set; }
+        public int? PartidaActual { get; set; }
+        public int? JugadorGanador { get; set; }
+        public int? Organizador { get; set; }
 
     }
 }

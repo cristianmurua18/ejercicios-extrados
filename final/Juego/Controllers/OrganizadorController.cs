@@ -24,13 +24,17 @@ namespace Juego.Controllers
         /// </summary>
         /// 
 
-        //[HttpGet("ObtenerTorneos")]
-        //public async Task<IActionResult> ObtenerTorneos()
-        //{
-        //    //return StatusCode(StatusCodes.Status200OK, new { Value = _usuarioServicio.ObtenerUsuarios() });
-        //    return Ok(await _organizadorServicio.VerTorneos());
-        //    //FUNCIONA, ver paginacion. Ver que sean solo sus torneos organizados
-        //}
+        [HttpGet("CantidadPartidas")]
+        public async Task<IActionResult> CantidadPartidas(int idTorneo)
+        {
+            //return StatusCode(StatusCodes.Status200OK, new { Value = _usuarioServicio.ObtenerUsuarios() });
+
+            var tupla = await _organizadorServicio.CalcularPartidas(idTorneo);
+
+            return Ok($"Partidas: {tupla.Item1}. Cantidad de Inscriptos: {tupla.Item2}. Si partidas es 0 e inscriptos es 0 ingreso un torneo que no existe");
+            //FUNCIONA, ver paginacion. Ver que sean solo sus torneos organizados
+        }
+
         [HttpGet("ObtenerUsuariosPorRol")]
         public async Task<IActionResult> VerListadoJugadores(string rol)
         {
@@ -65,9 +69,20 @@ namespace Juego.Controllers
         [HttpPost("OrganizarTorneo")]
         public async Task<IActionResult> OrganizarTorneo(CrudTorneoDTO torneo)
         {
-            //Ver que sean solo sus torneos organizados
-            return Ok(await _organizadorServicio.CrearTorneo(torneo));
+            var respon = await _organizadorServicio.CrearTorneo(torneo);
+            return respon ? Ok($"Registro exitoso") : BadRequest("No fue posible insertar");
+            //FUNCIONAAA
         }
+
+        [HttpPost("CrearTorneoSerieHabilitada")]
+        public async Task<IActionResult> CrearTorneoSerieHabilitada(CrudTorneoSerieHabilitadaDTO serie)
+        {
+            var resp = await _organizadorServicio.CrearTorneoSerieHabilitada(serie);
+
+            return resp ? Ok($"Registro exitoso") : BadRequest("No fue posible insertar");
+
+        }
+
 
         [HttpPut("EditarTorneo")]
         public async Task<IActionResult> EditarTorneo(CrudTorneoDTO torneo)
