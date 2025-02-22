@@ -22,8 +22,7 @@ namespace Juego.Controllers
         /// </summary>
 
 
-        //PRIMERO CREO EL MAZO, me devuelve el numero de MazoID
-        //Con una transaccion recupero ese MazoID necesario para registrar cartas
+        //PRIMERO CREO EL MAZO, me devuelve el numero de MazoID necesario para registrar cartas
         [HttpPost("CrearMazo")]
         public async Task<IActionResult> CrearMazo(string nombreMazo)
         {
@@ -39,9 +38,9 @@ namespace Juego.Controllers
 
         //Voy al registro de cartas y agrego las cartas en la tabla MazoCartas
         [HttpPost("RegistroCartas")]
-        public async Task<IActionResult> RegistrarCartas(CrudMazoCartasDTO cartas, int torneoID)
+        public async Task<IActionResult> RegistrarCartas(CrudMazoCartasDTO cartas)
         {
-            return Ok(await _jugadorServicio.RegistrarCartas(cartas, torneoID));
+            return Ok(await _jugadorServicio.RegistrarCartas(cartas));
 
         }
 

@@ -10,6 +10,7 @@ namespace Entidades.DTOs.Respuestas
     {
         public string? NombrePais { get; set; }
         public int? PaisID { get; set; }
+        public string? Timezones { get; set; }
 
     }
 }

@@ -18,30 +18,47 @@ namespace Juego.Controllers
         private readonly IAccesoServicio _accesoServicio = accesoServicio;
 
 
-        //Iniciar sesion no es necesario
+        ///// <summary>
+        ///// Sirve para rellenar la tabla de de Cartas
+        ///// </summary>
+        //[HttpGet]
+        //[Route("ObtenerPokemones")]
+        //public async Task<IActionResult> ObtenerPokemones()
+        //{
+
+        //    var res = await _accesoServicio.ObtenerPokemones();
+
+        //    return res ? Ok($"{res}") : BadRequest("No fue posible insertar");
+
+        //}
+
+        ///// <summary>
+        ///// Sirve para rellenar la tabla de de CartasSerie
+        ///// </summary>
+        //[HttpGet]
+        //[Route("ObtenerCartaSerie")]
+        //public async Task<IActionResult> ObtenerCartaSerie()
+        //{
+
+        //    var res = await _accesoServicio.RellenarCartaSerie();
+
+        //    return res ? Ok($"{res}") : BadRequest("No fue posible insertar");
+
+        //}
+
+        /// <summary>
+        /// Sirve para tener Informacion de referencia de los torneos disponibles, el id sirve para inscribir un jugador
+        /// </summary>
         [HttpGet]
-        [Route("ObtenerPokemones")]
-        public async Task<IActionResult> ObtenerPokemones()
+        [Route("VerInfoTorneos")]
+        public async Task<IActionResult> VerInfoTorneos()
         {
-
-            var res = await _accesoServicio.ObtenerPokemones();
-
-            return res ? Ok($"{res}") : BadRequest("No fue posible insertar");
-
+            return Ok(await _accesoServicio.VerInfoTorneos());
         }
 
-        [HttpGet]
-        [Route("ObtenerCartaSerie")]
-        public async Task<IActionResult> ObtenerCartaSerie()
-        {
-
-            var res = await _accesoServicio.RellenarCartaSerie();
-
-            return res ? Ok($"{res}") : BadRequest("No fue posible insertar");
-
-        }
-
-
+        /// <summary>
+        /// Sirve para tener Informacion de referencia de los paises disponibles por Nombre, te da una lista
+        /// </summary>
         [HttpGet]
         [Route("ObtenerPais")]
         public async Task<IActionResult> ObtenerPais(string nombre)
@@ -63,6 +80,9 @@ namespace Juego.Controllers
 
         }
 
+        /// <summary>
+        /// Sirve para tener Informacion de referencia de los paises disponibles por cierta cantidad
+        /// </summary>
         [HttpGet]
         [Route("ObtenerPaginaPais")]
         public async Task<IActionResult> ObtenerPaginacionPaises(int desdePagina, int cantRegistros)
@@ -73,28 +93,32 @@ namespace Juego.Controllers
                 return BadRequest("No fue posible obtener datos");
 
             return Ok(result);
+            
 
         }
 
-
-
-        //IDEA REVISAR EL ESTADO DE UN TORNEO Y QUE EN BASE A ESO TE DEJE INSCRIBIR O NO
+        /// <summary>
+        /// Sirve para que un jugador pueda inscribirse como usuario
+        /// Se necesita la referencia de un torneoID con interes de inscripcion, se revisa su estado
+        /// </summary>
         [HttpPost]
         [Route("RegistroJugador")]
-        public async Task<IActionResult> RegistroJugador(CrudUsuarioDTO jugador)
+        public async Task<IActionResult> RegistroJugador(CrudUsuarioDTO jugador, int idtorneoRef)
         {
-            if (await _accesoServicio.RegistroJugador(jugador))
+            if (await _accesoServicio.RegistroJugador(jugador, idtorneoRef))
             {
-                return Ok($"Registro exitoso {jugador.Alias}. Bienvenido/a.");
+                return Ok($"Registro exitoso {jugador.Alias}. Bienvenido/a. Fuiste inscripto en el TorneoID: {idtorneoRef}");
             }
-            return BadRequest("Registro fallido. Revise informacion");
+            return BadRequest("Registro fallido. Revise informacion.");
 
             //FALTA ver como registrar los mazos de cartas que tiene al sistema
             //Inscripcion de mazo al torneo, ver que cumplan con las series de cartas permitidas
            //Cuando el organizador haga la inscripcion
         }
 
-
+        /// <summary>
+        /// Sirve para que un usuario pueda obtener el token de autorizacion
+        /// </summary>
         [HttpPost]
         [Route("LoginUsuarios")]
         public async Task<IActionResult> Login(LoginDTO usuario)

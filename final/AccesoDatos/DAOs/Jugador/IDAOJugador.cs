@@ -10,7 +10,7 @@ namespace AccesoDatos.DAOs.Jugador
     public interface IDAOJugador
     {
         public Task<int> CrearMazo(int userId, string nombreMazo);
-        public Task<dynamic> RegistrarCartas(CrudMazoCartasDTO cartas, int torneoID);
+        public Task<dynamic> RegistrarCartas(CrudMazoCartasDTO cartas);
 
 
     }

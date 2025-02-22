@@ -16,6 +16,7 @@ using Servicios.Servicios.Organizador;
 using System.Data;
 using System.Text;
 using Utilidades.Utilidades;
+using Validaciones.Middlewares;
 using Validaciones.Validacion;
 
 
@@ -32,19 +33,20 @@ namespace Juego
 
 
             //Agregar la cadena de conexion al servicio
-            builder.Services.AddSingleton<IDbConnection>(sp =>
+            builder.Services.AddScoped<IDbConnection>(sp =>
             {
-                return new SqlConnection(builder.Configuration.GetConnectionString("SqlConnection"));
-
+                var conec = new SqlConnection(builder.Configuration.GetConnectionString("SqlConnection"));
+                conec.Open();
+                return conec;
             });
 
             //Agrego utilidades al proyecto
-            builder.Services.AddSingleton<IComunes, Comunes>();
+            builder.Services.AddScoped<IComunes, Comunes>();
 
 
             //Inyeccion de dependecia para el Controlador de Acceso
-            builder.Services.AddSingleton<IDAOAcceso, DAOAcceso>();
-            builder.Services.AddSingleton<IAccesoServicio, AccesoServicio>();
+            builder.Services.AddScoped<IDAOAcceso, DAOAcceso>();
+            builder.Services.AddScoped<IAccesoServicio, AccesoServicio>();
 
             //Para actuar como un cliente al consumir alguna api, revisar url siempre
             builder.Services.AddHttpClient<IAccesoServicio, AccesoServicio>( c => {
@@ -52,26 +54,27 @@ namespace Juego
             });
 
             //Inyeccion de dependecia para el Controlador de Administradores
-            builder.Services.AddSingleton<IDAOAdministrador, DAOAdministrador>();
-            builder.Services.AddSingleton<IAdministradorServicio, AdministradorServicio>();
+            builder.Services.AddScoped<IDAOAdministrador, DAOAdministrador>();
+            builder.Services.AddScoped<IAdministradorServicio, AdministradorServicio>();
 
             //Inyeccion de dependecia para el Controlador de Organizadores
-            builder.Services.AddSingleton<IDAOOrganizador, DAOOrganizador>();
-            builder.Services.AddSingleton<IOrganizadorServicio, OrganizadorServicio>();
+            builder.Services.AddScoped<IDAOOrganizador, DAOOrganizador>();
+            builder.Services.AddScoped<IOrganizadorServicio, OrganizadorServicio>();
 
             //Inyeccion de dependecia para el Controlador de Jueces
-            builder.Services.AddSingleton<IDAOJuez, DAOJuez>();
-            builder.Services.AddSingleton<IJuezServicio, JuezServicio>();
+            builder.Services.AddScoped<IDAOJuez, DAOJuez>();
+            builder.Services.AddScoped<IJuezServicio, JuezServicio>();
 
             //Inyeccion de dependecia para el Controlador de Jugadores
-            builder.Services.AddSingleton<IDAOJugador, DAOJugador>();
-            builder.Services.AddSingleton<IJugadorServicio, JugadorServicio>();
+            builder.Services.AddScoped<IDAOJugador, DAOJugador>();
+            builder.Services.AddScoped<IJugadorServicio, JugadorServicio>();
 
             //Inyeccion de depencia para las validaciones, falta la otra parte - SACAR
-            builder.Services.AddScoped<IValidator<UsuarioDTO>,ValidadorUsuario>();
+            //builder.Services.AddScoped<IValidator<UsuarioDTO>,ValidadorUsuario>();
 
             //Haciendo una prueba de Obtener el Id del Usuario Jugador cuando ya hizo el logeo
             builder.Services.AddHttpContextAccessor();
+
 
 
             //Agregando autenticacion y autorizacion
@@ -101,6 +104,8 @@ namespace Juego
             //});
 
 
+            //app.UseMiddleware<ExceptionMiddleware>(); 
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -114,7 +119,7 @@ namespace Juego
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            
             app.UseHttpsRedirection();
 
             app.UseAuthentication();

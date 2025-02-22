@@ -28,9 +28,9 @@ namespace Servicios.Servicios.Jugador
 
         }
     
-        public async Task<bool> RegistrarCartas(CrudMazoCartasDTO cartas, int torneoID)
+        public async Task<bool> RegistrarCartas(CrudMazoCartasDTO cartas)
         {
-            return await _daoJugador.RegistrarCartas(cartas, torneoID);
+            return await _daoJugador.RegistrarCartas(cartas);
 
         }
 

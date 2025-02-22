@@ -9,6 +9,7 @@ namespace Entidades.DTOs
     public class TorneoDTO
     {
         public int TorneoID { get; set; }
+        public string? NombreTorneo { get; set; }
         public DateTime FyHInicioT { get; set; }
         public DateTime FyHFinT { get; set; }
         public string? Estado { get; set; }

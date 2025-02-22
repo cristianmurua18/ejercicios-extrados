@@ -14,11 +14,12 @@ namespace AccesoDatos.DAOs.Acceso
     {
 
         //Definicion de Metodos
-        public Task<int> ObtenerPokemones(PokemonDTO pokemon);
-        public Task<int> RellenarCartaSerie(CartaSerieDTO cartaSerie);
+        //public Task<int> ObtenerPokemones(PokemonDTO pokemon);
+        //public Task<int> RellenarCartaSerie(CartaSerieDTO cartaSerie);
+        public Task<List<TorneoDTO>> VerInfoTorneos();
         public Task<List<RespuestaPaisDTO>> ObtenerIdPais(string nombre);
         public Task<List<RespuestaPaisDTO>> ObtenerPaginacionPaises(int desdePagina, int cantRegistros);
-        public Task<bool> RegistroJugador(CrudUsuarioDTO jugador);
+        public Task<bool> RegistroJugador(CrudUsuarioDTO jugador, int idTorneoRef);
         public Task<UsuarioDTO> ObtenerAutenticacion(LoginDTO usuario);
 
 

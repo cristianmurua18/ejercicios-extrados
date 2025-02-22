@@ -35,18 +35,29 @@ namespace AccesoDatos.DAOs.Jugador
         //Creo una lista de cartas, IdMazo y IdCarta - A una mazo le asigno cierta cantidad de cartas
         //Esta cantidad de cartas no puede superar 15 - VER CHECK. OKA
         //El proc debe pedir en que torneo sera utilizado el mazo y se debe chequear que la carta tenga una serie permitida en ese torneo
-        public async Task<dynamic> RegistrarCartas(CrudMazoCartasDTO cartas, int torneoID)
+        public async Task<dynamic> RegistrarCartas(CrudMazoCartasDTO cartas)
         {
             var carta = await _dbConnection.QueryAsync(
                 sql: "dbo.RevisarCantCartas",
-                param: new { cartas.IdMazo, cartas.IdCarta, TorneoID = torneoID},
+                param: new { MazoID = cartas.IdMazo, CartaID = cartas.IdCarta},
                 commandType: CommandType.StoredProcedure);
          
             return carta;
 
         }
 
-        
+        public async Task<dynamic> RegistrarCartasRestriccion(int idCarta, int idTorneo)
+        {
+            var carta = await _dbConnection.QueryAsync(
+                sql: "dbo.RevisarSerieCarta",
+                param: new { idCarta, idTorneo },
+                commandType: CommandType.StoredProcedure);
+
+            return carta;
+
+        }
+
+
 
 
 
