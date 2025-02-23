@@ -28,9 +28,13 @@ namespace Servicios.Servicios.Jugador
 
         }
     
-        public async Task<bool> RegistrarCartas(CrudMazoCartasDTO cartas)
+        public async Task<bool> RegistrarCartas(CrudMazoCartasDTO cartas, int idTorneo)
         {
-            return await _daoJugador.RegistrarCartas(cartas);
+            //Traigo el id del usuario al autenticarse
+            var userIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value;
+            var userId = int.Parse(userIdClaim!);
+
+            return await _daoJugador.RegistrarCartas(cartas, idTorneo, userId);
 
         }
 

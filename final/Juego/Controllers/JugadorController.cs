@@ -17,12 +17,8 @@ namespace Juego.Controllers
         #region Métodos exclusivos para Jugadores
 
         /// <summary>
-        /// Debe poder registrar las cartas que tiene en su colección.
-        /// Debe poder registrarse en un torneo, y armar un mazo de cartas con las cartas que cuenta para entrar a cada torneo.
+        /// Aqui el jugador crea un mazo de cartas, con su correspondiente nombre y se le asigna un ID
         /// </summary>
-
-
-        //PRIMERO CREO EL MAZO, me devuelve el numero de MazoID necesario para registrar cartas
         [HttpPost("CrearMazo")]
         public async Task<IActionResult> CrearMazo(string nombreMazo)
         {
@@ -34,13 +30,13 @@ namespace Juego.Controllers
         }
 
 
-
-
-        //Voy al registro de cartas y agrego las cartas en la tabla MazoCartas
+        /// <summary>
+        /// Aqui registrar las cartas con su Mazo anteriormente creado
+        /// </summary>
         [HttpPost("RegistroCartas")]
-        public async Task<IActionResult> RegistrarCartas(CrudMazoCartasDTO cartas)
+        public async Task<IActionResult> RegistrarCartas(CrudMazoCartasDTO cartas, int idTorneo)
         {
-            return Ok(await _jugadorServicio.RegistrarCartas(cartas));
+            return Ok(await _jugadorServicio.RegistrarCartas(cartas, idTorneo));
 
         }
 

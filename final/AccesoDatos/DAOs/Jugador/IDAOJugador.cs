@@ -1,4 +1,5 @@
 ﻿using Entidades.DTOs.Cruds;
+using Entidades.Modelos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace AccesoDatos.DAOs.Jugador
     public interface IDAOJugador
     {
         public Task<int> CrearMazo(int userId, string nombreMazo);
-        public Task<dynamic> RegistrarCartas(CrudMazoCartasDTO cartas);
+        public Task<bool> RegistrarCartas(CrudMazoCartasDTO cartas, int idTorneo, int userId);
 
 
     }

@@ -4,16 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entidades.Modelos
+namespace Entidades.DTOs.Respuestas
 {
-    public class CartaSerie
+    public class RespuestaCartaSerieDTO
     {
         public int CartaID { get; set; }
         public string? NombreCarta { get; set; }
         public int SerieID { get; set; }
         public string? NombreSerie { get; set; }
-
-
-
     }
 }
