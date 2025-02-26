@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Utilidades.Utilidades
 {
@@ -90,6 +91,47 @@ namespace Utilidades.Utilidades
 
             return Convert.ToInt32(cantPartidas);
 
+        }
+
+        public void CalcularMaximos(int diasDuracion, int juegosPorDia, out int juegosTotales, out int maxJugadores)
+        {
+            int juegosPosibles = diasDuracion * juegosPorDia;
+            juegosTotales = juegosPosibles - 1;
+            maxJugadores = (int)Math.Pow(2, Math.Floor(Math.Log2(juegosPosibles + 1)));
+        }
+
+        public int CalcularPotenciaDeDos(int numero)
+        {   //El numero no puede ser 0 ni negativos   -- El numero debe ser potencia de dos.
+            if (numero < 1 || (numero & (numero - 1)) != 0)
+                throw new ArgumentException("El número debe ser una potencia de 2 mayor a 0.");
+            else
+                //Ver implementacion
+
+
+                return (int)Math.Log2(numero);
+        }
+
+        public int ObtenerNumeroRondas(int inscriptos)
+        {
+            var rondas = CalcularPotenciaDeDos(inscriptos);
+
+            return rondas;
+        }
+
+
+        public string ObtenerNombreRonda(int numeroRonda)
+        {
+            return numeroRonda switch
+            {
+                6 => "64avos",   //128 jugadores max
+                5 => "32avos",   //64 jugadores max
+                4 => "16avos",   //32 Jugadores max
+                3 => "8vos",     //16 jugadores max
+                2 => "4tos",     //8 jugadores max
+                1 => "Semi",     //4 jugadores max
+                0 => "Final",    //2 jugadores max
+                _ => "Desconocida" //0 jugadores
+            };
         }
 
     }

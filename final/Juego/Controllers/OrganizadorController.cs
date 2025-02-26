@@ -1,4 +1,5 @@
-﻿using Entidades.DTOs.Cruds;
+﻿using Entidades.DTOs;
+using Entidades.DTOs.Cruds;
 using Entidades.Modelos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -22,30 +23,23 @@ namespace Juego.Controllers
         /// Pueden hacer avanzar un torneo a la siguiente fase, y modificar las partidas del torneo
         /// Los debe crear un Administrador, pueden crear Jueces
         /// </summary>
-        /// 
 
-        [HttpGet("CantidadPartidas")]
-        public async Task<IActionResult> CantidadPartidas(int idTorneo)
-        {
-            //return StatusCode(StatusCodes.Status200OK, new { Value = _usuarioServicio.ObtenerUsuarios() });
-
-            var tupla = await _organizadorServicio.CalcularPartidas(idTorneo);
-
-            return Ok($"Partidas: {tupla.Item1}. Cantidad de Inscriptos: {tupla.Item2}. Si partidas es 0 e inscriptos es 0 ingreso un torneo que no existe");
-            //FUNCIONA, ver paginacion. Ver que sean solo sus torneos organizados
-        }
-
+        /// <summary>
+        /// Metodo para obtener usuarios por un rol especifico y que fueron creados por el usuario autenticado
+        /// </summary>
         [HttpGet("ObtenerUsuariosPorRol")]
-        public async Task<IActionResult> VerListadoJugadores(string rol)
+        public async Task<IActionResult> VerListadoUsuarios(string rol)
         {
             if (rol != "Jugador" || rol != "Juez")
                 return BadRequest("Solo puedes ver Jugadores o jueces creados por ti");
-
+            //RIVISAR que el usuario fue creado por el
             return Ok(await _organizadorServicio.VerListadoUsuarios(rol));
 
         }
 
-
+        /// <summary>
+        /// Metodo para registrar jueces. Solo usuarios con rol Juez
+        /// </summary>
         [HttpPost("RegistroJuez")]
         public async Task<IActionResult> RegistrarJuez(CrudUsuarioDTO usuario)
         {
@@ -53,27 +47,31 @@ namespace Juego.Controllers
             if (usuario.Rol == "Juez")
             {
                 //Validaciones basicas
-                if (usuario == null) return BadRequest();
+                if (usuario == null) return BadRequest("No se agrego ningun usuario");
                 //Si un modelo no es valido, valida estado del formulario, si alguna validacion no se cumple
                 if (!ModelState.IsValid) return BadRequest(ModelState);
                 //devolver un NoContent()?
                 return Ok(await _organizadorServicio.RegistrarJuez(usuario));
                 //FUNCIONO
             }
-
             return BadRequest("No es posible insertar otro tipo de usuario");
 
         }
 
-
-        [HttpPost("OrganizarTorneo")]
-        public async Task<IActionResult> OrganizarTorneo(CrudTorneoDTO torneo)
+        /// <summary>
+        /// Metodo para crear un torneo. Fecha fin se puede no insertar y jugador ganador, hasta conocer el resultado
+        /// </summary>
+        [HttpPost("CrearTorneo")]
+        public async Task<IActionResult> CrearTorneo(CrudTorneoDTO torneo)
         {
             var respon = await _organizadorServicio.CrearTorneo(torneo);
             return respon ? Ok($"Registro exitoso") : BadRequest("No fue posible insertar");
             //FUNCIONAAA
         }
 
+        /// <summary>
+        /// Metodo para crear la lista de series que acepta un torneo
+        /// </summary>
         [HttpPost("CrearTorneoSerieHabilitada")]
         public async Task<IActionResult> CrearTorneoSerieHabilitada(CrudTorneoSerieHabilitadaDTO serie)
         {
@@ -83,29 +81,46 @@ namespace Juego.Controllers
 
         }
 
-
-        [HttpPut("EditarTorneo")]
-        public async Task<IActionResult> EditarTorneo(CrudTorneoDTO torneo)
+        /// <summary>
+        /// Metodo para editar un torneo. Fecha fin se puede no insertar y jugador ganador, hasta conocer el resultado
+        /// </summary>
+        [HttpPut("EditarTorneoById")]
+        public async Task<IActionResult> EditarTorneoById(CrudTorneoDTO torneo)
         {
             //Ver que sean solo sus torneos organizados
             //Sirve para hacer avanzar a la siguiente fase un torneo
             return Ok(await _organizadorServicio.EditarTorneo(torneo));
         }
 
+        /// <summary>
+        /// Metodo para cancelar un torneo. Se cambia el estado a Cancelado.
+        /// </summary>
         [HttpPut("CancelarTorneo")]
-        public async Task<IActionResult> CancelarTorneo(int torneoid, string texto)
+        public async Task<IActionResult> CancelarTorneo(int torneoid, string estado)
         {
             //Ver que sean solo sus torneos organizados
-            return Ok(await _organizadorServicio.CancelarTorneo(torneoid, texto));
+            return Ok(await _organizadorServicio.CancelarTorneo(torneoid, estado));
 
         }
 
+        /// <summary>
+        /// Metodo para crear rondas. -- Asignaciones: 6 (64avos), 5 (32avos), 4 (16avos), 3 (8vos), 2 (4tos), 1 (semifinal), 0 (final)
+        /// </summary>
+        [HttpPost("CrearRondas")]
+        public async Task<IActionResult> CrearRondas(int idTorneo)
+        {
+            var result = await _organizadorServicio.CrearRondas(idTorneo);
 
+            return result ? Ok("Ronda creada con exito") : BadRequest("No fue posible crear la ronda");
+        }
 
-        //[HttpPost("CrearPartida")]
-        //public async Task<IActionResult> CrearPartida(PartidaDTO partida)
+        /// <summary>
+        /// Metodo para crear partidas. -- Asignaciones: 6 (64avos), 5 (32avos), 4 (16avos), 3 (8vos), 2 (4tos), 1 (semifinal), 0 (final)
+        /// </summary>
+        //[HttpPost("CrearRondas")]
+        //public async Task<IActionResult> CrearPartidas(PartidaDTO partida)
         //{
-        //    return Ok(await _usuarioServicio.CrearPartida(partida));
+        //    return Ok(await _usuarioServicio.CrearPartidas(partida));
         //}
 
 

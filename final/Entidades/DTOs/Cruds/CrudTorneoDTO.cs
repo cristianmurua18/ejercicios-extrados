@@ -16,6 +16,8 @@ namespace Entidades.DTOs.Cruds
         public int? PartidaActual { get; set; }
         public int? JugadorGanador { get; set; }
         public int? Organizador { get; set; }
+        public int? PartidasDiarias { get; set; }
+        public int? DiasDeDuracion { get; set; }
 
     }
 }

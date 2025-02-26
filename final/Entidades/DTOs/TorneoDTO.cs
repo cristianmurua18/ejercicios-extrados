@@ -17,6 +17,8 @@ namespace Entidades.DTOs
         public int PartidaActual { get; set; }
         public int JugadorGanador { get; set; }
         public int Organizador { get; set; }
+        public int PartidasDiarias { get; set; }
+        public int DiasDeDuracion { get; set; }
 
         //Une con tabla Partidas
         //public int PartidaID { get; set; }

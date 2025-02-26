@@ -112,14 +112,14 @@ namespace AccesoDatos.DAOs.Acceso
         }
 
 
-        //VER COMO LIMITAR EL REGISTRO EN ALGUN MOMENTO
+        //VER COMO LIMITAR EL REGISTRO EN ALGUN MOMENTO. OKA
         public async Task<bool> RegistroJugador(CrudUsuarioDTO jugador, int idTorneoRef)
         {
             //CREAR UN TRNSACCION 
             try
             {
                 using (var tran = _dbConnection.BeginTransaction())
-                {
+                {  //Inserto el usuario en la tabla Usuario
                     var sqlInsert = @"INSERT
                     INTO Usuarios(NombreApellido,Alias,IdPaisOrigen,Email,NombreUsuario,Contraseña,FotoAvatar,Rol,CreadoPor,Activo)
                     OUTPUT INSERTED.UsuarioID
@@ -128,32 +128,46 @@ namespace AccesoDatos.DAOs.Acceso
                     var userId = await _dbConnection.ExecuteScalarAsync<int>(sqlInsert, jugador, transaction: tran);
                     //si es mayor a 0, significa que fue correcta la insercion 
                     if (userId > 0)
-                    {
-                        var sqlSelect = @"SELECT TorneoID, NombreTorneo, Estado FROM Torneos
+                    {   //Traigo info del torneo
+                        var sqlSelect = @"SELECT FyHInicioT, Estado, PartidasDiarias, DiasDeDuracion FROM Torneos
                             where TorneoID = @idTorneoRef;";
 
                         var torneo = await _dbConnection.QuerySingleOrDefaultAsync<TorneoDTO>(sqlSelect, new { idTorneoRef }, transaction: tran);
 
                         if (torneo != null && torneo.Estado == "Registro")
                         {
-                            //Lo inscribo en el torneo, luego el organizador va a asignarle su mazo de cartas.
-                            var sqlInsertar = @"INSERT
+                            var select = @"SELECT COUNT(IdJugador) from InfoTorneoJugadores where IdTorneo = @idTorneo;;";
+                            //Traigo info de los inscriptos hasta el momento
+                            var inscriptos = await _dbConnection.ExecuteScalarAsync<int>(select, new { idTorneoRef }, transaction: tran);
+
+                            if (inscriptos < 2)
+                                throw new InvalidOperationException("No es posible iniciar el torneo con solo un jugador");
+
+                            var maxJugadores = torneo.PartidasDiarias * torneo.DiasDeDuracion * 2;
+
+                            if(inscriptos <= maxJugadores)
+                            {
+                                //Lo inscribo en el torneo, luego el organizador va a asignarle su mazo de cartas.
+                                var sqlInsertar = @"INSERT
                                     INTO InfoTorneoJugadores(IdTorneo,IdJugador) 
                                     VALUES(@TorneoID,@userId);";
 
-                            var insert = await _dbConnection.ExecuteAsync(sqlInsertar, new { TOrneoID = torneo.TorneoID, userId }, transaction: tran);
+                                var insert = await _dbConnection.ExecuteAsync(sqlInsertar, new { TOrneoID = torneo.TorneoID, userId }, transaction: tran);
 
-                            if (insert>0)
-                            {
-                                tran.Commit();
-                                return true;
+                                if (insert>0)
+                                {
+                                    tran.Commit();
+                                    return true;
+                                }
+
+                                else
+                                {
+                                    tran.Rollback();
+                                    throw new InvalidOperationException("Registro fallido. No fue posible inscribir al jugador.");
+                                }
                             }
-
                             else
-                            {
-                                tran.Rollback();
-                                throw new InvalidOperationException("Registro fallido. No fue posible inscribir al jugador.");
-                            }
+                                throw new InvalidOperationException("Registro fallido. Se ha llegado al maximo posible de inscriptos.");
                         }
                         else
                             throw new InvalidOperationException("Registro fallido. El torneo no existe o no esta en etapa de Registro.");

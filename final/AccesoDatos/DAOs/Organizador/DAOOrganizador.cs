@@ -21,18 +21,18 @@ namespace AccesoDatos.DAOs.Organizador
 
         #region Uso general de Organizadores
 
-        public async Task<int> ContarInscriptosActivos()
+        public async Task<int> ContarInscriptosByTorneo(int idTorneo)
         {
-            var sql = "SELECT COUNT(UsuarioID) FROM Usuarios WHERE Rol='Jugador' AND Activo=1;";
+            var sql = "SELECT COUNT(IdJugador) FROM InfoJugadorTorneo WHERE IdTorneo=idTorneo;";
 
-            var cantidad = await _dbConnection.ExecuteScalarAsync<int>(sql);
+            var cantidad = await _dbConnection.ExecuteScalarAsync<int>(sql, new { idTorneo});
 
             return cantidad;
 
         }
 
 
-        //Para Calcular Cantidad de partidas
+        //Para Calcular Cantidad de partidas, organizador viene de id del usuario autenticado
         public async Task<TorneoDTO> TraerTorneo(int organizador, int idTorneo)
         {
             var sqlSelect = @"SELECT * from Torneos WHERE Organizador=@organizador AND TorneoID=@idTorneo;";
@@ -74,8 +74,8 @@ namespace AccesoDatos.DAOs.Organizador
 
         public async Task<bool> CrearTorneo(CrudTorneoDTO torneo)
         {
-            var sqlInsert = @"INSERT INTO Torneos(FyHInicioT,FyHFinT,Estado,IdPaisRealizacion,PartidaActual,JugadorGanador,Organizador) 
-                                     VALUES(@FyHInicioT,@FyHFinT,@Estado,@IdPaisRealizacion,@PartidaActual,@JugadorGanador,@Organizador);";
+            var sqlInsert = @"INSERT INTO Torneos(FyHInicioT,FyHFinT,Estado,IdPaisRealizacion,PartidaActual,JugadorGanador,Organizador, PartidasDiarias, DiasDeDuracion) 
+                                     VALUES(@FyHInicioT,@FyHFinT,@Estado,@IdPaisRealizacion,@PartidaActual,@JugadorGanador,@Organizador,@PartidasDiarias,@DiasDeDuracion);";
 
             var resultado = await _dbConnection.ExecuteAsync(sqlInsert, torneo);
 
@@ -100,7 +100,7 @@ namespace AccesoDatos.DAOs.Organizador
             var sqlUpdate =
                 @"UPDATE Torneos 
                 SET FyHInicioT=@FyHInicioT, FyHFinT=@FyHFinT, Estado=@Estado, IdPaisRealizacion=@IdPaisRealizacion, PartidaActual=@PartidaActual, 
-                JugadorGanador=@JugadorGanador, Organizador=@Organizador 
+                JugadorGanador=@JugadorGanador, Organizador=@Organizador, PartidasDiarias=@PartidasDiarias,DiasDeDuracion=@DiasDeDuracion
                 WHERE TorneoID=@TorneoID;";
 
             var resultado = await _dbConnection.ExecuteAsync(sqlUpdate, torneo);
@@ -113,15 +113,26 @@ namespace AccesoDatos.DAOs.Organizador
         {
             var sqlDelete =
                 @"UPDATE Torneos 
-                SET Estado=@estado
-                WHERE TorneoID=@idtorneo;";            ;
-
+                SET Estado=@estado 
+                WHERE TorneoID=@idtorneo;";            
+                                //Pongo directamente cancelado?
             var resultado = await _dbConnection.ExecuteAsync(sqlDelete, new { idtorneo });
 
             return resultado > 0;
 
         }
 
+        public async Task<bool> CrearRondas(RondaDTO ronda)
+        {
+            var sqlInsert = @"INSERT INTO Rondas(RondaID, IdTorneo,CantidadPartidas,JugadoresPar) 
+                                     VALUES(@RondaID, @IdTorneo, @CantidadPartidas, @JugadoresPar);";
+
+            var resultado = await _dbConnection.ExecuteAsync(sqlInsert, ronda);
+
+            //Agrega un torneo con Exito?
+            return resultado > 0;
+
+        }
         public async Task<bool> CrearPartida(PartidaDTO partida)
         {
             var sqlInsert = @"INSERT INTO Partidas(FyHInicioP,FyHFinP,Ronda,JugadorDerrotado,JugadorVencedor) 

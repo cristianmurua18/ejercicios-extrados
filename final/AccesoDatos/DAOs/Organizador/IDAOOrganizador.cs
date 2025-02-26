@@ -13,7 +13,7 @@ namespace AccesoDatos.DAOs.Organizador
     public interface IDAOOrganizador
     {
         //Solo lo uso en el servicio
-        public Task<int> ContarInscriptosActivos();
+        public Task<int> ContarInscriptosByTorneo(int idTorneo);
         public Task<TorneoDTO> TraerTorneo(int organizador, int idTorneo);
         public Task<List<Usuario>> VerListadoUsuarios(string rol);
         public Task<bool> RegistrarJuez(CrudUsuarioDTO usuario);
@@ -21,6 +21,8 @@ namespace AccesoDatos.DAOs.Organizador
         public Task<bool> CrearTorneoSerieHabilitada(CrudTorneoSerieHabilitadaDTO serie);
         public Task<bool> EditarTorneo(CrudTorneoDTO torneo);
         public Task<bool> CancelarTorneo(int idtorneo, string estado);
+
+        public Task<bool> CrearRondas(RondaDTO ronda);
         public Task<bool> CrearPartida(PartidaDTO partida);
         public Task<bool> ModificarPartida(PartidaDTO partida);
 

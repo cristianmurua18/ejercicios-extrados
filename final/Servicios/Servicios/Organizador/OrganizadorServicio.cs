@@ -22,27 +22,6 @@ namespace Servicios.Servicios.Organizador
 
         private readonly IComunes _common = comunes;
 
-        public async Task<(int, int)> CalcularPartidas(int idTorneo)
-        {
-            //Traigo el id del usuario al autenticarse
-            var organizador = Convert.ToInt32(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value);
-
-            var torneo = await _daoOrganizador.TraerTorneo(organizador, idTorneo);
-
-            if (torneo != null)
-            {
-                var inscriptos = await _daoOrganizador.ContarInscriptosActivos();
-
-                var partidas = _common.CalcularCantidadPartidas(torneo.FyHInicioT, torneo.FyHFinT);
-
-                return (partidas, inscriptos);
-            }
-            else
-                return (0, 0);
-
-
-        }
-
         public async Task<List<Usuario>> VerListadoUsuarios(string rol)
         {
             return await _daoOrganizador.VerListadoUsuarios(rol);
@@ -73,11 +52,68 @@ namespace Servicios.Servicios.Organizador
             return await _daoOrganizador.CancelarTorneo(idtorneo, estado);
         }
 
-
-        public async Task<bool> CrearPartida(PartidaDTO partida)
+        public async Task<bool> CrearRondas(int idTorneo)
         {
-            return await _daoOrganizador.CrearPartida(partida);
+            //IDEAS, contar cantidad de Inscriptos, en base a eso calcular cantidad de rondas
+
+            //Traigo el id del usuario al autenticarse, el organizador
+            var organizador = Convert.ToInt32(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value);
+
+
+            //Veo en que torneo quiero crear las partidas, que yo organice si o si
+            var torneo = await _daoOrganizador.TraerTorneo(organizador, idTorneo);
+
+            if (torneo != null)
+            {
+                var partidas = (torneo.PartidasDiarias * torneo.DiasDeDuracion) - 1;
+
+                var inscriptos = await _daoOrganizador.ContarInscriptosByTorneo(idTorneo);
+
+                var ronda = new RondaDTO();
+
+                if (inscriptos % 2 == 0)
+                {
+                    ronda.RondaID = 1;
+                    ronda.CantidadPartidas = partidas;
+                    ronda.IdTorneo = idTorneo;
+                    ronda.JugadoresPar = true;
+                }
+                else               //SEGUIR REVISANDO
+                {
+                    ronda.RondaID = 1;
+                    ronda.CantidadPartidas = partidas;
+                    ronda.IdTorneo = idTorneo;
+                    ronda.JugadoresPar = false;
+
+                }
+
+                //Usar un bucle por cada ronda, ir creando las partidas - Asignando dias y horarios
+
+                var nueva = await _daoOrganizador.CrearRondas(ronda);
+
+
+                var part = new PartidaDTO();
+
+                part.PartidaID = 1;
+                part.IdRonda = 1;
+                part.FyHInicioP = torneo.FyHInicioT;
+
+                for (int i = 1; i <= ronda.CantidadPartidas; i++)
+                {
+                    await _daoOrganizador.CrearPartida(part);
+
+                    part.PartidaID++;
+                    part.FyHFinP.AddMinutes(30);
+                }
+
+                return true;
+            }
+            else
+                throw new InvalidOperationException("Registro fallido. No fue posible ubicar el torneo.Revise informacion.");
+
+            
         }
+
 
         public async Task<bool> ModificarPartida(PartidaDTO partida)
         {
