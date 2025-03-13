@@ -31,6 +31,16 @@ namespace AccesoDatos.DAOs.Organizador
 
         }
 
+        public async Task<int> ContarInscriptosByTorneo(int idTorneo, IDbTransaction transaction)
+        {
+            var sql = "SELECT COUNT(IdJugador) FROM InfoJugadorTorneo WHERE IdTorneo=idTorneo;";
+
+            var cantidad = await _dbConnection.ExecuteScalarAsync<int>(sql, new { idTorneo }, transaction);
+
+            return cantidad;
+
+        }
+
 
         //Para Calcular Cantidad de partidas, organizador viene de id del usuario autenticado
         public async Task<TorneoDTO> TraerTorneo(int organizador, int idTorneo)
@@ -38,6 +48,16 @@ namespace AccesoDatos.DAOs.Organizador
             var sqlSelect = @"SELECT * from Torneos WHERE Organizador=@organizador AND TorneoID=@idTorneo;";
 
             var torneo = await _dbConnection.QueryFirstOrDefaultAsync<TorneoDTO>(sqlSelect, new { organizador, idTorneo});
+
+            return torneo!;
+
+        }
+
+        public async Task<TorneoDTO> TraerTorneo(int organizador, int idTorneo, IDbTransaction transaction)
+        {
+            var sqlSelect = @"SELECT * from Torneos WHERE Organizador=@organizador AND TorneoID=@idTorneo;";
+
+            var torneo = await _dbConnection.QueryFirstOrDefaultAsync<TorneoDTO>(sqlSelect, new { organizador, idTorneo }, transaction);
 
             return torneo!;
 
@@ -121,6 +141,49 @@ namespace AccesoDatos.DAOs.Organizador
             return resultado > 0;
 
         }
+
+        public async Task GenerarRondasYPartidas(int organizador, int idTorneo)
+        {
+            using var tran = _dbConnection.BeginTransaction();
+
+            int rondaID = 1;
+            //En realidad son todos los jugadores del torneo
+            int jugadoresRestantes = await ContarInscriptosByTorneo(idTorneo, tran);
+
+            if (jugadoresRestantes % 2 == 1)
+                throw new InvalidOperationException("No es posible iniciar un torneo con cantidad impar de jugadores");
+
+
+            var torneo = await TraerTorneo(organizador, idTorneo, tran);
+
+            if (torneo!=null)
+            {
+                while (jugadoresRestantes > 1)
+                {
+                    int cantidadPartidas = jugadoresRestantes / 2;
+                    // Insertar la ronda
+                    string sqlInsertRonda = "INSERT INTO Rondas (RondaID, IdTorneo, CantidadPartidas) VALUES (@RondaID, @IdTorneo, @CantidadPartidas)";
+                    await _dbConnection.ExecuteAsync(sqlInsertRonda, new { RondaID = rondaID, IdTorneo = torneo.TorneoID, CantidadPartidas = cantidadPartidas }, transaction: tran);
+
+                    // Insertar las partidas
+                    for (int i = 1; i <= cantidadPartidas; i++)
+                    {
+                        string sqlInsertPartida = "INSERT INTO Partidas (PartidaID, IdRonda, FyHInicioP) VALUES (@PartidaID, @IdRonda, @FyHInicioP)";
+                        await _dbConnection.ExecuteAsync(sqlInsertPartida, new { PartidaID = i, IdRonda = rondaID, FyHInicioP = torneo.FyHInicioT }, transaction: tran);
+                        torneo.FyHInicioT = torneo.FyHInicioT.AddMinutes(30);
+                    }
+
+                    // Avanzar a la siguiente ronda
+                    jugadoresRestantes = (jugadoresRestantes % 2 == 0) ? jugadoresRestantes / 2 : (jugadoresRestantes / 2) + 1;
+                    rondaID++;
+                }
+                tran.Commit();
+            }
+            else
+                tran.Rollback();
+                throw new InvalidOperationException("Registro fallido. No fue posible ubicar el torneo.Revise informacion.");
+        }
+
 
         public async Task<bool> CrearRondas(RondaDTO ronda)
         {

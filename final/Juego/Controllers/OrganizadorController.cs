@@ -59,7 +59,7 @@ namespace Juego.Controllers
         }
 
         /// <summary>
-        /// Metodo para crear un torneo. Fecha fin se puede no insertar y jugador ganador, hasta conocer el resultado
+        /// Metodo para crear un torneo. Fecha fin se puede no insertar y jugador ganador igual, hasta conocer el resultado
         /// </summary>
         [HttpPost("CrearTorneo")]
         public async Task<IActionResult> CrearTorneo(CrudTorneoDTO torneo)
@@ -106,12 +106,12 @@ namespace Juego.Controllers
         /// <summary>
         /// Metodo para crear rondas. -- Asignaciones: 6 (64avos), 5 (32avos), 4 (16avos), 3 (8vos), 2 (4tos), 1 (semifinal), 0 (final)
         /// </summary>
-        [HttpPost("CrearRondas")]
-        public async Task<IActionResult> CrearRondas(int idTorneo)
+        [HttpPost("CrearRondasYPartidas")]
+        public async Task<IActionResult> CrearRondasYPartidas(int idTorneo)
         {
-            var result = await _organizadorServicio.CrearRondas(idTorneo);
-
-            return result ? Ok("Ronda creada con exito") : BadRequest("No fue posible crear la ronda");
+            await _organizadorServicio.GenerarRondasYPartidas(idTorneo);
+            //Ver otro retorno
+            return Ok("Rondas y partidas creadas con exito");
         }
 
         /// <summary>

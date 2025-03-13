@@ -3,6 +3,7 @@ using Entidades.DTOs;
 using Entidades.DTOs.Cruds;
 using Entidades.Modelos;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -52,6 +53,13 @@ namespace Servicios.Servicios.Organizador
             return await _daoOrganizador.CancelarTorneo(idtorneo, estado);
         }
 
+        public async Task GenerarRondasYPartidas(int idTorneo)
+        {
+            var organizador = Convert.ToInt32(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value);
+
+            await _daoOrganizador.GenerarRondasYPartidas(organizador, idTorneo);
+        }
+
         public async Task<bool> CrearRondas(int idTorneo)
         {
             //IDEAS, contar cantidad de Inscriptos, en base a eso calcular cantidad de rondas
@@ -69,43 +77,35 @@ namespace Servicios.Servicios.Organizador
 
                 var inscriptos = await _daoOrganizador.ContarInscriptosByTorneo(idTorneo);
 
-                var ronda = new RondaDTO();
+                var ronda = new RondaDTO
+                {
+                    RondaID = 1,
+                    CantidadPartidas = partidas,
+                    IdTorneo = idTorneo
+                };
 
                 if (inscriptos % 2 == 0)
                 {
-                    ronda.RondaID = 1;
-                    ronda.CantidadPartidas = partidas;
-                    ronda.IdTorneo = idTorneo;
-                    ronda.JugadoresPar = true;
+                    var nueva = await _daoOrganizador.CrearRondas(ronda);
+
+                    for (int i = 1; i <= ronda.CantidadPartidas; i++)
+                    {
+                        var part = new PartidaDTO();
+
+                        part.PartidaID = 1;
+                        part.IdRonda = 1;
+                        part.FyHInicioP = torneo.FyHInicioT;
+                        await _daoOrganizador.CrearPartida(part);
+
+                        part.PartidaID++;
+                        part.FyHFinP.AddMinutes(30);
+
+                    }
                 }
                 else               //SEGUIR REVISANDO
                 {
-                    ronda.RondaID = 1;
-                    ronda.CantidadPartidas = partidas;
-                    ronda.IdTorneo = idTorneo;
-                    ronda.JugadoresPar = false;
-
+                    throw new InvalidOperationException("No es posible iniciar un torneo con cantidad impar de jugadores");
                 }
-
-                //Usar un bucle por cada ronda, ir creando las partidas - Asignando dias y horarios
-
-                var nueva = await _daoOrganizador.CrearRondas(ronda);
-
-
-                var part = new PartidaDTO();
-
-                part.PartidaID = 1;
-                part.IdRonda = 1;
-                part.FyHInicioP = torneo.FyHInicioT;
-
-                for (int i = 1; i <= ronda.CantidadPartidas; i++)
-                {
-                    await _daoOrganizador.CrearPartida(part);
-
-                    part.PartidaID++;
-                    part.FyHFinP.AddMinutes(30);
-                }
-
                 return true;
             }
             else
@@ -113,6 +113,10 @@ namespace Servicios.Servicios.Organizador
 
             
         }
+
+
+
+        
 
 
         public async Task<bool> ModificarPartida(PartidaDTO partida)

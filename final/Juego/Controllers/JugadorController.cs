@@ -31,7 +31,8 @@ namespace Juego.Controllers
 
 
         /// <summary>
-        /// Aqui registrar las cartas con su Mazo anteriormente creado
+        /// Aqui registrar las cartas con su Mazo anteriormente creado, se pide como referencia en que torneo lo va a usar
+        /// para ver si la serie de las cartas que agrega las acepta o no
         /// </summary>
         [HttpPost("RegistroCartas")]
         public async Task<IActionResult> RegistrarCartas(CrudMazoCartasDTO cartas, int idTorneo)

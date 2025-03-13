@@ -18,6 +18,7 @@ namespace Servicios.Servicios.Organizador
         public Task<bool> EditarTorneo(CrudTorneoDTO torneo);
         public Task<bool> CancelarTorneo(int idtorneo, string estado);
 
+        public Task GenerarRondasYPartidas(int idTorneo);
         public Task<bool> CrearRondas(int idTorneo);
         public Task<bool> ModificarPartida(PartidaDTO partida);
     }

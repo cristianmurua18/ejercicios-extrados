@@ -133,7 +133,7 @@ namespace AccesoDatos.DAOs.Acceso
                             where TorneoID = @idTorneoRef;";
 
                         var torneo = await _dbConnection.QuerySingleOrDefaultAsync<TorneoDTO>(sqlSelect, new { idTorneoRef }, transaction: tran);
-
+                       //Si existe y su estado es Registro. IDEA: Corrobar que fecha de inicio sea menor a hoy. O sea si no comenzo.
                         if (torneo != null && torneo.Estado == "Registro")
                         {
                             var select = @"SELECT COUNT(IdJugador) from InfoTorneoJugadores where IdTorneo = @idTorneo;;";
@@ -142,8 +142,8 @@ namespace AccesoDatos.DAOs.Acceso
 
                             if (inscriptos < 2)
                                 throw new InvalidOperationException("No es posible iniciar el torneo con solo un jugador");
-
-                            var maxJugadores = torneo.PartidasDiarias * torneo.DiasDeDuracion * 2;
+                            //El maximo de jugadores en primera ronda
+                            var maxJugadores = torneo.PartidasDiarias * torneo.DiasDeDuracion;
 
                             if(inscriptos <= maxJugadores)
                             {
@@ -152,10 +152,12 @@ namespace AccesoDatos.DAOs.Acceso
                                     INTO InfoTorneoJugadores(IdTorneo,IdJugador) 
                                     VALUES(@TorneoID,@userId);";
 
-                                var insert = await _dbConnection.ExecuteAsync(sqlInsertar, new { TOrneoID = torneo.TorneoID, userId }, transaction: tran);
+                                var insert = await _dbConnection.ExecuteAsync(sqlInsertar, new { torneo.TorneoID, userId }, transaction: tran);
 
                                 if (insert>0)
-                                {
+                                {   //Cuando se llegue al numero maximo de inscriptos se cambia el estado del Torneo
+                                    if (inscriptos == maxJugadores)
+                                        torneo.Estado = "Partidas";
                                     tran.Commit();
                                     return true;
                                 }
