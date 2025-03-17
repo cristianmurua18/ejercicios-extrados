@@ -23,68 +23,68 @@ namespace Servicios.Servicios.Acceso
 
         //Implementacion de Metodos
 
-        //public async Task<bool> ObtenerPokemones()
-        //{
-        //    //Llamo a la URL, la lleve al appsettings - VER OFFSET
-        //    //string url = "https://pokeapi.co/api/v2/pokemon/";
+        public async Task<bool> ObtenerPokemones()
+        {
+            //Llamo a la URL, la lleve al appsettings - VER OFFSET
+            //string url = "https://pokeapi.co/api/v2/pokemon/";
 
-        //    //Esperar que se ejecuta de Forma asincrona y que espere el resultado
+            //Esperar que se ejecuta de Forma asincrona y que espere el resultado
 
-        //    var i = 1;
-        //    //Traer del 1001 al 1025. No hay mas
-        //    while (i < 0)
-        //    {
-        //        var res = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/pokemon/{i}");
+            var i = 10201;
+            //Traer del 1001 al 1025. No hay mas
+            while (i < 10278)
+            {
+                var res = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/pokemon/{i}");
 
-        //        _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-        //        if (res.IsSuccessStatusCode)
-        //        {
-        //            //var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        //            //obtener el contenido
-        //            var body = await res.Content.ReadAsStringAsync();
+                if (res.IsSuccessStatusCode)
+                {
+                    //var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    //obtener el contenido
+                    var body = await res.Content.ReadAsStringAsync();
 
-        //            var pokemon = JsonConvert.DeserializeObject<PokemonDTO>(body);
+                    var pokemon = JsonConvert.DeserializeObject<PokemonDTO>(body);
 
-        //            await _daoAcceso.ObtenerPokemones(pokemon!);
+                    await _daoAcceso.ObtenerPokemones(pokemon!);
 
-        //            i++;
+                    i++;
 
-        //        }
-        //    }
-        //    return true;
-        //}
+                }
+            }
+            return true;
+        }
 
-        //public async Task<bool> RellenarCartaSerie()
-        //{
-        //    //Llamo a la URL, la lleve al appsettings - VER OFFSET
-        //    //string url = "https://pokeapi.co/api/v2/pokemon/";
+        public async Task<bool> RellenarCartaSerie()
+        {
+            //Llamo a la URL, la lleve al appsettings - VER OFFSET
+            //string url = "https://pokeapi.co/api/v2/pokemon/";
 
-        //    //Esperar que se ejecuta de Forma asincrona y que espere el resultado
+            //Esperar que se ejecuta de Forma asincrona y que espere el resultado
 
-        //    var i = 1001;
+            var i = 10101;
+            var idCarta = 10000;
+            while (i < 10278)
+            {
+                var res = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/pokemon/{i}");
 
-        //    while (i < 1026)
-        //    {
-        //        var res = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/pokemon/{i}");
+                _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-        //        _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                if (res.IsSuccessStatusCode)
+                {
+                    //var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    //obtener el contenido
+                    var body = await res.Content.ReadAsStringAsync();
 
-        //        if (res.IsSuccessStatusCode)
-        //        {
-        //            //var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        //            //obtener el contenido
-        //            var body = await res.Content.ReadAsStringAsync();
+                    var pokemon = JsonConvert.DeserializeObject<CartaSerieDTO>(body);
 
-        //            var pokemon = JsonConvert.DeserializeObject<CartaSerieDTO>(body);
-
-        //            await _daoAcceso.RellenarCartaSerie(pokemon!);
-
-        //            i++;
-        //        }
-        //    }
-        //    return true;
-        //}
+                    await _daoAcceso.RellenarCartaSerie(pokemon!, idCarta);
+                    idCarta++;
+                    i++;
+                }
+            }
+            return true;
+        }
 
         public async Task<string> VerInfoTorneos()
         {
@@ -116,14 +116,14 @@ namespace Servicios.Servicios.Acceso
             return await _daoAcceso.ObtenerPaginacionPaises(desdePagina, cantRegistros);            
         }
 
-        public async Task<bool> RegistroJugador(CrudUsuarioDTO jugador, int idTorneoRef)
+        public async Task<bool> RegistroJugador(CrudUsuarioDTO jugador)
         {
             if(jugador.Rol != "Jugador")
                 throw new ArgumentException("Registro fallido. El usuario debe ser jugador");
 
             jugador.Contraseña = _common.EncriptarSHA256(jugador.Contraseña!);
 
-            return await _daoAcceso.RegistroJugador(jugador, idTorneoRef);
+            return await _daoAcceso.RegistroJugador(jugador);
         }
         
 

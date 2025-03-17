@@ -21,30 +21,30 @@ namespace Juego.Controllers
         ///// <summary>
         ///// Sirve para rellenar la tabla de de Cartas
         ///// </summary>
-        //[HttpGet]
-        //[Route("ObtenerPokemones")]
-        //public async Task<IActionResult> ObtenerPokemones()
-        //{
+        [HttpGet]
+        [Route("ObtenerPokemones")]
+        public async Task<IActionResult> ObtenerPokemones()
+        {
 
-        //    var res = await _accesoServicio.ObtenerPokemones();
+            var res = await _accesoServicio.ObtenerPokemones();
 
-        //    return res ? Ok($"{res}") : BadRequest("No fue posible insertar");
+            return res ? Ok($"{res}") : BadRequest("No fue posible insertar");
 
-        //}
+        }
 
         ///// <summary>
         ///// Sirve para rellenar la tabla de de CartasSerie
         ///// </summary>
-        //[HttpGet]
-        //[Route("ObtenerCartaSerie")]
-        //public async Task<IActionResult> ObtenerCartaSerie()
-        //{
+        [HttpGet]
+        [Route("ObtenerCartaSerie")]
+        public async Task<IActionResult> ObtenerCartaSerie()
+        {
 
-        //    var res = await _accesoServicio.RellenarCartaSerie();
+            var res = await _accesoServicio.RellenarCartaSerie();
 
-        //    return res ? Ok($"{res}") : BadRequest("No fue posible insertar");
+            return res ? Ok($"{res}") : BadRequest("No fue posible insertar");
 
-        //}
+        }
 
         /// <summary>
         /// Sirve para tener Informacion de referencia de los torneos disponibles, el id sirve para inscribir un jugador
@@ -103,11 +103,11 @@ namespace Juego.Controllers
         /// </summary>
         [HttpPost]
         [Route("RegistroJugador")]
-        public async Task<IActionResult> RegistroJugador(CrudUsuarioDTO jugador, int idtorneoRef)
+        public async Task<IActionResult> RegistroJugador(CrudUsuarioDTO jugador)
         {
-            if (await _accesoServicio.RegistroJugador(jugador, idtorneoRef))
+            if (await _accesoServicio.RegistroJugador(jugador))
             {
-                return Ok($"Registro exitoso {jugador.Alias}. Bienvenido/a. Fuiste inscripto en el TorneoID: {idtorneoRef}");
+                return Ok($"Registro exitoso {jugador.Alias}. Bienvenido/a. Recuerde usuario y contraseña.");
             }
             return BadRequest("Registro fallido. Revise informacion.");
 

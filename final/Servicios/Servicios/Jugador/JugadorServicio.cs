@@ -1,5 +1,6 @@
 ﻿using AccesoDatos.DAOs.Jugador;
 using Entidades.DTOs.Cruds;
+using Entidades.Modelos;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,26 @@ namespace Servicios.Servicios.Jugador
             return await _daoJugador.CrearMazo(userId,nombreMazo);
 
         }
-    
+
+        public async Task<string> VerMisMazos()
+        {
+            var mensaje = string.Empty;
+
+            var userIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value;
+            var userId = int.Parse(userIdClaim!);
+
+            var mazos = await _daoJugador.VerMisMazos(userId);
+
+            if (mazos.Count != 0)
+            {
+                foreach (var mazo in mazos)
+                {
+                    mensaje += $"TorneoID: {mazo.MazoID}, Nombre: {mazo.Nombre} \n";
+                }
+                return mensaje;
+            }
+            return string.Empty;
+        }
         public async Task<bool> RegistrarCartas(CrudMazoCartasDTO cartas, int idTorneo)
         {
             //Traigo el id del usuario al autenticarse
@@ -38,5 +58,12 @@ namespace Servicios.Servicios.Jugador
 
         }
 
+        public async Task<bool> RegistroEnTorneo(int idTorneo, int idMazo)
+        {
+            var userIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value;
+            var userId = int.Parse(userIdClaim!);
+
+            return await _daoJugador.RegistroEnTorneo(idTorneo, userId, idMazo);
+        }
     }
 }

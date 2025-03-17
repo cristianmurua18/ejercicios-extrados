@@ -3,6 +3,7 @@ using Entidades.Modelos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Servicios.Servicios.Jugador;
 
 namespace Juego.Controllers
@@ -24,10 +25,28 @@ namespace Juego.Controllers
         {
             var res = await _jugadorServicio.CrearMazo(nombreMazo);
             if (res > 0)
-                return Ok($"MazoID: {res}. Recuerdalo");
+                return Ok($"Mazo creado con exito. Su ID es: {res}. Recuerdalo para poder registrar cartas");
             return BadRequest("No fue posible crear el mazo.");
 
         }
+
+        /// <summary>
+        /// Aqui el jugador puede ver sus mazos creados
+        /// </summary>
+        [HttpGet("VerMisMazos")]
+        public async Task<IActionResult> VerMisMazos()
+        {
+            var mazos = await _jugadorServicio.VerMisMazos();
+
+            if (!mazos.IsNullOrEmpty())
+            {
+                return Ok(mazos);
+            }
+            return BadRequest("Ud. no tiene un mazo creado.");
+            //Que pasa si tiene varios Mazos creados?
+        }
+
+
 
 
         /// <summary>
@@ -41,8 +60,20 @@ namespace Juego.Controllers
 
         }
 
+        /// <summary>
+        /// Aqui se puede registrar a un torneo, pasar idTorneo y idMazo
+        /// </summary>
+        [HttpPost("RegistroEnTorneo")]
+        public async Task<IActionResult> RegistroEnTorneo(int idTorneo, int idMazo)
+        {
+            if (await _jugadorServicio.RegistroEnTorneo(idTorneo, idMazo))
+                return Ok("Registro exitoso. Bienvenido!");
+            return BadRequest("Registro fallido. Revise informacion");
+
+        }
 
 
+        //Cual seria mejor opcion? Que se incriba solo o que inscriba el mazo el organizador?
 
 
 

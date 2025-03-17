@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dapper;
-using Entidades.Modelos;
+﻿using Dapper;
+using Entidades.DTOs;
 using Entidades.DTOs.Cruds;
 using Entidades.DTOs.Respuestas;
-using Entidades.DTOs;
+using System.Data;
 
 namespace AccesoDatos.DAOs.Jugador
 {
@@ -25,25 +18,37 @@ namespace AccesoDatos.DAOs.Jugador
                 INTO Mazos(NombreMazo,JugadorCreador)
                 OUTPUT INSERTED.MazoID
                 VALUES(@NombreMazo,@JugadorCreador);";
-            
+
             var mazoID = await _dbConnection.ExecuteScalarAsync<int>(sqlInsert, new { NombreMazo = nombreMazo, JugadorCreador = userId });
 
             return mazoID;
 
         }
-        
+
+        public async Task<List<CrudMazoDTO>> VerMisMazos(int userId)
+        {
+            var sqlInsert = @"SELECT * from Mazos where JugadorCreador = @userId;";
+
+            var mazo = await _dbConnection.QueryAsync<CrudMazoDTO>(sqlInsert, new { JugadorCreador = userId });
+
+            return mazo.ToList();
+
+        }
+
+
+
         //Creo una lista de cartas, IdMazo y IdCarta - A una mazo le asigno cierta cantidad de cartas
         //El proc debe pedir en que torneo sera utilizado el mazo y se debe chequear que la carta tenga una serie permitida en ese torneo
         public async Task<bool> RegistrarCartas(CrudMazoCartasDTO carta, int idTorneo, int userId)
         {
-            //CREAR UN TRNSACCION 
+            //CREAR UN TARNSACCION 
             try
             {   //Controlo que el mazo en el que estoy intentando insertar, sea de ese jugador
                 var sqlrevision = @"SELECT * from Mazos where MazoID = @IdMazo;";
 
                 var mazo = await _dbConnection.QuerySingleOrDefaultAsync<CrudMazoDTO>(sqlrevision, new { carta.IdMazo });
 
-                if(mazo != null && mazo.JugadorCreador == userId)
+                if (mazo != null && mazo.JugadorCreador == userId)
                 {
                     using (var tran = _dbConnection.BeginTransaction())
                     {
@@ -95,5 +100,42 @@ namespace AccesoDatos.DAOs.Jugador
             }
 
         }
+
+        public async Task<bool> RegistroEnTorneo(int idTorneo, int userId, int idMazo)
+        {
+            using (var tran = _dbConnection.BeginTransaction())
+            {
+                //Traigo info del torneo
+                var sqlSelect = @"SELECT FyHInicioT, Estado, PartidasDiarias, DiasDeDuracion FROM Torneos
+                    where TorneoID = @idTorneo;";
+
+                var torneo = await _dbConnection.QuerySingleOrDefaultAsync<TorneoDTO>(sqlSelect, new { idTorneo }, transaction: tran);
+                //Si existe y su estado es Registro.
+                if (torneo != null && torneo.Estado == "Registro")
+                {
+                    //Lo inscribo en el torneo, con su respectivo Mazo
+                    var sqlInsertar = @"INSERT
+                                      INTO TorneoJugadores(IdTorneo, IdJugador, IdMazo) 
+                                      VALUES(@TorneoID,@userId,@idMazo);";
+
+                    var insert = await _dbConnection.ExecuteAsync(sqlInsertar, new { torneo.TorneoID, userId, idMazo }, transaction: tran);
+
+                    if (insert>0)
+                    {
+                        tran.Commit(); 
+                        return true;
+
+                    }
+                    else
+                    {
+                        tran.Rollback();
+                        throw new InvalidOperationException("Registro fallido. No fue posible inscribir al jugador. Revise informacion");
+                    }
+                }
+                return false;
+
+            }
+        }
+
     }
 }
