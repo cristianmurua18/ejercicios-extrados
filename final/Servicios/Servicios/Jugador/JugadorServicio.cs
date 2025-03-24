@@ -18,12 +18,16 @@ namespace Servicios.Servicios.Jugador
         //Es para traer la info de los claims del usuario logeado
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
-        public async Task<int> CrearMazo(string nombreMazo)
+        public async Task<int> CrearColeccion(int idCarta)
         {
             //Traigo el id del usuario al autenticarse
-            var userIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value;
+            var userId = int.Parse(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value!);
 
-            var userId = int.Parse(userIdClaim!);
+            return await _daoJugador.CrearColeccion(idCarta, userId);
+        }
+        public async Task<int> CrearMazo(string nombreMazo)
+        {
+            var userId = int.Parse(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value!);
 
             return await _daoJugador.CrearMazo(userId,nombreMazo);
 
@@ -32,9 +36,7 @@ namespace Servicios.Servicios.Jugador
         public async Task<string> VerMisMazos()
         {
             var mensaje = string.Empty;
-
-            var userIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value;
-            var userId = int.Parse(userIdClaim!);
+            var userId = int.Parse(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value!);
 
             var mazos = await _daoJugador.VerMisMazos(userId);
 
@@ -51,8 +53,7 @@ namespace Servicios.Servicios.Jugador
         public async Task<bool> RegistrarCartas(CrudMazoCartasDTO cartas, int idTorneo)
         {
             //Traigo el id del usuario al autenticarse
-            var userIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value;
-            var userId = int.Parse(userIdClaim!);
+            var userId = int.Parse(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value!);
 
             return await _daoJugador.RegistrarCartas(cartas, idTorneo, userId);
 
@@ -60,8 +61,7 @@ namespace Servicios.Servicios.Jugador
 
         public async Task<bool> RegistroEnTorneo(int idTorneo, int idMazo)
         {
-            var userIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value;
-            var userId = int.Parse(userIdClaim!);
+            var userId = int.Parse(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value!);
 
             return await _daoJugador.RegistroEnTorneo(idTorneo, userId, idMazo);
         }

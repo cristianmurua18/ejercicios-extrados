@@ -5,6 +5,7 @@ using Entidades.DTOs.Cruds;
 using Entidades.DTOs.Jugadores;
 using Entidades.DTOs.Respuestas;
 using Entidades.Modelos;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using Utilidades.Utilidades;
@@ -85,6 +86,13 @@ namespace Servicios.Servicios.Acceso
             }
             return true;
         }
+        //public async Task<int> CambiarContrasena(string nuevaContraseña, int userId)
+        //{
+        //    nuevaContraseña = _common.EncriptarSHA256(nuevaContraseña);
+
+        //    return await _daoAcceso.CambiarContrasena(nuevaContraseña, userId);
+        //}
+
 
         public async Task<string> VerInfoTorneos()
         {

@@ -100,23 +100,25 @@ namespace Utilidades.Utilidades
             maxJugadores = (int)Math.Pow(2, Math.Floor(Math.Log2(juegosPosibles + 1)));
         }
 
-        public int CalcularPotenciaDeDos(int numero)
+        public int CalcularPotenciaDeDos(int inscriptos, out int sobrante)
         {   //El numero no puede ser 0 ni negativos   -- El numero debe ser potencia de dos.
-            if (numero < 1 || (numero & (numero - 1)) != 0)
-                throw new ArgumentException("El número debe ser una potencia de 2 mayor a 0.");
-            else
-                //Ver implementacion
+            if (inscriptos <= 0)
+            {
+                sobrante = 0;
+                return 0;
+            }
 
+            int potencia = 1;
+            while (potencia * 2 <= inscriptos)
+            {
+                potencia *= 2;
+            }
 
-                return (int)Math.Log2(numero);
+            sobrante = inscriptos - potencia;
+            return potencia;
+
         }
 
-        public int ObtenerNumeroRondas(int inscriptos)
-        {
-            var rondas = CalcularPotenciaDeDos(inscriptos);
-
-            return rondas;
-        }
 
 
         public string ObtenerNombreRonda(int numeroRonda)

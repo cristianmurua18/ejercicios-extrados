@@ -2,6 +2,7 @@
 using Entidades.DTOs;
 using Entidades.DTOs.Cruds;
 using Entidades.DTOs.Respuestas;
+using Entidades.Modelos;
 using System.Data;
 
 namespace AccesoDatos.DAOs.Jugador
@@ -10,6 +11,19 @@ namespace AccesoDatos.DAOs.Jugador
     {
 
         private readonly IDbConnection _dbConnection = dbConnection;
+
+        public async Task<int> CrearColeccion(int idCarta, int userId)
+        {
+            var sqlInsert = @"INSERT
+                INTO CartasColeccionadas(IdCarta, IdUsuario)
+                VALUES(@idCarta,@userId);";
+
+            var affectedRows = await _dbConnection.ExecuteAsync(sqlInsert, new { idCarta, userId });
+
+            return affectedRows;
+
+        }
+
 
         //Creo un Mazo, le pongo nombre y jugador que lo creo(viene de los claims)
         public async Task<int> CrearMazo(int userId, string nombreMazo)
@@ -44,11 +58,15 @@ namespace AccesoDatos.DAOs.Jugador
             //CREAR UN TARNSACCION 
             try
             {   //Controlo que el mazo en el que estoy intentando insertar, sea de ese jugador
-                var sqlrevision = @"SELECT * from Mazos where MazoID = @IdMazo;";
+                var sqlRevision = @"SELECT * from Mazos where MazoID = @IdMazo;";
 
-                var mazo = await _dbConnection.QuerySingleOrDefaultAsync<CrudMazoDTO>(sqlrevision, new { carta.IdMazo });
+                var mazo = await _dbConnection.QuerySingleOrDefaultAsync<CrudMazoDTO>(sqlRevision, new { carta.IdMazo });
 
-                if (mazo != null && mazo.JugadorCreador == userId)
+                var sqlChequeo = @"SELECT IdCarta from CartasColeccionadas where IdUsuario = @userId;";
+
+                var cartaColeccion = await _dbConnection.QuerySingleOrDefaultAsync<CartaColeccionDTO>(sqlChequeo, new { userId });
+
+                if (mazo != null && cartaColeccion != null && mazo.JugadorCreador == userId)
                 {
                     using (var tran = _dbConnection.BeginTransaction())
                     {
@@ -91,7 +109,7 @@ namespace AccesoDatos.DAOs.Jugador
                     }
                 }
                 else
-                    throw new InvalidOperationException("Registro fallido. Ese Mazo no existe o no es tuyo.");
+                    throw new InvalidOperationException("Registro fallido. Ese Mazo no existe, o no es tuyo o la carta no es tuya.");
             }
             catch (Exception ex)
             {
@@ -106,34 +124,67 @@ namespace AccesoDatos.DAOs.Jugador
             using (var tran = _dbConnection.BeginTransaction())
             {
                 //Traigo info del torneo
-                var sqlSelect = @"SELECT FyHInicioT, Estado, PartidasDiarias, DiasDeDuracion FROM Torneos
+                var sqlTorneo = @"SELECT * FROM Torneos
                     where TorneoID = @idTorneo;";
 
-                var torneo = await _dbConnection.QuerySingleOrDefaultAsync<TorneoDTO>(sqlSelect, new { idTorneo }, transaction: tran);
-                //Si existe y su estado es Registro.
+                var torneo = await _dbConnection.QuerySingleOrDefaultAsync<TorneoDTO>(sqlTorneo, new { idTorneo }, transaction: tran);
+                //Veo si existe y su estado es Registro.
                 if (torneo != null && torneo.Estado == "Registro")
                 {
-                    //Lo inscribo en el torneo, con su respectivo Mazo
-                    var sqlInsertar = @"INSERT
-                                      INTO TorneoJugadores(IdTorneo, IdJugador, IdMazo) 
-                                      VALUES(@TorneoID,@userId,@idMazo);";
+                    //IDEA: Controlar que el Mazo sea del Jugador y que tenga 15 cartas, y luego que sean de series que acepta el torneo
+                    var Sqlmazo = @"SELECT * FROM Mazos where JugadorCreador=@userId;";
 
-                    var insert = await _dbConnection.ExecuteAsync(sqlInsertar, new { torneo.TorneoID, userId, idMazo }, transaction: tran);
+                    var mazo = await _dbConnection.QuerySingleOrDefaultAsync<CrudMazoDTO>(Sqlmazo, new { userId }, tran);
 
-                    if (insert>0)
+                    if (mazo != null)
                     {
-                        tran.Commit(); 
-                        return true;
+                        //Contolamos la cantidad de inscriptos y que no supere el maxJugadores de torneo
 
+                        var contarInscriptos = "SELECT COUNT(IdJugador) from TorneoJugadores where IdTorneo=@idTorneo AND Aceptada=1;";
+                        //SIN , transaction: tran. Hay error?
+                        var cantidad = await _dbConnection.ExecuteScalarAsync<int>(contarInscriptos, new { idTorneo }, tran);
+
+                        if (cantidad <= torneo.MaxJugadores)
+                        {
+                            //Lo inscribo en el torneo, con su respectivo Mazo
+                            var sqlInsertar = @"INSERT
+                                    INTO TorneoJugadores(IdTorneo, IdJugador, IdMazo, Aceptada) 
+                                    VALUES(@TorneoID,@userId,@idMazo,1);";
+
+                            var insert = await _dbConnection.ExecuteAsync(sqlInsertar, new { torneo.TorneoID, userId, idMazo }, transaction: tran);
+
+                            if (insert>0)
+                            {
+                                tran.Commit();
+                                return true;
+
+                            }
+                            else
+                            {
+                                tran.Rollback();
+                                throw new InvalidOperationException("Registro fallido. No fue posible inscribir al jugador. Revise informacion");
+                            }
+
+                        }
+                        else
+                        {
+                            tran.Rollback();
+                            throw new InvalidOperationException("Registro fallido. No fue posible inscribir al jugador debido a que no es su mazo");
+
+                        }
+
+                    
                     }
                     else
                     {
                         tran.Rollback();
-                        throw new InvalidOperationException("Registro fallido. No fue posible inscribir al jugador. Revise informacion");
+                        throw new InvalidOperationException("Registro fallido. No fue posible inscribir al jugador debido a que no hay mas cupos disponibles");
                     }
+
+                     
                 }
                 return false;
-
+                throw new InvalidOperationException("Registro fallido. No fue posible inscribir al jugador debido a que no existe el torneo o ya no esta en etapa de registro");
             }
         }
 

@@ -23,6 +23,31 @@ namespace Servicios.Servicios.Organizador
 
         private readonly IComunes _common = comunes;
 
+        public async Task<string> VerInscriptosByTorneo(int idTorneo)
+        {
+            var mensaje = string.Empty;
+            var inscriptos = await _daoOrganizador.VerInscriptosByTorneo(idTorneo);
+
+            if (inscriptos == null || inscriptos.Count() == 0)
+            {
+                return mensaje = "Todavia no hay inscriptos";
+            }
+            else
+            {
+                foreach (var jugador in inscriptos)
+                {
+                    mensaje += $"Id Jugador : {jugador.IdJugador}, Id Mazo: {jugador.IdMazo}";
+                }
+                return mensaje;
+            }
+
+        }
+        public async Task<bool> EliminarInscriptoByTorneo(int idJugador)
+        {
+            return await _daoOrganizador.EliminarInscriptoByTorneo(idJugador);
+        }
+
+
         public async Task<List<Usuario>> VerListadoUsuarios(string rol)
         {
             return await _daoOrganizador.VerListadoUsuarios(rol);
@@ -53,11 +78,12 @@ namespace Servicios.Servicios.Organizador
             return await _daoOrganizador.CancelarTorneo(idtorneo, estado);
         }
 
-        public async Task GenerarRondasYPartidas(int idTorneo)
+        public async Task<bool> GenerarRondasYPartidas(int idTorneo)
         {
             var organizador = Convert.ToInt32(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value);
-
-            await _daoOrganizador.GenerarRondasYPartidas(organizador, idTorneo);
+            
+            //Pasar jugadores para calcular partidas y cuantos van a sobrar en primera ronda
+            return await _daoOrganizador.GenerarRondasYPartidas(organizador, idTorneo);
         }
 
         public async Task<bool> CrearRondas(int idTorneo)

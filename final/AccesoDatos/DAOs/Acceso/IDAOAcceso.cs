@@ -14,6 +14,7 @@ namespace AccesoDatos.DAOs.Acceso
     {
 
         //Definicion de Metodos
+        //public Task<int> CambiarContrasena(string nuevaContraseña, int userId);
         public Task<int> ObtenerPokemones(PokemonDTO pokemon);
         public Task<int> RellenarCartaSerie(CartaSerieDTO cartaSerie, int idCarta);
         public Task<List<TorneoDTO>> VerInfoTorneos();

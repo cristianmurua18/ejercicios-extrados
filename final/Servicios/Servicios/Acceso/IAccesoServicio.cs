@@ -15,6 +15,7 @@ namespace Servicios.Servicios.Acceso
         //Definicion de Metodos
         public Task<bool> ObtenerPokemones();
         public Task<bool> RellenarCartaSerie();
+        //public Task<int> CambiarContrasena(string nuevaContraseña, int userId);
         public Task<string> VerInfoTorneos();
         public Task<List<RespuestaPaisDTO>> ObtenerIdPais(string nombre);
         public Task<List<RespuestaPaisDTO>> ObtenerPaginacionPaises(int desdePagina, int cantRegistros);

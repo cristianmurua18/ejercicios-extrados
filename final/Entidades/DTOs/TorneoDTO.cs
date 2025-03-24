@@ -14,11 +14,11 @@ namespace Entidades.DTOs
         public DateTime FyHFinT { get; set; }
         public string? Estado { get; set; }
         public int IdPaisRealizacion { get; set; }
-        public int PartidaActual { get; set; }
         public int JugadorGanador { get; set; }
         public int Organizador { get; set; }
         public int PartidasDiarias { get; set; }
         public int DiasDeDuracion { get; set; }
+        public int MaxJugadores { get; set; }
 
         //Une con tabla Partidas
         //public int PartidaID { get; set; }

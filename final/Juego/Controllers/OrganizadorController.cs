@@ -24,6 +24,28 @@ namespace Juego.Controllers
         /// Los debe crear un Administrador, pueden crear Jueces
         /// </summary>
 
+
+        /// <summary>
+        /// Metodo para obtener los jugadores inscriptos en un Torneo
+        /// </summary>
+        [HttpGet("ObtenerInscriptosEnTorneo")]
+        public async Task<IActionResult> VerInscriptosByTorneo(int idTorneo)
+        {
+            return Ok(await _organizadorServicio.VerInscriptosByTorneo(idTorneo));
+        }
+
+        /// <summary>
+        /// Metodo para obtener los jugadores inscriptos en un Torneo
+        /// </summary>
+        [HttpDelete("EliminarInscriptoDeTorneoByIdJugador")]
+        public async Task<IActionResult> EliminarInscriptoByTorneo(int idJugador)
+        {
+            if (await _organizadorServicio.EliminarInscriptoByTorneo(idJugador))
+                return Ok("Eliminacion exitosa");
+            return BadRequest("Elimnacion fallida. Revise informacion");
+        }
+
+
         /// <summary>
         /// Metodo para obtener usuarios por un rol especifico y que fueron creados por el usuario autenticado
         /// </summary>
@@ -32,7 +54,7 @@ namespace Juego.Controllers
         {
             if (rol != "Jugador" || rol != "Juez")
                 return BadRequest("Solo puedes ver Jugadores o jueces creados por ti");
-            //RIVISAR que el usuario fue creado por el
+            //REVISAR que el usuario fue creado por el. Capaz uno para jugadores y otro para otros usuarios creados por el
             return Ok(await _organizadorServicio.VerListadoUsuarios(rol));
 
         }

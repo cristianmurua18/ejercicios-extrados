@@ -46,6 +46,17 @@ namespace Juego.Controllers
 
         }
 
+        //[HttpPost]
+        //[Route("CambiarContasena")]
+        //public async Task<IActionResult> CambiarContraseña(string nuevaContraseña, int userId)
+        //{
+        //    if (await _accesoServicio.CambiarContrasena(nuevaContraseña, userId) > 0)
+        //    {
+        //        return Ok($"Cambio de contraseña exitoso");
+        //    }
+        //    return BadRequest("Cambio de contraseña fallido. Revise informacion.");
+        //}
+
         /// <summary>
         /// Sirve para tener Informacion de referencia de los torneos disponibles, el id sirve para inscribir un jugador
         /// </summary>

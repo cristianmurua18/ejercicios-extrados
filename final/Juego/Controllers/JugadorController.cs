@@ -17,6 +17,20 @@ namespace Juego.Controllers
 
         #region Métodos exclusivos para Jugadores
 
+
+        /// <summary>
+        /// Aqui el jugador crea una coleccion de cartas, con su correspondiente id de la carta
+        /// </summary>
+        [HttpPost("AgregarCartaAMiColeccion")]
+        public async Task<IActionResult> CrearColeccion(int idCarta)
+        {
+            var res = await _jugadorServicio.CrearColeccion(idCarta);
+            if (res > 0)
+                return Ok($"Carta agregada con exito");
+            return BadRequest("No fue posible agregar la carta");
+
+        }
+
         /// <summary>
         /// Aqui el jugador crea un mazo de cartas, con su correspondiente nombre y se le asigna un ID
         /// </summary>
@@ -53,7 +67,7 @@ namespace Juego.Controllers
         /// Aqui registrar las cartas con su Mazo anteriormente creado, se pide como referencia en que torneo lo va a usar
         /// para ver si la serie de las cartas que agrega las acepta o no
         /// </summary>
-        [HttpPost("RegistroCartas")]
+        [HttpPost("RegistroCartasAMiMazo")]
         public async Task<IActionResult> RegistrarCartas(CrudMazoCartasDTO cartas, int idTorneo)
         {
             return Ok(await _jugadorServicio.RegistrarCartas(cartas, idTorneo));

@@ -15,6 +15,18 @@ namespace AccesoDatos.DAOs.Acceso
         #region Metodos para el acceso sin autenticacion
 
         //Cambiar modelos por dto?
+
+        //public async Task<int> CambiarContrasena(string nuevaContraseña, int userId)
+        //{
+        //    var sqlUpdate = @"UPDATE Usuarios
+        //        SET Contraseña = @nuevaContraseña
+        //        WHERE UsuarioID=@userId;";
+
+        //    var affectedRows = await _dbConnection.ExecuteAsync(sqlUpdate, new { nuevaContraseña, userId });
+
+        //    return affectedRows;
+
+        //}
         public async Task<int> ObtenerPokemones(PokemonDTO pokemon)
         {
             var sqlInsert = @"INSERT
