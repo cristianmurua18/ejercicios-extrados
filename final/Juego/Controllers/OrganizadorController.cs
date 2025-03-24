@@ -126,33 +126,39 @@ namespace Juego.Controllers
         }
 
         /// <summary>
+        /// Metodo para cerrar las incripciones a torneo
+        /// </summary>
+        [HttpPost("CerrarInscripcionTorneo")]
+        public async Task<IActionResult> CerrarInscrpcionTorneo(int idTorneo)
+        {
+            if (await _organizadorServicio.CerrarInscrpcionTorneo(idTorneo))
+                return Ok("Rondas y partidas creadas con exito");
+            //Ver otro retornow
+            return BadRequest("las rondas y partidas no se pudieron crear");
+        }
+
+        /// <summary>
         /// Metodo para crear rondas. -- Asignaciones: 6 (64avos), 5 (32avos), 4 (16avos), 3 (8vos), 2 (4tos), 1 (semifinal), 0 (final)
         /// </summary>
         [HttpPost("CrearRondasYPartidas")]
         public async Task<IActionResult> CrearRondasYPartidas(int idTorneo)
         {
-            await _organizadorServicio.GenerarRondasYPartidas(idTorneo);
+            if(await _organizadorServicio.GenerarRondasYPartidas(idTorneo))
+                return Ok("Rondas y partidas creadas con exito");
             //Ver otro retorno
-            return Ok("Rondas y partidas creadas con exito");
+            return BadRequest("las rondas y partidas no se pudieron crear");
         }
 
-        /// <summary>
-        /// Metodo para crear partidas. -- Asignaciones: 6 (64avos), 5 (32avos), 4 (16avos), 3 (8vos), 2 (4tos), 1 (semifinal), 0 (final)
-        /// </summary>
-        //[HttpPost("CrearRondas")]
-        //public async Task<IActionResult> CrearPartidas(PartidaDTO partida)
-        //{
-        //    return Ok(await _usuarioServicio.CrearPartidas(partida));
-        //}
 
-
-        ////A lo mejor falta un metodo para crear, modificar partidas
+        ////A lo mejor falta un metodo modificar partidas
         //[HttpPost("ModificarPartida")]
         //public async Task<IActionResult> ModificarPartida(PartidaDTO partida)
         //{
         //    //modificar partidas solo creadas por el
         //    return Ok(await _usuarioServicio.ModificarPartida(partida));
         //}
+
+
 
 
 

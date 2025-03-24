@@ -34,29 +34,6 @@ namespace Juego.Controllers
             return Ok(await _juezServicio.DescalificarJugador(jugadorDescalificado));
         }
 
-        //ESTE METODO ESTA DE MAS
-        //[Authorize(Roles = "Juez")]
-        //[HttpPost("RegistrarJuez")]
-        //public async Task<IActionResult> RegistroJuez([FromBody] CrudUsuarioDTO usuario)
-        //{
-        //    //Verificacion Inicial para que solo pueda crear Jueces. 
-        //    if (usuario.Rol == "Juez")
-        //    {
-        //        //Validaciones basicas
-        //        if (usuario == null) return BadRequest();
-        //        //Si un modelo no es valido, valida estado del formulario, si alguna validacion no se cumple
-        //        if (!ModelState.IsValid) return BadRequest(ModelState);
-        //        //devolver un NoContent()?
-        //        return Ok();
-        //        //await _juezServicio.InsertarUsuario(usuario)
-        //        //FUNCIONO
-
-        //    }
-
-        //    return BadRequest("No es posible insertar este tipo de usuario.");
-
-        //}
-
 
         #endregion Fin exclusivos para Jueces
     }

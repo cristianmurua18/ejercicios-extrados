@@ -78,6 +78,10 @@ namespace Servicios.Servicios.Organizador
             return await _daoOrganizador.CancelarTorneo(idtorneo, estado);
         }
 
+        public async Task<bool> CerrarInscrpcionTorneo(int idTorneo)
+        {
+            return await _daoOrganizador.CerrarInscrpcionTorneo(idTorneo);
+        }
         public async Task<bool> GenerarRondasYPartidas(int idTorneo)
         {
             var organizador = Convert.ToInt32(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value);
@@ -85,64 +89,6 @@ namespace Servicios.Servicios.Organizador
             //Pasar jugadores para calcular partidas y cuantos van a sobrar en primera ronda
             return await _daoOrganizador.GenerarRondasYPartidas(organizador, idTorneo);
         }
-
-        public async Task<bool> CrearRondas(int idTorneo)
-        {
-            //IDEAS, contar cantidad de Inscriptos, en base a eso calcular cantidad de rondas
-
-            //Traigo el id del usuario al autenticarse, el organizador
-            var organizador = Convert.ToInt32(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value);
-
-
-            //Veo en que torneo quiero crear las partidas, que yo organice si o si
-            var torneo = await _daoOrganizador.TraerTorneo(organizador, idTorneo);
-
-            if (torneo != null)
-            {
-                var partidas = (torneo.PartidasDiarias * torneo.DiasDeDuracion) - 1;
-
-                var inscriptos = await _daoOrganizador.ContarInscriptosByTorneo(idTorneo);
-
-                var ronda = new RondaDTO
-                {
-                    RondaID = 1,
-                    CantidadPartidas = partidas,
-                    IdTorneo = idTorneo
-                };
-
-                if (inscriptos % 2 == 0)
-                {
-                    var nueva = await _daoOrganizador.CrearRondas(ronda);
-
-                    for (int i = 1; i <= ronda.CantidadPartidas; i++)
-                    {
-                        var part = new PartidaDTO();
-
-                        part.PartidaID = 1;
-                        part.IdRonda = 1;
-                        part.FyHInicioP = torneo.FyHInicioT;
-                        await _daoOrganizador.CrearPartida(part);
-
-                        part.PartidaID++;
-                        part.FyHFinP.AddMinutes(30);
-
-                    }
-                }
-                else               //SEGUIR REVISANDO
-                {
-                    throw new InvalidOperationException("No es posible iniciar un torneo con cantidad impar de jugadores");
-                }
-                return true;
-            }
-            else
-                throw new InvalidOperationException("Registro fallido. No fue posible ubicar el torneo.Revise informacion.");
-
-            
-        }
-
-
-
-        
 
 
         public async Task<bool> ModificarPartida(PartidaDTO partida)

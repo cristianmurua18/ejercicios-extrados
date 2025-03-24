@@ -19,8 +19,8 @@ namespace Servicios.Servicios.Organizador
         public Task<bool> CrearTorneoSerieHabilitada(CrudTorneoSerieHabilitadaDTO serie);
         public Task<bool> EditarTorneo(CrudTorneoDTO torneo);
         public Task<bool> CancelarTorneo(int idtorneo, string estado);
+        public Task<bool> CerrarInscrpcionTorneo(int idTorneo);
         public Task<bool> GenerarRondasYPartidas(int idTorneo);
-        public Task<bool> CrearRondas(int idTorneo);
         public Task<bool> ModificarPartida(PartidaDTO partida);
     }
 }

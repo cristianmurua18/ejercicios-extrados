@@ -10,7 +10,7 @@ namespace Entidades.DTOs
     {
         public int? RondaID { get; set; }
         public int? IdTorneo { get; set; }
-        public int? CantidadPartidas { get; set; }
+        public int? NumeroRonda { get; set; }
 
     }
 }

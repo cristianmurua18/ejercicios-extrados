@@ -26,9 +26,8 @@ namespace AccesoDatos.DAOs.Organizador
         public Task<bool> CrearTorneoSerieHabilitada(CrudTorneoSerieHabilitadaDTO serie);
         public Task<bool> EditarTorneo(CrudTorneoDTO torneo);
         public Task<bool> CancelarTorneo(int idtorneo, string estado);
+        public Task<bool> CerrarInscrpcionTorneo(int idTorneo);
         public Task<bool> GenerarRondasYPartidas(int organizador, int torneoId);
-        public Task<bool> CrearRondas(RondaDTO ronda);
-        public Task<bool> CrearPartida(PartidaDTO partida);
         public Task<bool> ModificarPartida(PartidaDTO partida);
 
     }
