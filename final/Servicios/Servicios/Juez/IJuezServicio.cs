@@ -1,4 +1,5 @@
 ﻿using Entidades.DTOs.Jugadores;
+using Entidades.DTOs.Respuestas;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,9 @@ namespace Servicios.Servicios.Juez
 {
     public interface IJuezServicio
     {
-        public Task<bool> OficializarResultados();
+        public Task<string> VerRondasYPartidas(int idTorneo);
+        public Task<bool> OficializarResultadoEnPartida(int idTorneo, int idPartida, int idGanador);
+        public Task<bool> OficializarResultadoEnTorneo(int idTorneo, int idGanador);
         public Task<bool> DescalificarJugador(JugadorDescalificadoDTO jugadorDescalificado);
 
     }

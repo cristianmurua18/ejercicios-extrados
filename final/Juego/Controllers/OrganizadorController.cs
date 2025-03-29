@@ -81,13 +81,27 @@ namespace Juego.Controllers
         }
 
         /// <summary>
+        /// Metodo para registrar jueces en un torneo. Solo usuarios con rol Juez
+        /// </summary>
+        [HttpPost("AsignarJuezATorneo")]
+        public async Task<IActionResult> AsignarJuezATorneo(int idJuez, int idTorneo)
+        {
+            if (await _organizadorServicio.AsignarJuezATorneo(idJuez, idTorneo))
+            {
+                return Ok("Juez asignado correctamente");
+            }
+            return BadRequest("No es posible asignar juez, corrobore informacion");
+
+        }
+
+        /// <summary>
         /// Metodo para crear un torneo. Fecha fin se puede no insertar y jugador ganador igual, hasta conocer el resultado
         /// </summary>
         [HttpPost("CrearTorneo")]
         public async Task<IActionResult> CrearTorneo(CrudTorneoDTO torneo)
         {
             var respon = await _organizadorServicio.CrearTorneo(torneo);
-            return respon ? Ok($"Registro exitoso") : BadRequest("No fue posible insertar");
+            return respon ? Ok($"Registro exitoso") : BadRequest("No fue posible insertar, corrobore informacion");
             //FUNCIONAAA
         }
 
@@ -99,7 +113,7 @@ namespace Juego.Controllers
         {
             var resp = await _organizadorServicio.CrearTorneoSerieHabilitada(serie);
 
-            return resp ? Ok($"Registro exitoso") : BadRequest("No fue posible insertar");
+            return resp ? Ok($"Registro exitoso") : BadRequest("No fue posible insertar, corrobore informacion");
 
         }
 
@@ -134,7 +148,7 @@ namespace Juego.Controllers
             if (await _organizadorServicio.CerrarInscrpcionTorneo(idTorneo))
                 return Ok("Rondas y partidas creadas con exito");
             //Ver otro retornow
-            return BadRequest("las rondas y partidas no se pudieron crear");
+            return BadRequest("las rondas y partidas no se pudieron crear, corrobore informacion");
         }
 
         /// <summary>
@@ -146,17 +160,21 @@ namespace Juego.Controllers
             if(await _organizadorServicio.GenerarRondasYPartidas(idTorneo))
                 return Ok("Rondas y partidas creadas con exito");
             //Ver otro retorno
-            return BadRequest("las rondas y partidas no se pudieron crear");
+            return BadRequest("las rondas y partidas no se pudieron crear, corrobore informacion");
         }
 
-
+        /// <summary>
+        /// Metodo para crear rondas. -- Asignaciones: 6 (64avos), 5 (32avos), 4 (16avos), 3 (8vos), 2 (4tos), 1 (semifinal), 0 (final)
+        /// </summary>
         ////A lo mejor falta un metodo modificar partidas
-        //[HttpPost("ModificarPartida")]
-        //public async Task<IActionResult> ModificarPartida(PartidaDTO partida)
-        //{
-        //    //modificar partidas solo creadas por el
-        //    return Ok(await _usuarioServicio.ModificarPartida(partida));
-        //}
+        [HttpPost("AsignarJugadores")]
+        public async Task<IActionResult> ModificarPartida(PartidaDTO partida)
+        {
+            //modificar partidas solo creadas por el
+            if(await _organizadorServicio.ModificarPartida(partida))
+                return Ok("Jugadores asignados con exito");
+            return BadRequest("No fue posible insertar a los jugadores, corrobore informacion");
+        }
 
 
 

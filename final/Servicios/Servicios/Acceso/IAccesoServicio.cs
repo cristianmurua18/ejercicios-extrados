@@ -19,7 +19,7 @@ namespace Servicios.Servicios.Acceso
         public Task<string> VerInfoTorneos();
         public Task<List<RespuestaPaisDTO>> ObtenerIdPais(string nombre);
         public Task<List<RespuestaPaisDTO>> ObtenerPaginacionPaises(int desdePagina, int cantRegistros);
-        public Task<bool> RegistroJugador(CrudUsuarioDTO jugador);
+        public Task<bool> RegistroJugador(InsertarJugadorDTO jugador);
         public Task<AutorizacionRespuestaDTO> ObtenerAutenticacion(LoginDTO login);
 
 

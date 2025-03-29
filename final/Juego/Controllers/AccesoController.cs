@@ -114,7 +114,7 @@ namespace Juego.Controllers
         /// </summary>
         [HttpPost]
         [Route("RegistroJugador")]
-        public async Task<IActionResult> RegistroJugador(CrudUsuarioDTO jugador)
+        public async Task<IActionResult> RegistroJugador(InsertarJugadorDTO jugador)
         {
             if (await _accesoServicio.RegistroJugador(jugador))
             {

@@ -1,7 +1,9 @@
 ﻿using Entidades.DTOs.Jugadores;
+using Entidades.DTOs.Respuestas;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Servicios.Servicios.Juez;
 
 namespace Juego.Controllers
@@ -20,18 +22,41 @@ namespace Juego.Controllers
         /// Los debe crear un Administrador o un Juez
         /// </summary>
 
-        [HttpPost("OficializarResultados")]
-        public async Task<IActionResult> OficializarResultados()
+        [HttpGet("ObtenerPartidasYRondas")]
+        public async Task<IActionResult> VerRondasYPartidas(int idTorneo)
         {
-            //Que debe hacer oficializar resultados?
-            //Jugador ganador
-            return Ok(await _juezServicio.OficializarResultados());
+            var res = await _juezServicio.VerRondasYPartidas(idTorneo);
+            if (res.IsNullOrEmpty())
+            {
+                return NotFound("No hay rondas ni partidas generadas por el momento");
+            }
+            return Ok(res);
         }
+
+        [HttpPost("OficializarPartida")]
+        public async Task<IActionResult> OficializarResultadoEnPartida(int idTorneo, int idPartida, int idGanador)
+        {
+            if (await _juezServicio.OficializarResultadoEnPartida(idTorneo, idPartida, idGanador))
+                return Ok($"Se inserto al ganador de la Partida: N° {idPartida}");
+            return BadRequest("No fue posible insertar al ganador");
+        }
+
+        [HttpPost("OficializarTorneo")]
+        public async Task<IActionResult> OficializarResultadoEnTorneo(int idTorneo, int idGanador)
+        {
+            if (await _juezServicio.OficializarResultadoEnTorneo(idTorneo, idGanador))
+                return Ok($"Se inserto al ganador del Torneo: N° {idTorneo}");
+            return BadRequest("No fue posible insertar al ganador");
+        }
+
+
 
         [HttpPost("DescalificarJugador")]
         public async Task<IActionResult> DescalificarJugador(JugadorDescalificadoDTO jugadorDescalificado)
         {
-            return Ok(await _juezServicio.DescalificarJugador(jugadorDescalificado));
+            if (await _juezServicio.DescalificarJugador(jugadorDescalificado))
+                return Ok($"Jugador {jugadorDescalificado.JugadorID} descalificado con exito del torneo {jugadorDescalificado.IdTorneo}.");
+            return BadRequest("No fue posible descalificar. Revise informacion");
         }
 
 

@@ -20,7 +20,7 @@ namespace AccesoDatos.DAOs.Acceso
         public Task<List<TorneoDTO>> VerInfoTorneos();
         public Task<List<RespuestaPaisDTO>> ObtenerIdPais(string nombre);
         public Task<List<RespuestaPaisDTO>> ObtenerPaginacionPaises(int desdePagina, int cantRegistros);
-        public Task<bool> RegistroJugador(CrudUsuarioDTO jugador);
+        public Task<bool> RegistroJugador(InsertarJugadorDTO jugador);
         public Task<UsuarioDTO> ObtenerAutenticacion(LoginDTO usuario);
 
 

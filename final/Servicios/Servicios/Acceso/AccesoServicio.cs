@@ -86,6 +86,7 @@ namespace Servicios.Servicios.Acceso
             }
             return true;
         }
+
         //public async Task<int> CambiarContrasena(string nuevaContraseña, int userId)
         //{
         //    nuevaContraseña = _common.EncriptarSHA256(nuevaContraseña);
@@ -124,7 +125,7 @@ namespace Servicios.Servicios.Acceso
             return await _daoAcceso.ObtenerPaginacionPaises(desdePagina, cantRegistros);            
         }
 
-        public async Task<bool> RegistroJugador(CrudUsuarioDTO jugador)
+        public async Task<bool> RegistroJugador(InsertarJugadorDTO jugador)
         {
             if(jugador.Rol != "Jugador")
                 throw new ArgumentException("Registro fallido. El usuario debe ser jugador");

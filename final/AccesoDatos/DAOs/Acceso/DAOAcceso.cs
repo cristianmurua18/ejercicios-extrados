@@ -126,13 +126,13 @@ namespace AccesoDatos.DAOs.Acceso
         }
 
         //VER COMO LIMITAR EL REGISTRO EN ALGUN MOMENTO
-        public async Task<bool> RegistroJugador(CrudUsuarioDTO jugador)
+        public async Task<bool> RegistroJugador(InsertarJugadorDTO jugador)
         {
-
+            
             //Inserto el usuario en la tabla Usuario
             var sqlInsert = @"INSERT
-                INTO Usuarios(NombreApellido,Alias,IdPaisOrigen,Email,NombreUsuario,Contraseña,FotoAvatar,Rol,CreadoPor,Activo)
-                VALUES(@NombreApellido,@Alias,@IdPaisOrigen,@Email,@NombreUsuario,@Contraseña,@FotoAvatar,@Rol,@CreadoPor,@Activo);";
+                INTO Usuarios(NombreApellido,Alias,IdPaisOrigen,Email,NombreUsuario,Contraseña,Rol,Activo)
+                VALUES(@NombreApellido,@Alias,@IdPaisOrigen,@Email,@NombreUsuario,@Contraseña,@Rol,@Activo);";
 
             var affectRows = await _dbConnection.ExecuteAsync(sqlInsert, jugador);
 

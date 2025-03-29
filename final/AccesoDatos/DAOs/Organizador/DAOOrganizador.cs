@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Entidades.Modelos;
 using Entidades.DTOs.Cruds;
 using System.Collections;
+using Entidades.DTOs.Respuestas;
 
 namespace AccesoDatos.DAOs.Organizador
 {
@@ -110,6 +111,17 @@ namespace AccesoDatos.DAOs.Organizador
 
         }
 
+        public async Task<bool> AsignarJuezATorneo(int idJuez, int idTorneo)
+        {
+            var sqlInsert = @"INSERT
+                INTO TorneoJueces 
+                VALUES(@IdJuez,@IdTorneo);";
+
+            var result = await _dbConnection.ExecuteAsync(sqlInsert, new { idJuez, idTorneo});
+
+            return result > 0;
+
+        }
 
         public async Task<bool> CrearTorneo(CrudTorneoDTO torneo)
         {
@@ -132,8 +144,6 @@ namespace AccesoDatos.DAOs.Organizador
             //Agrega un torneo con Exito?
             return resultado > 0;
         }
-
-
         public async Task<bool> EditarTorneo(CrudTorneoDTO torneo)
         {
             var sqlUpdate =
@@ -172,7 +182,6 @@ namespace AccesoDatos.DAOs.Organizador
 
             return resultado > 0;
         }
-
         public async Task<bool> GenerarRondasYPartidas(int organizador, int idTorneo)
         {
             using var tran = _dbConnection.BeginTransaction();
@@ -187,22 +196,24 @@ namespace AccesoDatos.DAOs.Organizador
             if ((inscriptos & (inscriptos - 1)) != 0)
                 throw new InvalidOperationException("La cantidad de jugadores debe ser una potencia de 2. Revise inscriptos. Operacion cancelada.");
 
-            //Traigo los jugadores inscriptos, un listado 
+            //Traigo los jugadores inscriptos, un listado de sus ids
             var sqlInscriptos = "SELECT IdJugador from TorneoJugadores where IdTorneo=@idTorneo";
 
             var verInscriptos = await _dbConnection.QueryAsync<TorneoJugadorDTO>(sqlInscriptos, new { IdTorneo = idTorneo }, tran);
             //los pongo en una pila, para luego asignarlos en la creacion de partidas
             var pilaJugadores = new Stack<int>(verInscriptos.Select(jug => jug.IdJugador));
 
-            //var inscriptos = 2;
-                        //Revisar cuales serian las mejores validaciones
-            if (torneo!=null && (torneo.Estado != "Cancelado" || torneo.Estado != "Finalizado"))
+            //Valido que exista el torneo y seas el organizador, y que esten en estado partidas. Con las incripciones cerradas
+            if (torneo!=null && (torneo.Estado == "Partidas"))
             {
 
                 var partidasTotales = inscriptos - 1;
 
                 int cantidadRondas = (int)Math.Log2(inscriptos);
                 int partidasEnRonda = inscriptos / 2;
+
+                int? jugadorUno = null;
+                int? jugadorDos = null;
 
                 // Insertar rondas
                 for (int i = 1; i <= cantidadRondas; i++)
@@ -228,8 +239,11 @@ namespace AccesoDatos.DAOs.Organizador
                             throw new InvalidOperationException("No hay suficientes jugadores para generar las partidas.");
                         }
 
-                        int jugadorUno = pilaJugadores.Pop();
-                        int jugadorDos = pilaJugadores.Pop();
+                        if(i == 1) //Esto es todas las partidas que se creen en la primera ronda?
+                        {
+                            jugadorUno = pilaJugadores.Pop();
+                            jugadorDos = pilaJugadores.Pop();
+                        }
 
                         await _dbConnection.ExecuteAsync(
                             @"INSERT INTO Partidas (IdRonda, NumeroPartida, FyHInicioP, JugadorUno, JugadorDos)
@@ -251,12 +265,12 @@ namespace AccesoDatos.DAOs.Organizador
                 return true;
             }
             return false;
-            throw new ArgumentException("No existe el torneo o tu no lo organizas. Operacion cancelada.");
+            throw new ArgumentException("No existe el torneo o tu no lo organizas, luego debes cerrar inscripciones. Operacion cancelada.");
         }
-
 
         public async Task<bool> ModificarPartida(PartidaDTO partida)
         {
+            //Revisar 
             var sqlUpdate =
                 @"UPDATE Partidas 
                 SET FyHInicioP=@FyHInicioP, FyHFinP=@FyHFinP, Ronda=@Ronda, JugadorDerrotado=@JugadorDerrotado, 

@@ -58,6 +58,15 @@ namespace Servicios.Servicios.Organizador
             usuario.Contraseña = _common.EncriptarSHA256(usuario.Contraseña!);
             return await _daoOrganizador.RegistrarJuez(usuario);
         }
+
+        public async Task<bool> AsignarJuezATorneo(int idJuez, int idTorneo)
+        {
+            var resp = await _daoOrganizador.TraerTorneo(idJuez, idTorneo);
+            //Controlo que sea el organizador del torneo
+            if (resp != null)
+                return false;
+            return await _daoOrganizador.AsignarJuezATorneo(idJuez, idTorneo);
+        }
         public async Task<bool> CrearTorneo(CrudTorneoDTO torneo)
         {
             return await _daoOrganizador.CrearTorneo(torneo);

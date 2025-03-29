@@ -22,6 +22,7 @@ namespace AccesoDatos.DAOs.Organizador
         public Task<TorneoDTO> TraerTorneo(int organizador, int idTorneo, IDbTransaction transaction);
         public Task<List<Usuario>> VerListadoUsuarios(string rol);
         public Task<bool> RegistrarJuez(CrudUsuarioDTO usuario);
+        public Task<bool> AsignarJuezATorneo(int idJuez, int idTorneo);
         public Task<bool> CrearTorneo(CrudTorneoDTO torneo);
         public Task<bool> CrearTorneoSerieHabilitada(CrudTorneoSerieHabilitadaDTO serie);
         public Task<bool> EditarTorneo(CrudTorneoDTO torneo);

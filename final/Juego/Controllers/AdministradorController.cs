@@ -37,8 +37,6 @@ namespace Juego.Controllers
         }
 
 
-
-
         [HttpGet("ObtenerUsuariosNombre")]
         public async Task<IActionResult> ObtenerUsuariosPorNombre(string nombre)
         {

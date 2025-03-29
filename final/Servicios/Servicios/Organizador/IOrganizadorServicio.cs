@@ -15,6 +15,7 @@ namespace Servicios.Servicios.Organizador
         public Task<bool> EliminarInscriptoByTorneo(int idJugador);
         public Task<List<Usuario>> VerListadoUsuarios(string rol);
         public Task<bool> RegistrarJuez(CrudUsuarioDTO usuario);
+        public Task<bool> AsignarJuezATorneo(int idJuez, int idTorneo);
         public Task<bool> CrearTorneo(CrudTorneoDTO torneo);
         public Task<bool> CrearTorneoSerieHabilitada(CrudTorneoSerieHabilitadaDTO serie);
         public Task<bool> EditarTorneo(CrudTorneoDTO torneo);

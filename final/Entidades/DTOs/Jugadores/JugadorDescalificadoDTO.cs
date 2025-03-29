@@ -10,6 +10,7 @@ namespace Entidades.DTOs.Jugadores
     {
         public int DescalificacionID { get; set; }
         public string? Motivo { get; set; }
+        public int IdTorneo { get; set; }
         public int JuezDescalificador { get; set; }
         public int JugadorID { get; set; }
 
