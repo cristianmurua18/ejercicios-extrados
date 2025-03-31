@@ -131,12 +131,12 @@ namespace AccesoDatos.DAOs.Jugador
                 //Veo si existe y su estado es Registro.
                 if (torneo != null && torneo.Estado == "Registro")
                 {
-                    //IDEA: Controlar que el Mazo sea del Jugador y que tenga 15 cartas, y luego que sean de series que acepta el torneo
+                    //Controlar que el Mazo sea del Jugador y que tenga 15 cartas(Falta), y luego que sean de series que acepta el torneo
                     var Sqlmazo = @"SELECT * FROM Mazos where JugadorCreador=@userId;";
 
                     var mazo = await _dbConnection.QuerySingleOrDefaultAsync<CrudMazoDTO>(Sqlmazo, new { userId }, tran);
 
-                    if (mazo != null)
+                    if (mazo != null && mazo.MazoID == idMazo)
                     {
                         //Contolamos la cantidad de inscriptos y que no supere el maxJugadores de torneo
 
@@ -169,7 +169,7 @@ namespace AccesoDatos.DAOs.Jugador
                         else
                         {
                             tran.Rollback();
-                            throw new InvalidOperationException("Registro fallido. No fue posible inscribir al jugador debido a que no es su mazo");
+                            throw new InvalidOperationException("Registro fallido. No fue posible inscribir al jugador debido a que no hay mas lugar");
 
                         }
 
@@ -178,7 +178,7 @@ namespace AccesoDatos.DAOs.Jugador
                     else
                     {
                         tran.Rollback();
-                        throw new InvalidOperationException("Registro fallido. No fue posible inscribir al jugador debido a que no hay mas cupos disponibles");
+                        throw new InvalidOperationException("Registro fallido. No fue posible inscribir al jugador debido a que no es su mazo");
                     }
 
                      

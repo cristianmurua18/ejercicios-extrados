@@ -13,15 +13,16 @@ namespace Servicios.Servicios.Organizador
     {
         public Task<string> VerInscriptosByTorneo(int idTorneo);
         public Task<bool> EliminarInscriptoByTorneo(int idJugador);
-        public Task<List<Usuario>> VerListadoUsuarios(string rol);
-        public Task<bool> RegistrarJuez(CrudUsuarioDTO usuario);
+        public Task<List<UsuarioPaisDTO>> VerListadoUsuarios(string rol);
+        public Task<bool> RegistrarJuez(InsertarJuezDTO juez);
         public Task<bool> AsignarJuezATorneo(int idJuez, int idTorneo);
-        public Task<bool> CrearTorneo(CrudTorneoDTO torneo);
+        public Task<bool> CrearTorneo(InsertarTorneoDTO torneo);
         public Task<bool> CrearTorneoSerieHabilitada(CrudTorneoSerieHabilitadaDTO serie);
         public Task<bool> EditarTorneo(CrudTorneoDTO torneo);
         public Task<bool> CancelarTorneo(int idtorneo, string estado);
         public Task<bool> CerrarInscrpcionTorneo(int idTorneo);
         public Task<bool> GenerarRondasYPartidas(int idTorneo);
-        public Task<bool> ModificarPartida(PartidaDTO partida);
+        public Task<string> VerRondasYPartidas(int idTorneo);
+        public Task<bool> AvanzarRonda(int idTorneo, int idRonda);
     }
 }

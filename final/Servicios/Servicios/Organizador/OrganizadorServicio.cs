@@ -1,6 +1,7 @@
 ﻿using AccesoDatos.DAOs.Organizador;
 using Entidades.DTOs;
 using Entidades.DTOs.Cruds;
+using Entidades.DTOs.Respuestas;
 using Entidades.Modelos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
@@ -48,28 +49,34 @@ namespace Servicios.Servicios.Organizador
         }
 
 
-        public async Task<List<Usuario>> VerListadoUsuarios(string rol)
+        public async Task<List<UsuarioPaisDTO>> VerListadoUsuarios(string rol)
         {
-            return await _daoOrganizador.VerListadoUsuarios(rol);
+            var miUsuario = Convert.ToInt32(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value);
+            return await _daoOrganizador.VerListadoUsuarios(rol, miUsuario);
         }
 
-        public async Task<bool> RegistrarJuez(CrudUsuarioDTO usuario)
+        public async Task<bool> RegistrarJuez(InsertarJuezDTO juez)
         {   //Encripto contraseña
-            usuario.Contraseña = _common.EncriptarSHA256(usuario.Contraseña!);
-            return await _daoOrganizador.RegistrarJuez(usuario);
+            var miUsuario = Convert.ToInt32(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value);
+            juez.Contraseña = _common.EncriptarSHA256(juez.Contraseña!);
+            return await _daoOrganizador.RegistrarJuez(juez, miUsuario);
         }
 
         public async Task<bool> AsignarJuezATorneo(int idJuez, int idTorneo)
         {
-            var resp = await _daoOrganizador.TraerTorneo(idJuez, idTorneo);
-            //Controlo que sea el organizador del torneo
-            if (resp != null)
+            var torneo = await _daoOrganizador.TraerTorneo(idJuez, idTorneo);
+
+            var juez = await _daoOrganizador.VerUsuario(idJuez);
+
+            //Controlo que sea el organizador del torneo y que existe el juez
+            if (torneo == null || juez == null)
                 return false;
             return await _daoOrganizador.AsignarJuezATorneo(idJuez, idTorneo);
         }
-        public async Task<bool> CrearTorneo(CrudTorneoDTO torneo)
+        public async Task<bool> CrearTorneo(InsertarTorneoDTO torneo)
         {
-            return await _daoOrganizador.CrearTorneo(torneo);
+            var miUsuario = Convert.ToInt32(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value);
+            return await _daoOrganizador.CrearTorneo(torneo, miUsuario);
         }
 
         public async Task<bool> CrearTorneoSerieHabilitada(CrudTorneoSerieHabilitadaDTO serie)
@@ -89,6 +96,12 @@ namespace Servicios.Servicios.Organizador
 
         public async Task<bool> CerrarInscrpcionTorneo(int idTorneo)
         {
+            var miUsuario = Convert.ToInt32(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value);
+            var torneo = await _daoOrganizador.TraerTorneo(idTorneo, miUsuario);
+
+            if (torneo == null)
+                return false;
+
             return await _daoOrganizador.CerrarInscrpcionTorneo(idTorneo);
         }
         public async Task<bool> GenerarRondasYPartidas(int idTorneo)
@@ -99,10 +112,39 @@ namespace Servicios.Servicios.Organizador
             return await _daoOrganizador.GenerarRondasYPartidas(organizador, idTorneo);
         }
 
-
-        public async Task<bool> ModificarPartida(PartidaDTO partida)
+        public async Task<string> VerRondasYPartidas(int idTorneo)
         {
-            return await _daoOrganizador.ModificarPartida(partida);
+            var miUsuario = Convert.ToInt32(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value);
+            var torneo = await _daoOrganizador.TraerTorneo(idTorneo, miUsuario);
+
+            if (torneo == null)
+                return "El torneo no es valido o no tienes permiso";
+            else
+            { 
+                var mensaje = string.Empty;
+
+                var listado = await _daoOrganizador.VerRondasYPartidas(idTorneo);
+
+                foreach (var item in listado)
+                {
+                    mensaje += $"PartidaID: {item.PartidaID}, RondaId: {item.RondaID}, {item.JugadorUno}, {item.JugadorDos} ";
+                    //SEGUIR
+                }
+                return mensaje;
+            }
+
+
+
+        }
+        public async Task<bool> AvanzarRonda(int idTorneo, int idRonda)
+        {
+            var miUsuario = Convert.ToInt32(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value);
+            var torneo = await _daoOrganizador.TraerTorneo(idTorneo, miUsuario);
+
+            if (torneo == null)
+                return false;
+
+            return await _daoOrganizador.AvanzarRonda(idTorneo, idRonda);
         }
     }
 }

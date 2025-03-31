@@ -1,5 +1,6 @@
 ﻿using Entidades.DTOs;
 using Entidades.DTOs.Cruds;
+using Entidades.DTOs.Respuestas;
 using Entidades.Modelos;
 using System;
 using System.Collections;
@@ -20,16 +21,18 @@ namespace AccesoDatos.DAOs.Organizador
         public Task<int> ContarInscriptosByTorneo(int idTorneo, IDbTransaction transaction);
         public Task<TorneoDTO> TraerTorneo(int organizador, int idTorneo);
         public Task<TorneoDTO> TraerTorneo(int organizador, int idTorneo, IDbTransaction transaction);
-        public Task<List<Usuario>> VerListadoUsuarios(string rol);
-        public Task<bool> RegistrarJuez(CrudUsuarioDTO usuario);
+        public Task<UsuarioDTO> VerUsuario(int id);
+        public Task<List<UsuarioPaisDTO>> VerListadoUsuarios(string rol, int miUsuario);
+        public Task<bool> RegistrarJuez(InsertarJuezDTO juez, int miUsuario);
         public Task<bool> AsignarJuezATorneo(int idJuez, int idTorneo);
-        public Task<bool> CrearTorneo(CrudTorneoDTO torneo);
+        public Task<bool> CrearTorneo(InsertarTorneoDTO torneo, int miUsuario);
         public Task<bool> CrearTorneoSerieHabilitada(CrudTorneoSerieHabilitadaDTO serie);
         public Task<bool> EditarTorneo(CrudTorneoDTO torneo);
         public Task<bool> CancelarTorneo(int idtorneo, string estado);
         public Task<bool> CerrarInscrpcionTorneo(int idTorneo);
         public Task<bool> GenerarRondasYPartidas(int organizador, int torneoId);
-        public Task<bool> ModificarPartida(PartidaDTO partida);
+        public Task<List<PartidaRondaDTO>> VerRondasYPartidas(int idTorneo);
+        public Task<bool> AvanzarRonda(int idTorneo, int idRonda);
 
     }
 }

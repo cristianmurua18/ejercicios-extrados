@@ -64,6 +64,16 @@ namespace Utilidades.Utilidades
             return new JwtSecurityTokenHandler().WriteToken(jwtConfig);
         }
 
+        public bool EsPotenciaDeDos(int n)
+        {
+            if (n == 0)
+                return false;
+
+            return (int)(Math.Ceiling((Math.Log(n) / Math.Log(2))))
+                      == (int)(Math.Floor(((Math.Log(n) / Math.Log(2)))));
+            
+        }
+
         //calcular diferencia de tiempo
         public int CalcularCantidadPartidas(DateTime inicio, DateTime fin)
         {

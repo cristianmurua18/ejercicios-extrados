@@ -11,13 +11,17 @@ using Entidades.Modelos;
 using Entidades.DTOs.Cruds;
 using System.Collections;
 using Entidades.DTOs.Respuestas;
+using Utilidades.Utilidades;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AccesoDatos.DAOs.Organizador
 {
-    public class DAOOrganizador(IDbConnection dbConnection) : IDAOOrganizador
+    public class DAOOrganizador(IDbConnection dbConnection, IComunes comunes) : IDAOOrganizador
     {
 
         private readonly IDbConnection _dbConnection = dbConnection;
+
+        private readonly IComunes _comunes = comunes;
 
 
         #region Uso general de Organizadores
@@ -31,6 +35,7 @@ namespace AccesoDatos.DAOs.Organizador
             return inscriptos.ToList();
 
         }
+
         public async Task<bool> EliminarInscriptoByTorneo(int idJugador)
         {                                                                   //Agregar condicion Aceptada=0
             var sql = "UPDATE TorneoJugadores SET Aceptada=0 WHERE IdJugador=idJugador;";
@@ -40,6 +45,7 @@ namespace AccesoDatos.DAOs.Organizador
             return filas > 0;
 
         }
+
         public async Task<int> ContarInscriptosByTorneo(int idTorneo)
         {
             var sql = "SELECT COUNT(IdJugador) FROM TorneoJugadores WHERE IdTorneo=idTorneo AND Aceptada=1;";
@@ -50,10 +56,9 @@ namespace AccesoDatos.DAOs.Organizador
 
         }
 
-
         public async Task<int> ContarInscriptosByTorneo(int idTorneo, IDbTransaction transaction)
         {
-            var sql = "SELECT COUNT(IdJugador) FROM TorneoJugadores WHERE IdTorneo=idTorneo AND Aceptada=1;";
+            var sql = "SELECT COUNT(*) FROM TorneoJugadores WHERE IdTorneo=idTorneo AND Aceptada=1;";
 
             var cantidad = await _dbConnection.ExecuteScalarAsync<int>(sql, new { idTorneo }, transaction);
 
@@ -61,8 +66,6 @@ namespace AccesoDatos.DAOs.Organizador
 
         }
 
-
-        //Para Calcular Cantidad de partidas, organizador viene de id del usuario autenticado
         public async Task<TorneoDTO> TraerTorneo(int organizador, int idTorneo)
         {
             var sqlSelect = @"SELECT * from Torneos WHERE Organizador=@organizador AND TorneoID=@idTorneo;";
@@ -83,29 +86,50 @@ namespace AccesoDatos.DAOs.Organizador
 
         }
 
+        public async Task<UsuarioDTO> VerUsuario(int id)
+        {                                           
+            var sqlSelect = @"SELECT * 
+                            FROM usuarios 
+                            WHERE UsuarioID=@id;";
 
-        public async Task<List<Usuario>> VerListadoUsuarios(string rol)
-        {                                           //ver de manejar estado 1 o 0
-            var sqlSelect = @"SELECT *u2.NombreApellido, u2.Alias, u2.IdPaisOrigen, u2.Email, 
-                            u2.NombreUsuario, u2.FotoAvatar, u2.Rol, u2.Activo
-                            FROM usuarios u1
-                            JOIN usuarios u2 ON u1.UsuarioID = u2.CreadoPor
-                            WHERE Rol=@rol;";
-            //SEGUIR REVISANDO, NO FUNCIONA BIEN
-            var listado = await _dbConnection.QueryAsync<Usuario>(sqlSelect, new { Rol = rol });
+            var usuario = await _dbConnection.QueryFirstOrDefaultAsync<UsuarioDTO>(sqlSelect, new { id });
 
-            return [.. listado];
+            return usuario;
 
         }
 
+        public async Task<List<UsuarioPaisDTO>> VerListadoUsuarios(string rol, int miUsuario)
+        {                                           //ver de manejar estado 1 o 0
+            var sqlSelect = @"SELECT * 
+                            FROM usuarios us
+                            INNER JOIN Paises pa ON us.IdPaisOrigen = pa.PaisID
+                            WHERE (us.CreadoPor = @miUsuario OR us.CreadoPor IS NULL) 
+                            AND us.Rol = @rol;";
 
-        public async Task<bool> RegistrarJuez(CrudUsuarioDTO usuario)
+            var listado = await _dbConnection.QueryAsync<UsuarioPaisDTO>(sqlSelect, new { rol, miUsuario });
+
+            return listado.ToList();
+
+        }
+
+        public async Task<bool> RegistrarJuez(InsertarJuezDTO juez, int miUsuario)
         {
             var sqlInsert = @"INSERT
-                INTO Usuarios(NombreApellido,Alias,IdPaisOrigen,Email,NombreUsuario,Contraseña,FotoAvatar,Rol,CreadoPor,Activo) 
-                VALUES(@NombreApellido,@Alias,@IdPaisOrigen,@Email,@NombreUsuario,@Contraseña,@FotoAvatar,@Rol,@CreadoPor,@Activo);";
+                INTO Usuarios(NombreApellido,Alias,IdPaisOrigen,Email,NombreUsuario,Contraseña,Rol,CreadoPor,Activo) 
+                VALUES(@NombreApellido,@Alias,@IdPaisOrigen,@Email,@NombreUsuario,@Contraseña,@Rol,@CreadoPor,@Activo);";
 
-            var result = await _dbConnection.ExecuteAsync(sqlInsert, usuario);
+            var result = await _dbConnection.ExecuteAsync(sqlInsert, new
+            {
+                juez.NombreApellido,
+                juez.Alias,
+                juez.IdPaisOrigen,
+                juez.Email,
+                juez.NombreUsuario,
+                juez.Contraseña,
+                juez.Rol,
+                miUsuario,
+                juez.Activo
+            });
 
             return result > 0;
 
@@ -123,12 +147,23 @@ namespace AccesoDatos.DAOs.Organizador
 
         }
 
-        public async Task<bool> CrearTorneo(CrudTorneoDTO torneo)
+        public async Task<bool> CrearTorneo(InsertarTorneoDTO torneo, int miUsuario)
         {
-            var sqlInsert = @"INSERT INTO Torneos(FyHInicioT,FyHFinT,Estado,IdPaisRealizacion,PartidaActual,JugadorGanador,Organizador, PartidasDiarias, DiasDeDuracion) 
-                                     VALUES(@FyHInicioT,@FyHFinT,@Estado,@IdPaisRealizacion,@PartidaActual,@JugadorGanador,@Organizador,@PartidasDiarias,@DiasDeDuracion);";
+            var sqlInsert = @"INSERT INTO Torneos(NombreTorneo, FyHInicioT,FyHFinT,Estado,IdPaisRealizacion,JugadorGanador,Organizador, PartidasDiarias, DiasDeDuracion,MaxJugadores) 
+                                     VALUES(@NombreTorneo,@FyHInicioT,@FyHFinT,@Estado,@IdPaisRealizacion,@JugadorGanador,@Organizador,@PartidasDiarias,@DiasDeDuracion,@MaxJugadores);";
 
-            var resultado = await _dbConnection.ExecuteAsync(sqlInsert, torneo);
+            var resultado = await _dbConnection.ExecuteAsync(sqlInsert, new { 
+            torneo.NombreTorneo,
+            torneo.FyHInicioT,
+            torneo.FyHFinT,
+            torneo.Estado,
+            torneo.IdPaisRealizacion,
+            torneo.JugadorGanador,
+            Organizador = miUsuario,
+            torneo.PartidasDiarias,
+            torneo.DiasDeDuracion,
+            torneo.MaxJugadores
+            });
 
             //Agrega un torneo con Exito?
             return resultado > 0;
@@ -144,6 +179,7 @@ namespace AccesoDatos.DAOs.Organizador
             //Agrega un torneo con Exito?
             return resultado > 0;
         }
+
         public async Task<bool> EditarTorneo(CrudTorneoDTO torneo)
         {
             var sqlUpdate =
@@ -182,35 +218,33 @@ namespace AccesoDatos.DAOs.Organizador
 
             return resultado > 0;
         }
+
         public async Task<bool> GenerarRondasYPartidas(int organizador, int idTorneo)
         {
             using var tran = _dbConnection.BeginTransaction();
 
             //Traigo el torneo organizado por mi
             var torneo = await TraerTorneo(organizador, idTorneo, tran);
-
-            //Cuento la cantidad de inscriptos
-            var inscriptos = await ContarInscriptosByTorneo(idTorneo, tran);
-
-            // Validar bit a bit que la cantidad de jugadores sea potencia de 2
-            if ((inscriptos & (inscriptos - 1)) != 0)
-                throw new InvalidOperationException("La cantidad de jugadores debe ser una potencia de 2. Revise inscriptos. Operacion cancelada.");
-
+            
             //Traigo los jugadores inscriptos, un listado de sus ids
             var sqlInscriptos = "SELECT IdJugador from TorneoJugadores where IdTorneo=@idTorneo";
 
             var verInscriptos = await _dbConnection.QueryAsync<TorneoJugadorDTO>(sqlInscriptos, new { IdTorneo = idTorneo }, tran);
+
+            // Validar bit a bit que la cantidad de jugadores sea potencia de 2
+            if (!_comunes.EsPotenciaDeDos(verInscriptos.Count()))
+                throw new InvalidOperationException("La cantidad de jugadores debe ser una potencia de 2. Revise inscriptos. Operacion cancelada.");
+
+
+
             //los pongo en una pila, para luego asignarlos en la creacion de partidas
             var pilaJugadores = new Stack<int>(verInscriptos.Select(jug => jug.IdJugador));
 
             //Valido que exista el torneo y seas el organizador, y que esten en estado partidas. Con las incripciones cerradas
             if (torneo!=null && (torneo.Estado == "Partidas"))
             {
-
-                var partidasTotales = inscriptos - 1;
-
-                int cantidadRondas = (int)Math.Log2(inscriptos);
-                int partidasEnRonda = inscriptos / 2;
+                int cantidadRondas = (int)Math.Log2(verInscriptos.Count());
+                int partidasEnRonda = verInscriptos.Count() / 2;
 
                 int? jugadorUno = null;
                 int? jugadorDos = null;
@@ -233,14 +267,8 @@ namespace AccesoDatos.DAOs.Organizador
                     //Insertar partidas
                     for (int j = 1; j <= partidasEnRonda; j++)
                     {
-                        if (pilaJugadores.Count < 2)
-                        {
-                            tran.Rollback();
-                            throw new InvalidOperationException("No hay suficientes jugadores para generar las partidas.");
-                        }
-
-                        if(i == 1) //Esto es todas las partidas que se creen en la primera ronda?
-                        {
+                        if(i == 1 && pilaJugadores.Count != 0) //Esto es todas las partidas que se creen en la primera ronda?
+                        {   //ESTO NO FUNCIONA. Mete los ultimos dos jugadores en el resto de las rondas
                             jugadorUno = pilaJugadores.Pop();
                             jugadorDos = pilaJugadores.Pop();
                         }
@@ -268,17 +296,74 @@ namespace AccesoDatos.DAOs.Organizador
             throw new ArgumentException("No existe el torneo o tu no lo organizas, luego debes cerrar inscripciones. Operacion cancelada.");
         }
 
-        public async Task<bool> ModificarPartida(PartidaDTO partida)
+        //Crear metodo para ver Rondas y partidas
+        public async Task<List<PartidaRondaDTO>> VerRondasYPartidas(int idTorneo)
         {
+            var sqlSelect =
+                @"SELECT * FROM Partidas par
+                INNER JOIN Rondas ron
+                ON par.IdRonda = ron.RondaID
+                WHERE ron.IdTorneo=@IdTorneo;";
+
+            var listadoRonda = await _dbConnection.QueryAsync<PartidaRondaDTO>(sqlSelect, new { idTorneo });
+
+            return listadoRonda.ToList();
+
+        }
+
+        public async Task<List<PartidaRondaDTO>> VerRondasYPartidas(int idTorneo, int idRonda, IDbTransaction transaction)
+        {
+            var sqlSelect =
+                @"SELECT * FROM Partidas par
+                INNER JOIN Rondas ron
+                ON par.IdRonda = ron.RondaID
+                WHERE ron.IdTorneo=@IdTorneo AND ron.RondaID=@IdRonda AND par.IdRonda=@IdRonda;";
+
+            var listadoRonda = await _dbConnection.QueryAsync<PartidaRondaDTO>(sqlSelect, new { idTorneo, idRonda }, transaction);
+
+            return listadoRonda.ToList();
+
+        }
+
+        public async Task<bool> AvanzarRonda(int idTorneo, int idRonda)
+        {
+            using var tran = _dbConnection.BeginTransaction();
             //Revisar 
-            var sqlUpdate =
-                @"UPDATE Partidas 
-                SET FyHInicioP=@FyHInicioP, FyHFinP=@FyHFinP, Ronda=@Ronda, JugadorDerrotado=@JugadorDerrotado, 
-                JugadorVencedor=@JugadorVencedor WHERE PartidaID=@PartidaID;";
+            var partidasRondaActual = await VerRondasYPartidas(idTorneo, idRonda, tran);
 
-            var resultado = await _dbConnection.ExecuteAsync(sqlUpdate, partida);
+            if(partidasRondaActual.IsNullOrEmpty() || partidasRondaActual.Count == 0)
+                throw new InvalidOperationException("No hay partidas disponibles para la ronda actual. Operacion cancelada.");
+            //Apilo los ganadores de la ronda
+            var pilaJugadores = new Stack<int>(partidasRondaActual.Select(jug => jug.Ganador));
+            
+            var idRondaProx = idRonda + 1;
 
-            return resultado > 0;
+            var partidasRondaSig = await VerRondasYPartidas(idTorneo, idRondaProx, tran);
+            if (partidasRondaSig.IsNullOrEmpty() || partidasRondaSig.Count == 0)
+                throw new InvalidOperationException("No hay partidas disponibles para la ronda siguiente. Operacion cancelada.");
+
+            foreach (var partida in partidasRondaSig)
+            {  //Saco los jugadores ganadores de la pila
+                var jugadorUno = pilaJugadores.Pop();
+                var jugadorDos = pilaJugadores.Pop();
+
+                var sqlUpdate =
+                @"UPDATE Partidas SET JugadorUno=@jugadorUno, JugadorDos=@jugadorDos
+                where PartidaID=@partida.PartidaID;";
+
+                var resultado = await _dbConnection.ExecuteAsync(sqlUpdate, new { jugadorUno, jugadorDos, partida.PartidaID }, tran);
+                //Ver cuantas filas modifica
+                if (resultado <= 0)
+                {
+                    tran.Rollback();
+                    return false;
+
+                }
+                   
+            }
+            tran.Commit();
+            return true;
+        
         }
 
 
