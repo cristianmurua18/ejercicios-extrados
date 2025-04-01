@@ -12,7 +12,7 @@ namespace Servicios.Servicios.Juez
     {
         public Task<string> VerRondasYPartidas(int idTorneo);
         public Task<bool> OficializarResultadoEnPartida(int idTorneo, int idPartida, int idGanador);
-        public Task<bool> OficializarResultadoEnTorneo(int idTorneo, int idGanador);
+        public Task<bool> OficializarResultadoEnTorneo(int idGanador, int idTorneo);
         public Task<bool> DescalificarJugador(JugadorDescalificadoDTO jugadorDescalificado);
 
     }

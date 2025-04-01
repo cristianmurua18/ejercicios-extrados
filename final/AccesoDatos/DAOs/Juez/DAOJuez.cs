@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿
+using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -24,7 +25,7 @@ namespace AccesoDatos.DAOs.Juez
         public async Task<TorneoDTO> VerTorneo(int idTorneo)
         {
             var sqlSelect = @"SELECT * FROM Torneos
-                              WHERE IdTorneo=@idTorneo;";
+                              WHERE TorneoID=@idTorneo;";
 
             var respuesta = await _dbConnection.QuerySingleOrDefaultAsync<TorneoDTO>(sqlSelect, new { idTorneo });
 
@@ -51,6 +52,19 @@ namespace AccesoDatos.DAOs.Juez
                               WHERE ron.IdTorneo=@idTorneo;";
 
             var listado = await _dbConnection.QueryAsync<PartidaRondaDTO>(sqlSelect, new { idTorneo} );
+
+            return listado.ToList();
+
+        }
+
+        public async Task<List<PartidaRondaDTO>> VerRondasYPartidas(int idTorneo, int idRonda)
+        {
+            var sqlSelect = @"SELECT * FROM Partidas par
+                              INNER JOIN Rondas ron
+                              ON par.IdRonda = ron.RondaID
+                              WHERE ron.IdTorneo=@IdTorneo AND ron.RondaID=@IdRonda AND par.IdRonda=@IdRonda;";
+
+            var listado = await _dbConnection.QueryAsync<PartidaRondaDTO>(sqlSelect, new { idTorneo, idRonda });
 
             return listado.ToList();
 

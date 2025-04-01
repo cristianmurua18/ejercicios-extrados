@@ -241,13 +241,10 @@ namespace AccesoDatos.DAOs.Organizador
             var pilaJugadores = new Stack<int>(verInscriptos.Select(jug => jug.IdJugador));
 
             //Valido que exista el torneo y seas el organizador, y que esten en estado partidas. Con las incripciones cerradas
-            if (torneo!=null && (torneo.Estado == "Partidas"))
+            if (torneo!=null && torneo.Estado == "Partidas")
             {
                 int cantidadRondas = (int)Math.Log2(verInscriptos.Count());
                 int partidasEnRonda = verInscriptos.Count() / 2;
-
-                int? jugadorUno = null;
-                int? jugadorDos = null;
 
                 // Insertar rondas
                 for (int i = 1; i <= cantidadRondas; i++)
@@ -267,8 +264,11 @@ namespace AccesoDatos.DAOs.Organizador
                     //Insertar partidas
                     for (int j = 1; j <= partidasEnRonda; j++)
                     {
-                        if(i == 1 && pilaJugadores.Count != 0) //Esto es todas las partidas que se creen en la primera ronda?
-                        {   //ESTO NO FUNCIONA. Mete los ultimos dos jugadores en el resto de las rondas
+                        int? jugadorUno = null;
+                        int? jugadorDos = null;
+
+                        if (i == 1) //Esto es todas las partidas que se creen en la primera ronda
+                        { 
                             jugadorUno = pilaJugadores.Pop();
                             jugadorDos = pilaJugadores.Pop();
                         }
@@ -339,6 +339,7 @@ namespace AccesoDatos.DAOs.Organizador
             var idRondaProx = idRonda + 1;
 
             var partidasRondaSig = await VerRondasYPartidas(idTorneo, idRondaProx, tran);
+            
             if (partidasRondaSig.IsNullOrEmpty() || partidasRondaSig.Count == 0)
                 throw new InvalidOperationException("No hay partidas disponibles para la ronda siguiente. Operacion cancelada.");
 

@@ -19,7 +19,6 @@ namespace Servicios.Servicios.Juez
 
         public async Task<string> VerRondasYPartidas(int idTorneo)
         {
-
             var idUsuario = Convert.ToInt32(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value);
 
             var corroborarPermiso = await _daoJuez.CorroborarJuezYTorneo(idTorneo, idUsuario);
@@ -56,7 +55,7 @@ namespace Servicios.Servicios.Juez
                 if(partidas.Count == 0) throw new InvalidOperationException("No tal hay partida");
 
                 foreach (var partida in partidas)
-                {
+                {   //REVISAR SI ESTA BIEN ESTA VALIDACION
                     if (partida.JugadorUno != idGanador && partida.JugadorDos != idGanador)
                         throw new InvalidOperationException("El id no corresponde a ningun jugador de la partida");
                 }
@@ -67,7 +66,7 @@ namespace Servicios.Servicios.Juez
 
         }
 
-        public async Task<bool> OficializarResultadoEnTorneo(int idTorneo, int idGanador)
+        public async Task<bool> OficializarResultadoEnTorneo(int idGanador, int idTorneo)
         {
             var idUsuario = Convert.ToInt32(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value); ;
 

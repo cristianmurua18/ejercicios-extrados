@@ -42,9 +42,9 @@ namespace Juego.Controllers
         }
 
         [HttpPost("OficializarTorneo")]
-        public async Task<IActionResult> OficializarResultadoEnTorneo(int idTorneo, int idGanador)
+        public async Task<IActionResult> OficializarResultadoEnTorneo(int idGanador, int idTorneo)
         {
-            if (await _juezServicio.OficializarResultadoEnTorneo(idTorneo, idGanador))
+            if (await _juezServicio.OficializarResultadoEnTorneo(idGanador, idTorneo))
                 return Ok($"Se inserto al ganador del Torneo: N° {idTorneo}");
             return BadRequest("No fue posible insertar al ganador");
         }
