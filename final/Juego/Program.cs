@@ -69,8 +69,10 @@ namespace Juego
             builder.Services.AddScoped<IDAOJugador, DAOJugador>();
             builder.Services.AddScoped<IJugadorServicio, JugadorServicio>();
 
-            //Inyeccion de depencia para las validaciones, falta la otra parte - SACAR
+            //Inyeccion de depencia para las validaciones, falta la otra parte - SACAR(es para fluent validation)
             //builder.Services.AddScoped<IValidator<UsuarioDTO>,ValidadorUsuario>();
+
+            //builder.Services.AddScoped<GlobalExceptionHandlingMiddleware>();
 
             //Haciendo una prueba de Obtener el Id del Usuario Jugador cuando ya hizo el logeo
             builder.Services.AddHttpContextAccessor();
@@ -125,6 +127,7 @@ namespace Juego
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
             app.MapControllers();
 

@@ -1,7 +1,7 @@
-﻿using Entidades.DTOs;
-using Entidades.DTOs.Cruds;
+﻿using Entidades.DTOs.Cruds;
 using Entidades.DTOs.Jugadores;
 using Entidades.DTOs.Respuestas;
+using Entidades.DTOs.Varios;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;

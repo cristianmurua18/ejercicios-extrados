@@ -4,11 +4,13 @@ using Entidades.DTOs;
 using Entidades.DTOs.Cruds;
 using Entidades.DTOs.Jugadores;
 using Entidades.DTOs.Respuestas;
+using Entidades.DTOs.Varios;
 using Entidades.Modelos;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using Utilidades.Utilidades;
+using Validaciones.Excepciones;
 using static System.Net.WebRequestMethods;
 
 namespace Servicios.Servicios.Acceso
@@ -147,10 +149,10 @@ namespace Servicios.Servicios.Acceso
             {
                 var token = _common.GenerarJWT(usuario);
 
-                return new AutorizacionRespuestaDTO { Token = token, Msj = "Usuario Autorizado", Resultado = true };
+                return new AutorizacionRespuestaDTO { Resultado = true, Msj = "Usuario Autorizado", Token = token };
             }
 
-            return new AutorizacionRespuestaDTO { Token =  "No es posible obtenerlo", Msj = "Usuario NO Autorizado", Resultado = false };
+            throw new UnauthenticatedException("Credenciales invalidas");
 
         }
 

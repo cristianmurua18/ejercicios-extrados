@@ -1,7 +1,7 @@
-﻿using Entidades.DTOs;
-using Entidades.DTOs.Cruds;
+﻿using Entidades.DTOs.Cruds;
 using Entidades.DTOs.Jugadores;
 using Entidades.DTOs.Respuestas;
+using Entidades.DTOs.Varios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
