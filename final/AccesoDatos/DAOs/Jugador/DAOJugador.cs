@@ -4,6 +4,8 @@ using Entidades.DTOs.Cruds;
 using Entidades.DTOs.Respuestas;
 using Entidades.Modelos;
 using System.Data;
+using System.Data.Common;
+using Validaciones.Excepciones;
 
 namespace AccesoDatos.DAOs.Jugador
 {
@@ -41,152 +43,220 @@ namespace AccesoDatos.DAOs.Jugador
 
         public async Task<List<CrudMazoDTO>> VerMisMazos(int userId)
         {
-            var sqlInsert = @"SELECT * from Mazos where JugadorCreador = @userId;";
+            var sqlSelect = @"SELECT * from Mazos where JugadorCreador = @userId;";
 
-            var mazo = await _dbConnection.QueryAsync<CrudMazoDTO>(sqlInsert, new { JugadorCreador = userId });
+            var mazo = await _dbConnection.QueryAsync<CrudMazoDTO>(sqlSelect, new { JugadorCreador = userId });
 
             return mazo.ToList();
 
         }
 
-
-
-        //Creo una lista de cartas, IdMazo y IdCarta - A una mazo le asigno cierta cantidad de cartas
-        //El proc debe pedir en que torneo sera utilizado el mazo y se debe chequear que la carta tenga una serie permitida en ese torneo
-        public async Task<bool> RegistrarCartas(CrudMazoCartasDTO carta, int idTorneo, int userId)
+        public async Task<CrudMazoDTO> ControlarMazo(int idMazo, int userId)
         {
-            //CREAR UN TARNSACCION 
-            try
-            {   //Controlo que el mazo en el que estoy intentando insertar, sea de ese jugador
-                var sqlRevision = @"SELECT * from Mazos where MazoID = @IdMazo;";
+            var sqlSelect = @"SELECT * from Mazos where MazoID = @IdMazo AND JugadorCreador = @userId;";
 
-                var mazo = await _dbConnection.QuerySingleOrDefaultAsync<CrudMazoDTO>(sqlRevision, new { carta.IdMazo });
+            var mazo = await _dbConnection.QueryFirstOrDefaultAsync<CrudMazoDTO>(sqlSelect, new { idMazo, JugadorCreador = userId });
 
-                var sqlChequeo = @"SELECT IdCarta from CartasColeccionadas where IdUsuario = @userId;";
+            return mazo!;
 
-                var cartaColeccion = await _dbConnection.QuerySingleOrDefaultAsync<CartaColeccionDTO>(sqlChequeo, new { userId });
+        }
 
-                if (mazo != null && cartaColeccion != null && mazo.JugadorCreador == userId)
-                {
-                    using (var tran = _dbConnection.BeginTransaction())
-                    {
-                        var sqlSelect = @"SELECT
-                            c.CartaID,
-	                        c.NombreCarta,
-                            s.SerieID,
-	                        s.NombreSerie
+        public async Task<CartaColeccionDTO> ControlarCartaColeccionada(int userId)
+        {
+            var sqlSelect = @"SELECT IdCarta from CartasColeccionadas where IdUsuario = @userId;";
+
+            var cartaColeccion = await _dbConnection.QueryFirstOrDefaultAsync<CartaColeccionDTO>(sqlSelect, new { IdUsuario = userId });
+
+            return cartaColeccion!;
+
+        }
+
+        public async Task<List<RespuestaCartaSerieDTO>> ControlarCartaSerie(int idCarta, int idTorneo)
+        {
+            var sqlSelect = @"SELECT c.CartaID, c.NombreCarta, s.SerieID, s.NombreSerie
                             FROM CartaSerie cs
                             JOIN Cartas c ON cs.IdCarta = c.CartaID
                             JOIN Series s ON cs.IdSerie = s.SerieID
                             WHERE c.CartaID = @IdCarta AND
                             cs.IdSerie IN(SELECT IdSerie from TorneoSerieHabilitada WHERE IdTorneo = @idTorneo);";
-                        //Seguir aqui
-                        var cartas = await _dbConnection.QueryAsync<RespuestaCartaSerieDTO>(sqlSelect, new { carta.IdCarta, idTorneo }, transaction: tran);
-
-                        //si es 0, significa que la carta no tiene una serie que acepte el torneo, si es mayor si se acepta la carta
-                        if (cartas.Count() > 0)
-                        {
-                            //Inscribo la carta en el MazoCarta correspondiente
-                            var sqlInsertar = @"INSERT
-                                    INTO MazoCartas(IdMazo,IdCarta) 
-                                    VALUES(@IdMazo,@IdCarta);";
-
-                            var insert = await _dbConnection.ExecuteAsync(sqlInsertar, new { carta.IdMazo, carta.IdCarta }, transaction: tran);
-
-                            if (insert>0)
-                            {
-                                tran.Commit();
-                                return true;
-                            }
-                            else
-                            {
-                                tran.Rollback();
-                                throw new InvalidOperationException("Registro fallido. No fue posible inscribir la carta. Revise informacion");
-                            }
-                        }
-                        else
-                            throw new InvalidOperationException("Registro fallido. No se pudo inscribir la carta porque tiene una serie que el torneo no acepta");
-                    }
-                }
-                else
-                    throw new InvalidOperationException("Registro fallido. Ese Mazo no existe, o no es tuyo o la carta no es tuya.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return false;
-            }
+            //Controlo que carta pertenezca a una serie que acepta un torneo de referencia
+            var cartas = await _dbConnection.QueryAsync<RespuestaCartaSerieDTO>(sqlSelect, new { idCarta, idTorneo });
+            
+            return cartas.ToList();
 
         }
 
+        public async Task<int> InsertarCartaEnMazo(int idMazo, int idCarta, IDbTransaction tran)
+        {
+            var sqlInsertar = @"INSERT
+                                INTO MazoCartas(IdMazo,IdCarta) 
+                                VALUES(@IdMazo,@IdCarta);";
+
+            var insert = await _dbConnection.ExecuteAsync(sqlInsertar, new { idMazo, idCarta }, transaction: tran);
+
+           return insert;
+
+        }
+
+        public async Task<int> ContarCartasEnMazo(int idMazo, IDbTransaction tran)
+        {
+            var sqlInsertar = @"SELECT COUNT(IdCarta) AS Cantidad from MazoCartas
+                                WHERE MazoCartas.IdMazo = @idMazo;";
+
+            var insert = await _dbConnection.ExecuteScalarAsync<int>(sqlInsertar, new { idMazo }, transaction: tran);
+
+            return insert;
+
+        }
+
+        public async Task<int> ContarCartasEnMazo(int idMazo)
+        {
+            var sqlInsertar = @"SELECT COUNT(IdCarta) AS Cantidad from MazoCartas
+                                WHERE MazoCartas.IdMazo = @idMazo;";
+
+            var insert = await _dbConnection.ExecuteScalarAsync<int>(sqlInsertar, new { idMazo });
+
+            return insert;
+
+        }
+
+        //El proc debe pedir en que torneo sera utilizado el mazo y se debe chequear que la carta tenga una serie permitida en ese torneo
+        public async Task<bool> RegistrarCartas(CrudMazoCartasDTO carta, int idTorneo, int userId)
+        {
+            //Chequeo que sea su mazo
+            var mazo = await ControlarMazo(carta.IdMazo, userId);
+
+            //Chequeo que la carta sea de su coleccion
+            var cartaColeccionada = await ControlarCartaColeccionada(userId);
+
+            //Controlo que el mazo en el que estoy intentando insertar, sea de ese jugador
+            if (mazo != null && cartaColeccionada != null)
+            {
+                var cartas = await ControlarCartaSerie(carta.IdCarta, idTorneo);
+
+                //si es 0, significa que la carta NO tiene una serie que acepte el torneo, si es mayor si se acepta la carta
+                if (cartas.Count > 0)
+                {
+                    var cantidadCartas = await ContarCartasEnMazo(carta.IdMazo);
+                    
+                    if(cantidadCartas <= 15)
+                    {
+                        using var tran = _dbConnection.BeginTransaction();
+                        //Inserto la carta en el MazoCarta correspondiente, controlar que no pueda inscribir mas de 15 cartas
+                        var insert = await InsertarCartaEnMazo(carta.IdMazo, carta.IdCarta, tran);
+                        
+                        if (insert>0)
+                        {
+                            tran.Commit();
+                            return true;
+                        }
+                        else
+                        {
+                            tran.Rollback();
+                            return false;
+                            throw new InvalidRequestException("Registro fallido. No fue posible inscribir la carta. Revise informacion");
+                        }
+                    }
+                    else
+                    { 
+                        return false;
+                        throw new InvalidRequestException("Registro fallido. No fue posible inscribir la carta debido a que el Mazo llego a su limite de 15 cartas");
+                    }
+
+                }
+                else
+                { 
+                    return false; 
+                    throw new InvalidRequestException("Registro fallido. No se pudo inscribir la carta porque tiene una serie que el torneo no acepta");
+                }
+            }
+            else
+                return false;
+                throw new InvalidRequestException("Registro fallido. Ese Mazo no existe, o no es tuyo o la carta no es de tu coleccion");
+
+        }
+
+        public async Task<TorneoDTO> ControlarTorneo(int idTorneo)
+        {
+            var sqlTorneo = @"SELECT * FROM Torneos
+                              WHERE TorneoID = @idTorneo;;";
+
+            var resp = await _dbConnection.QuerySingleOrDefaultAsync<TorneoDTO>(sqlTorneo, new { idTorneo });
+
+            return resp!;
+
+        }
+
+        public async Task<int> ContarInscriptosEnTorneo(int idTorneo)
+        {
+            var sqlContar = @"SELECT COUNT(IdJugador) from TorneoJugadores where IdTorneo=@idTorneo AND Aceptada=1;";
+
+            var resp = await _dbConnection.ExecuteScalarAsync<int>(sqlContar, new { idTorneo });
+
+            return resp;
+
+        }
+
+
         public async Task<bool> RegistroEnTorneo(int idTorneo, int userId, int idMazo)
         {
-            using (var tran = _dbConnection.BeginTransaction())
+            //Traigo info del torneo
+            var torneo = await ControlarTorneo(idTorneo);
+
+            //Veo si existe y su estado es Registro.
+            if (torneo != null && torneo.Estado == "Registro")
             {
-                //Traigo info del torneo
-                var sqlTorneo = @"SELECT * FROM Torneos
-                    where TorneoID = @idTorneo;";
+                //Controlar que el Mazo sea del Jugador y que tenga 15 cartas(Falta), y luego que sean de series que acepta el torneo
+                var mazo = await ControlarMazo(idMazo, userId);
 
-                var torneo = await _dbConnection.QuerySingleOrDefaultAsync<TorneoDTO>(sqlTorneo, new { idTorneo }, transaction: tran);
-                //Veo si existe y su estado es Registro.
-                if (torneo != null && torneo.Estado == "Registro")
+                var cantidadCartas = await ContarCartasEnMazo(idMazo);
+
+                if (mazo != null && cantidadCartas == 15)
                 {
-                    //Controlar que el Mazo sea del Jugador y que tenga 15 cartas(Falta), y luego que sean de series que acepta el torneo
-                    var Sqlmazo = @"SELECT * FROM Mazos where JugadorCreador=@userId;";
+                    //Contolamos la cantidad de inscriptos y que no supere el maxJugadores de torneo
 
-                    var mazo = await _dbConnection.QuerySingleOrDefaultAsync<CrudMazoDTO>(Sqlmazo, new { userId }, tran);
+                    var cantidadInscriptos = await ContarInscriptosEnTorneo(idTorneo);
 
-                    if (mazo != null && mazo.MazoID == idMazo)
+                    if (cantidadInscriptos <= torneo.MaxJugadores)
                     {
-                        //Contolamos la cantidad de inscriptos y que no supere el maxJugadores de torneo
+                        using var tran = _dbConnection.BeginTransaction();
+                        
+                        //Lo inscribo en el torneo, con su respectivo Mazo
+                        var sqlInsertar = @"INSERT
+                                        INTO TorneoJugadores(IdTorneo, IdJugador, IdMazo, Aceptada) 
+                                        VALUES(@TorneoID,@userId,@idMazo,1);";
 
-                        var contarInscriptos = "SELECT COUNT(IdJugador) from TorneoJugadores where IdTorneo=@idTorneo AND Aceptada=1;";
-                        //SIN , transaction: tran. Hay error?
-                        var cantidad = await _dbConnection.ExecuteScalarAsync<int>(contarInscriptos, new { idTorneo }, tran);
+                        var insert = await _dbConnection.ExecuteAsync(sqlInsertar, new { torneo.TorneoID, userId, idMazo }, transaction: tran);
 
-                        if (cantidad <= torneo.MaxJugadores)
+                        if (insert>0)
                         {
-                            //Lo inscribo en el torneo, con su respectivo Mazo
-                            var sqlInsertar = @"INSERT
-                                    INTO TorneoJugadores(IdTorneo, IdJugador, IdMazo, Aceptada) 
-                                    VALUES(@TorneoID,@userId,@idMazo,1);";
-
-                            var insert = await _dbConnection.ExecuteAsync(sqlInsertar, new { torneo.TorneoID, userId, idMazo }, transaction: tran);
-
-                            if (insert>0)
-                            {
-                                tran.Commit();
-                                return true;
-
-                            }
-                            else
-                            {
-                                tran.Rollback();
-                                throw new InvalidOperationException("Registro fallido. No fue posible inscribir al jugador. Revise informacion");
-                            }
+                            tran.Commit();
+                            return true;
 
                         }
                         else
                         {
                             tran.Rollback();
-                            throw new InvalidOperationException("Registro fallido. No fue posible inscribir al jugador debido a que no hay mas lugar");
-
+                            throw new InvalidRequestException("Registro fallido. No fue posible inscribir al jugador. Revise informacion");
                         }
-
-                    
                     }
                     else
                     {
-                        tran.Rollback();
-                        throw new InvalidOperationException("Registro fallido. No fue posible inscribir al jugador debido a que no es su mazo");
+                        return false;
+                        throw new InvalidRequestException("Registro fallido. No fue posible inscribir al jugador debido a que no hay mas lugar");
+
                     }
 
-                     
                 }
-                return false;
-                throw new InvalidOperationException("Registro fallido. No fue posible inscribir al jugador debido a que no existe el torneo o ya no esta en etapa de registro");
+                else
+                {
+                    return false;
+                    throw new InvalidRequestException("Registro fallido. No fue posible inscribir al jugador debido a que no es su mazo o este no tiene 15 cartas");
+                }
             }
+            return false;
+            throw new InvalidRequestException("Registro fallido. No fue posible inscribir al jugador debido a que no existe el torneo o no esta en etapa de registro");
+            
         }
-
     }
 }

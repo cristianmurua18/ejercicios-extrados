@@ -97,22 +97,16 @@ namespace Servicios.Servicios.Acceso
         //}
 
 
-        public async Task<string> VerInfoTorneos()
+        public async Task<List<TorneoDTO>> VerInfoTorneos()
         {
-            var mensaje = string.Empty;
-
             var torneos = await _daoAcceso.VerInfoTorneos();
 
             if (torneos == null || torneos.Count == 0)
             {
-                return mensaje = "No hay torneos proximos";
+                return [];
             }
-            foreach (var torneo in torneos)
-            {
-                mensaje += $"TorneoID: {torneo.TorneoID}, Nombre: {torneo.NombreTorneo}, FyHInicio: {torneo.FyHInicioT}, Estado: {torneo.Estado} \n";
-            }
-            return mensaje;
-
+            else
+                return torneos;
   
         }
 

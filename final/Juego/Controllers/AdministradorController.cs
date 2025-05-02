@@ -9,6 +9,8 @@ using Validaciones.Validacion;
 using Entidades.DTOs.Cruds;
 using Servicios.Servicios.Administrador;
 using Microsoft.IdentityModel.Tokens;
+using Validaciones.Excepciones;
+using Entidades.Modelos;
 
 namespace Juego.Controllers
 {
@@ -31,7 +33,7 @@ namespace Juego.Controllers
             var lista = await _administradorServicio.ObtenerUsuariosPorRol(rol);
 
             if (lista.IsNullOrEmpty())
-                return NotFound("Usuario no encontrado.");
+                throw new ItemNotFoundException($"Usuarios con Rol: {rol} no encontrados");
             return Ok(new { Usuarios = lista });
             //FUNCIONA, con esto agrego un cierto filtro para no traer todoooo. PROBADO
         }
@@ -43,7 +45,7 @@ namespace Juego.Controllers
             var lista = await _administradorServicio.ObtenerUsuariosPorNombre(nombre);
 
             if (lista.IsNullOrEmpty())
-                return NotFound("Usuario no encontrado.");
+                throw new ItemNotFoundException($"Usuario {nombre} no encontrados.");
             return Ok(new { Usuarios = lista });
             //FUNCIONA, con esto agrego un cierto filtro para no traer todoooo. PROBADO
         }
@@ -53,7 +55,7 @@ namespace Juego.Controllers
         {
             var user = await _administradorServicio.ObtenerUsuarioPorId(id);
 
-            return user != null ? Ok(user): NotFound("Usuario no encontrado");
+            return user != null ? Ok(user): throw new ItemNotFoundException($"Usuario con Id: {id} no encontrado");
             //FUNCIONA. PROBADO
         }
 
@@ -63,40 +65,58 @@ namespace Juego.Controllers
             //Validacion de modelos con DataAnotation
             if (await _administradorServicio.RegistrarUsuario(usuario))
             {   //Validaciones basicas
-                if (usuario == null) return BadRequest("Usuario no puede ser null");
+                if (usuario == null) throw new ItemNotFoundException("Usuario no puede ser null");
                 //Si un modelo no es valido, valida estado del formulario, si alguna validacion no se cumple
-                if (!ModelState.IsValid) return BadRequest(ModelState);
+                if (!ModelState.IsValid) throw new InvalidRequestException($"El modelo no esta bien ingresado. {ModelState}");
                 return Ok("Registro exitoso");
             }
-            return BadRequest("Registro fallido. Revisar informacion");
+            throw new InvalidRequestException("Registro fallido. Revisar informacion");
             //PROBADO, funciona
         }
 
         [HttpPut("ActualizarUsuarioPorId")]
         public async Task<IActionResult> ActualizarUsuarioPorID(CrudUsuarioDTO usuario)
         {
-            return Ok(await _administradorServicio.ActualizarUsuarioPorID(usuario));
+            var res = await _administradorServicio.ActualizarUsuarioPorID(usuario);
+
+            if(res)
+                Ok($"Usuario Id: {usuario.UsuarioID}, actualizado con exito");
+            throw new InvalidRequestException($"No fue posible actualizar el usuario id:{usuario.UsuarioID}");
         }
 
         [HttpDelete("BorrarUsuarioPorId")]
         public async Task<IActionResult> BorrarUsuarioPorID(int id)
         {
-            return Ok(await _administradorServicio.BorrarUsuarioPorID(id));
+            var res = await _administradorServicio.BorrarUsuarioPorID(id);
+
+            if (res)
+                Ok($"Usuario Id: {id}, borrado con exito");
+            throw new InvalidRequestException($"No fue posible borrar el usuario id:{id}");
+ 
         }
 
         [HttpGet("VerTorneos")]
-        public async Task<IActionResult> VerTorneosYPartidas()
+        public async Task<IActionResult> VerTorneos()
         {
-            return Ok(await _administradorServicio.VerTorneosYpartidas());
+            var resp = await _administradorServicio.VerTorneos();
+                
+            if (resp.IsNullOrEmpty() || resp.Count == 0)
+                throw new ItemNotFoundException("Lista vacia");
+            return Ok(resp);
             //Funciona con Exito?, ver paginacion
         }
 
         //Metodo para 
 
         [HttpPost("CancelarTorneo")]
-        public async Task<IActionResult> CancelarTorneos(int torneoid, string texto)
+        public async Task<IActionResult> CancelarTorneo(int torneoid)
         {
-            return Ok(await _administradorServicio.CancelarTorneos(torneoid, texto));
+            var resp = await _administradorServicio.CancelarTorneo(torneoid);
+
+            if(resp)
+                 return Ok($"Torneo con Id: {torneoid} cancelado con exito");
+            throw new InvalidRequestException($"No fue posible cancelar el Torneo Id: {torneoid}");
+            
         }
 
         #endregion Final Administradores

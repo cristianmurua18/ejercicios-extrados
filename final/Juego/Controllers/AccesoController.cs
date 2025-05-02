@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Servicios.Servicios.Acceso;
+using Validaciones.Excepciones;
 
 namespace Juego.Controllers
 {
@@ -64,7 +65,8 @@ namespace Juego.Controllers
         [Route("VerInfoTorneos")]
         public async Task<IActionResult> VerInfoTorneos()
         {
-            return Ok(await _accesoServicio.VerInfoTorneos());
+            var resp = await _accesoServicio.VerInfoTorneos();
+            return Ok(resp);
         }
 
         /// <summary>
@@ -78,9 +80,9 @@ namespace Juego.Controllers
 
             var paises = await _accesoServicio.ObtenerIdPais(nombre);
 
-            if(paises == null)
+            if (paises == null)
             {
-                BadRequest("No existe pais con ese nombre. Pruebe nuevamente");
+                throw new InvalidRequestException("No existe pais con ese nombre. Pruebe nuevamente");
             }
             
             foreach (var pais in paises!)
@@ -101,7 +103,7 @@ namespace Juego.Controllers
             var result = await _accesoServicio.ObtenerPaginacionPaises(desdePagina, cantRegistros);
 
             if (result.IsNullOrEmpty())
-                return BadRequest("No fue posible obtener datos");
+                throw new InvalidRequestException("No fue posible obtener datos");
 
             return Ok(result);
             
@@ -120,11 +122,10 @@ namespace Juego.Controllers
             {
                 return Ok($"Registro exitoso {jugador.Alias}. Bienvenido/a. Recuerde usuario y contraseña.");
             }
-            return BadRequest("Registro fallido. Revise informacion.");
+            throw new InvalidRequestException("No fue posible registrar al jugador. Revise informacion y pruebe nuevamente");
 
-            //FALTA ver como registrar los mazos de cartas que tiene al sistema
             //Inscripcion de mazo al torneo, ver que cumplan con las series de cartas permitidas
-           //Cuando el organizador haga la inscripcion
+            //Cuando el organizador haga la inscripcion
         }
 
         /// <summary>

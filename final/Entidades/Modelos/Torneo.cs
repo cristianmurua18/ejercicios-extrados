@@ -14,9 +14,12 @@ namespace Entidades.Modelos
         public DateTime FyHFinT { get; set; }
         public string? Estado { get; set; }
         public int IdPaisRealizacion { get; set; }
-        public int PartidaActual { get; set; }
         public int JugadorGanador { get; set; }
         public int Organizador { get; set; }
+        public int PartidasDiarias { get; set; }
+        public int DiasDeDuracion { get; set; }
+        public int MaxJugadores { get; set; }
+
 
         //Une con Partida
         public int PartidaID { get; set; }
@@ -28,3 +31,34 @@ namespace Entidades.Modelos
 
     }
 }
+
+
+//RESPUESTA. ES UNA LISTA
+//[
+//  {
+//    "torneoID": 1,
+//    "nombreTorneo": "Devastacion",
+//    "fyHInicioT": "2025-03-28T10:00:00",
+//    "fyHFinT": "0001-01-01T00:00:00",
+//    "estado": "Finalizado",
+//    "idPaisRealizacion": 0,
+//    "jugadorGanador": 0,
+//    "organizador": 0,
+//    "partidasDiarias": 0,
+//    "diasDeDuracion": 0,
+//    "maxJugadores": 0
+//  },
+//  {
+//    "torneoID": 3,
+//    "nombreTorneo": "Armagedon",
+//    "fyHInicioT": "2025-04-02T10:00:00",
+//    "fyHFinT": "0001-01-01T00:00:00",
+//    "estado": "Partidas",
+//    "idPaisRealizacion": 0,
+//    "jugadorGanador": 0,
+//    "organizador": 0,
+//    "partidasDiarias": 0,
+//    "diasDeDuracion": 0,
+//    "maxJugadores": 0
+//  }
+//]

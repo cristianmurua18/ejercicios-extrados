@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Servicios.Servicios.Jugador;
+using Validaciones.Excepciones;
 
 namespace Juego.Controllers
 {
@@ -26,8 +27,8 @@ namespace Juego.Controllers
         {
             var res = await _jugadorServicio.CrearColeccion(idCarta);
             if (res > 0)
-                return Ok($"Carta agregada con exito");
-            return BadRequest("No fue posible agregar la carta");
+                return Ok($"Carta agregada con exito a su coleccion");
+            throw new InvalidRequestException("No fue posible agregar la carta, revise informacion");
 
         }
 
@@ -40,7 +41,7 @@ namespace Juego.Controllers
             var res = await _jugadorServicio.CrearMazo(nombreMazo);
             if (res > 0)
                 return Ok($"Mazo creado con exito. Su ID es: {res}. Recuerdalo para poder registrar cartas");
-            return BadRequest("No fue posible crear el mazo.");
+            throw new InvalidRequestException("No fue posible crear el mazo, revise informacion");
 
         }
 
@@ -56,12 +57,9 @@ namespace Juego.Controllers
             {
                 return Ok(mazos);
             }
-            return BadRequest("Ud. no tiene un mazo creado.");
-            //Que pasa si tiene varios Mazos creados?
+            throw new InvalidRequestException("Ud. no tiene un mazo creado.");
+
         }
-
-
-
 
         /// <summary>
         /// Aqui registrar las cartas con su Mazo anteriormente creado, se pide como referencia en que torneo lo va a usar
@@ -70,7 +68,10 @@ namespace Juego.Controllers
         [HttpPost("RegistroCartasAMiMazo")]
         public async Task<IActionResult> RegistrarCartas(CrudMazoCartasDTO cartas, int idTorneo)
         {
-            return Ok(await _jugadorServicio.RegistrarCartas(cartas, idTorneo));
+            var resp = await _jugadorServicio.RegistrarCartas(cartas, idTorneo);
+            if(resp)
+                return Ok($"Carta registrada con exito, en el mazo N° {cartas.IdMazo}");
+            throw new InvalidRequestException("No fue posible registrar la carta");
 
         }
 
@@ -82,20 +83,9 @@ namespace Juego.Controllers
         {
             if (await _jugadorServicio.RegistroEnTorneo(idTorneo, idMazo))
                 return Ok("Registro exitoso. Bienvenido!");
-            return BadRequest("Registro fallido. Revise informacion");
+            throw new InvalidRequestException("Registro fallido. Revise informacion");
 
         }
-
-
-        //Cual seria mejor opcion? Que se incriba solo o que inscriba el mazo el organizador?
-
-
-
-
-
-
-
-
 
 
         #endregion Fin Métodos de jugadores

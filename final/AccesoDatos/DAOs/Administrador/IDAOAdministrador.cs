@@ -1,5 +1,6 @@
 ﻿using Entidades.DTOs;
 using Entidades.DTOs.Cruds;
+using Entidades.DTOs.Varios;
 
 namespace AccesoDatos.DAOs.Administrador
 {
@@ -11,8 +12,8 @@ namespace AccesoDatos.DAOs.Administrador
         public Task<bool> RegistrarUsuario(CrudUsuarioDTO usuario);
         public Task<bool> ActualizarUsuarioPorID(CrudUsuarioDTO usuario);
         public Task<bool> BorrarUsuarioPorID(int id);
-        public Task<List<TorneoDTO>> VerTorneosYPartidas();
-        public Task<bool> CancelarTorneos(int torneoid, string texto);
+        public Task<List<TorneoDTO>> VerTorneos();
+        public Task<bool> CancelarTorneo(int torneoid);
        
 
     }

@@ -10,6 +10,7 @@ using static Azure.Core.HttpHeader;
 using Utilidades.Utilidades;
 using Entidades.DTOs.Cruds;
 using AccesoDatos.DAOs.Administrador;
+using Entidades.DTOs.Varios;
 
 
 namespace Servicios.Servicios.Administrador
@@ -31,13 +32,11 @@ namespace Servicios.Servicios.Administrador
         public async Task<List<UsuarioDTO>> ObtenerUsuariosPorNombre(string nombre)
         {
             return await _daoAdministrador.ObtenerUsuariosPorNombre(nombre);
-
         }
 
         public async Task<UsuarioDTO> ObtenerUsuarioPorId(int id)
         {
             return await _daoAdministrador.ObtenerUsuarioPorId(id);
-
         }
 
         public async Task<bool> RegistrarUsuario(CrudUsuarioDTO usuario)
@@ -51,30 +50,21 @@ namespace Servicios.Servicios.Administrador
         public async Task<bool> ActualizarUsuarioPorID(CrudUsuarioDTO usuario)
         {
             return await _daoAdministrador.ActualizarUsuarioPorID(usuario);
-
         }
 
         public async Task<bool> BorrarUsuarioPorID(int id)
         {
             return await _daoAdministrador.BorrarUsuarioPorID(id);
-
         }
-        public async Task<List<TorneoDTO>> VerTorneosYpartidas()
+        public async Task<List<TorneoDTO>> VerTorneos()
         {
-            return await _daoAdministrador.VerTorneosYPartidas();
+            return await _daoAdministrador.VerTorneos();
         }
 
-        public async Task<string> CancelarTorneos(int torneoid, string texto)
+        public async Task<bool> CancelarTorneo(int torneoid)
         {
-            if(await _daoAdministrador.CancelarTorneos(torneoid, texto))
-            {
-                return "Torneo cancelado con exito";
-            }
-            return "No fue posible cancelar";
-           
+            return await _daoAdministrador.CancelarTorneo(torneoid);
         }
-
-
 
 
     }

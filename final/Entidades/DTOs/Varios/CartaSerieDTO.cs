@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entidades.DTOs
+namespace Entidades.DTOs.Varios
 {
     public class CartaSerieDTO
     {

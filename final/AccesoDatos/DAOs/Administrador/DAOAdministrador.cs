@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Entidades.DTOs;
 using Entidades.DTOs.Cruds;
+using Entidades.DTOs.Varios;
 using Microsoft.IdentityModel.Tokens;
 using System.Data;
 
@@ -90,25 +91,25 @@ namespace AccesoDatos.DAOs.Administrador
             return resultado > 0;
         }
 
-        public async Task<List<TorneoDTO>> VerTorneosYPartidas()
+        public async Task<List<TorneoDTO>> VerTorneos()
         {
             string sqlJoin =
                 @"SELECT *
                 FROM Torneos tor
                 INNER JOIN Partidas par
                 ON tor.PartidaActual = par.PartidaID;";
-            //PARA VER TORNEOS Y PARTIDAS
+            //PARA VER TORNEOS Y PARTIDAS - REVISAR NO ME CONVENCE
             var torneos = await _dbConnection.QueryAsync<TorneoDTO>(sqlJoin, new { });
 
             return torneos.ToList();
         }
 
 
-        public async Task<bool> CancelarTorneos(int torneoid, string estado)
+        public async Task<bool> CancelarTorneo(int torneoid)
         {
             var sqlDelete =
                 @"UPDATE Torneos 
-                SET Estado=@estado
+                SET Estado='Cancelado'
                 WHERE TorneoID=@torneoid;";
 
             var resultado = await _dbConnection.ExecuteAsync(sqlDelete, new { torneoid });

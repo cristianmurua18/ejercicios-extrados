@@ -1,5 +1,6 @@
 ﻿using Entidades.DTOs;
 using Entidades.DTOs.Cruds;
+using Entidades.DTOs.Varios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +17,8 @@ namespace Servicios.Servicios.Administrador
         public Task<bool> RegistrarUsuario(CrudUsuarioDTO usuario);
         public Task<bool> ActualizarUsuarioPorID(CrudUsuarioDTO usuario);
         public Task<bool> BorrarUsuarioPorID(int id);
-        public Task<List<TorneoDTO>> VerTorneosYpartidas();
-        public Task<string> CancelarTorneos(int torneoid, string texto);
+        public Task<List<TorneoDTO>> VerTorneos();
+        public Task<bool> CancelarTorneo(int torneoid);
         
         //public Task<bool> DescalificarJugador(JugadorDescalificadoDTO jugadorDescalificado);
 

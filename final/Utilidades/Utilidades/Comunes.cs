@@ -1,4 +1,4 @@
-﻿using Entidades.DTOs;
+﻿using Entidades.DTOs.Varios;
 using Entidades.Modelos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

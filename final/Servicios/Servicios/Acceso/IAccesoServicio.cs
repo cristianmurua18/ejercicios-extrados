@@ -1,4 +1,5 @@
-﻿using Entidades.DTOs.Cruds;
+﻿using Entidades.DTOs;
+using Entidades.DTOs.Cruds;
 using Entidades.DTOs.Jugadores;
 using Entidades.DTOs.Respuestas;
 using Entidades.DTOs.Varios;
@@ -16,7 +17,7 @@ namespace Servicios.Servicios.Acceso
         public Task<bool> ObtenerPokemones();
         public Task<bool> RellenarCartaSerie();
         //public Task<int> CambiarContrasena(string nuevaContraseña, int userId);
-        public Task<string> VerInfoTorneos();
+        public Task<List<TorneoDTO>> VerInfoTorneos();
         public Task<List<RespuestaPaisDTO>> ObtenerIdPais(string nombre);
         public Task<List<RespuestaPaisDTO>> ObtenerPaginacionPaises(int desdePagina, int cantRegistros);
         public Task<bool> RegistroJugador(InsertarJugadorDTO jugador);

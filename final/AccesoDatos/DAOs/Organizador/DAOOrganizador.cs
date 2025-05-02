@@ -13,6 +13,7 @@ using System.Collections;
 using Entidades.DTOs.Respuestas;
 using Utilidades.Utilidades;
 using Microsoft.IdentityModel.Tokens;
+using Entidades.DTOs.Varios;
 
 namespace AccesoDatos.DAOs.Organizador
 {

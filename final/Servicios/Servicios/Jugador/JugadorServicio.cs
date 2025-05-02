@@ -44,7 +44,7 @@ namespace Servicios.Servicios.Jugador
             {
                 foreach (var mazo in mazos)
                 {
-                    mensaje += $"TorneoID: {mazo.MazoID}, Nombre: {mazo.Nombre} \n";
+                    mensaje += $"MazoID: {mazo.MazoID}, Nombre: {mazo.Nombre} \n";
                 }
                 return mensaje;
             }
