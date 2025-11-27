@@ -9,7 +9,7 @@ namespace Entidades.DTOs.Cruds
     public class CrudMazoDTO
     {
         public int MazoID { get; set; }
-        public string? Nombre { get; set; }
+        public string? NombreMazo { get; set; }
         public int JugadorCreador { get; set; }
 
     }

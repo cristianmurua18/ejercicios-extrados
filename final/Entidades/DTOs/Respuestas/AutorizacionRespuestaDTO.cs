@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Entidades.DTOs.Varios;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ namespace Entidades.DTOs.Respuestas
         public string? Token { get; set; }
         public bool Resultado { get; set; }
         public string? Msj { get; set; }
+        public UsuarioDTO? Usuario { get; set; }
 
     }
 }
