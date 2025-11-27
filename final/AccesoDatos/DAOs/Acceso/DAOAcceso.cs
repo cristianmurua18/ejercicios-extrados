@@ -3,7 +3,9 @@ using Entidades.DTOs;
 using Entidades.DTOs.Cruds;
 using Entidades.DTOs.Respuestas;
 using Entidades.DTOs.Varios;
+using Newtonsoft.Json.Linq;
 using System.Data;
+using System.Reflection.Metadata;
 using Utilidades.Utilidades;
 
 namespace AccesoDatos.DAOs.Acceso
@@ -28,6 +30,20 @@ namespace AccesoDatos.DAOs.Acceso
         //    return affectedRows;
 
         //}
+
+        public async Task<int> ModificarPokemones(string url, int posicion)
+        {
+            var sqlUpdate = @"UPDATE Cartas
+            SET Ilustracion = @url
+            where CartaId = @posicion; ";
+
+            var res = await _dbConnection.ExecuteAsync(sqlUpdate, new { url, posicion });
+
+            return res;
+        }
+
+
+
         public async Task<int> ObtenerPokemones(PokemonDTO pokemon)
         {
             var sqlInsert = @"INSERT
@@ -93,7 +109,7 @@ namespace AccesoDatos.DAOs.Acceso
 
         public async Task<List<TorneoDTO>> VerInfoTorneos()
         {
-            var sqlSelect = @"SELECT TorneoID, NombreTorneo, FyHInicioT, Estado FROM Torneos;";
+            var sqlSelect = @"SELECT * FROM Torneos;";
 
             var consulta = await _dbConnection.QueryAsync<TorneoDTO>(sqlSelect, new { });
 
