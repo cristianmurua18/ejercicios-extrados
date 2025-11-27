@@ -14,6 +14,18 @@ namespace AccesoDatos.DAOs.Jugador
 
         private readonly IDbConnection _dbConnection = dbConnection;
 
+        public async Task<List<Carta>> ObtenerPaginacionCartas(int desdePagina, int cantRegistros)
+        {
+            var paginas = await _dbConnection.QueryAsync<Carta>(
+                sql: "dbo.PaginacionCartas",
+                param: new { Pag = desdePagina, Reg = cantRegistros },
+                commandType: CommandType.StoredProcedure);
+
+            return paginas.ToList();
+
+
+        }
+
         public async Task<int> CrearColeccion(int idCarta, int userId)
         {
             var sqlInsert = @"INSERT
@@ -43,7 +55,7 @@ namespace AccesoDatos.DAOs.Jugador
 
         public async Task<List<CrudMazoDTO>> VerMisMazos(int userId)
         {
-            var sqlSelect = @"SELECT * from Mazos where JugadorCreador = @userId;";
+            var sqlSelect = @"SELECT * from Mazos where JugadorCreador = @JugadorCreador;";
 
             var mazo = await _dbConnection.QueryAsync<CrudMazoDTO>(sqlSelect, new { JugadorCreador = userId });
 
@@ -53,9 +65,9 @@ namespace AccesoDatos.DAOs.Jugador
 
         public async Task<CrudMazoDTO> ControlarMazo(int idMazo, int userId)
         {
-            var sqlSelect = @"SELECT * from Mazos where MazoID = @IdMazo AND JugadorCreador = @userId;";
+            var sqlSelect = @"SELECT * from Mazos where MazoID = @MazoID AND JugadorCreador = @JugadorCreador;";
 
-            var mazo = await _dbConnection.QueryFirstOrDefaultAsync<CrudMazoDTO>(sqlSelect, new { idMazo, JugadorCreador = userId });
+            var mazo = await _dbConnection.QueryFirstOrDefaultAsync<CrudMazoDTO>(sqlSelect, new { MazoID = idMazo, JugadorCreador = userId });
 
             return mazo!;
 
@@ -63,7 +75,7 @@ namespace AccesoDatos.DAOs.Jugador
 
         public async Task<CartaColeccionDTO> ControlarCartaColeccionada(int userId)
         {
-            var sqlSelect = @"SELECT IdCarta from CartasColeccionadas where IdUsuario = @userId;";
+            var sqlSelect = @"SELECT IdCarta from CartasColeccionadas where IdUsuario = @IdUsuario;";
 
             var cartaColeccion = await _dbConnection.QueryFirstOrDefaultAsync<CartaColeccionDTO>(sqlSelect, new { IdUsuario = userId });
 
@@ -78,9 +90,9 @@ namespace AccesoDatos.DAOs.Jugador
                             JOIN Cartas c ON cs.IdCarta = c.CartaID
                             JOIN Series s ON cs.IdSerie = s.SerieID
                             WHERE c.CartaID = @IdCarta AND
-                            cs.IdSerie IN(SELECT IdSerie from TorneoSerieHabilitada WHERE IdTorneo = @idTorneo);";
+                            cs.IdSerie IN(SELECT IdSerie from TorneoSerieHabilitada WHERE IdTorneo = @IdTorneo);";
             //Controlo que carta pertenezca a una serie que acepta un torneo de referencia
-            var cartas = await _dbConnection.QueryAsync<RespuestaCartaSerieDTO>(sqlSelect, new { idCarta, idTorneo });
+            var cartas = await _dbConnection.QueryAsync<RespuestaCartaSerieDTO>(sqlSelect, new { IdCarta = idCarta, IdTorneo = idTorneo });
             
             return cartas.ToList();
 
