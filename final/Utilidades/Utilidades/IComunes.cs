@@ -10,6 +10,6 @@ namespace Utilidades.Utilidades
         public int CalcularPotenciaDeDos(int inscriptos, out int sobrante);
         public int CalcularCantidadPartidas(DateTime inicio, DateTime fin);
         public void CalcularMaximos(int diasDuracion, int juegosPorDia, out int juegosTotales, out int maxJugadores);
-
+        public bool ValidarToken(string token);
     }
 }

@@ -69,6 +69,11 @@ namespace Juego
             builder.Services.AddScoped<IDAOJugador, DAOJugador>();
             builder.Services.AddScoped<IJugadorServicio, JugadorServicio>();
 
+            //Configuracion del kestrel para aceptar configuraciones externas
+            builder.WebHost.UseUrls("http://192.168.56.1:5053;");
+            //http://192.168.56.1:7224
+
+
             //Inyeccion de depencia para las validaciones, falta la otra parte - SACAR(es para fluent validation)
             //builder.Services.AddScoped<IValidator<UsuarioDTO>,ValidadorUsuario>();
 

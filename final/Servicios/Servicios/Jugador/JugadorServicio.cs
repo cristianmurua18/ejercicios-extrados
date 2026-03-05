@@ -18,6 +18,11 @@ namespace Servicios.Servicios.Jugador
         //Es para traer la info de los claims del usuario logeado
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
+        public async Task<List<Carta>> ObtenerPaginacionCartas(int desdePagina, int cantRegistros)
+        {
+            return await _daoJugador.ObtenerPaginacionCartas(desdePagina, cantRegistros);
+        }
+
         public async Task<int> CrearColeccion(int idCarta)
         {
             //Traigo el id del usuario al autenticarse
@@ -33,22 +38,18 @@ namespace Servicios.Servicios.Jugador
 
         }
 
-        public async Task<string> VerMisMazos()
+        public async Task<List<CrudMazoDTO>> VerMisMazos()
         {
-            var mensaje = string.Empty;
+            
             var userId = int.Parse(_httpContextAccessor.HttpContext?.User.FindFirst("UsuarioID")?.Value!);
 
             var mazos = await _daoJugador.VerMisMazos(userId);
 
             if (mazos.Count != 0)
             {
-                foreach (var mazo in mazos)
-                {
-                    mensaje += $"MazoID: {mazo.MazoID}, Nombre: {mazo.Nombre} \n";
-                }
-                return mensaje;
+                return mazos;
             }
-            return string.Empty;
+            return null!;
         }
         public async Task<bool> RegistrarCartas(CrudMazoCartasDTO cartas, int idTorneo)
         {

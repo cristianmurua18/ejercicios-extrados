@@ -57,11 +57,40 @@ namespace Utilidades.Utilidades
             //Crear detalle del token
             var jwtConfig = new JwtSecurityToken(
                 claims: userClaims,
-                expires: DateTime.UtcNow.AddMinutes(10),
+                expires: DateTime.UtcNow.AddDays(30),
                 signingCredentials: credentials
                 );
 
             return new JwtSecurityTokenHandler().WriteToken(jwtConfig);
+        }
+
+        public bool ValidarToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes("Jwt:key"); // misma que usas para firmar
+
+            try
+            {
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero // evita tolerancia por diferencia horaria
+                }, out SecurityToken validatedToken);
+
+                return true;
+            }
+            catch (SecurityTokenExpiredException)
+            {
+                return false;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public bool EsPotenciaDeDos(int n)
