@@ -7,8 +7,11 @@ using Entidades.DTOs.Respuestas;
 using Entidades.DTOs.Varios;
 using Entidades.Modelos;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
+using System.Text;
 using Utilidades.Utilidades;
 using Validaciones.Excepciones;
 using static System.Net.WebRequestMethods;
@@ -33,29 +36,52 @@ namespace Servicios.Servicios.Acceso
 
             //Esperar que se ejecuta de Forma asincrona y que espere el resultado
 
-            var i = 10201;
-            //Traer del 1001 al 1025. No hay mas
-            while (i < 10278)
+            var i = 10001;
+
+            var j = 1026;
+
+            while(i < 10278)
             {
-                var res = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/pokemon/{i}");
+                var url = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{i}.png";
 
-                _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                var resp = await _daoAcceso.ModificarPokemones(url, j);
 
-                if (res.IsSuccessStatusCode)
+                if (resp > 0)
                 {
-                    //var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                    //obtener el contenido
-                    var body = await res.Content.ReadAsStringAsync();
-
-                    var pokemon = JsonConvert.DeserializeObject<PokemonDTO>(body);
-
-                    await _daoAcceso.ObtenerPokemones(pokemon!);
-
                     i++;
-
+                    j++;
+                    
                 }
+                else
+                    return false;
+
+
             }
             return true;
+
+
+            //Traer del 1001 al 1025. No hay mas
+            //while (i < 10278)
+            //{
+            //    var res = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/pokemon/{i}");
+
+            //    _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            //    if (res.IsSuccessStatusCode)
+            //    {
+            //        //var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            //        //obtener el contenido
+            //        var body = await res.Content.ReadAsStringAsync();
+
+            //        var pokemon = JsonConvert.DeserializeObject<PokemonDTO>(body);
+
+            //        await _daoAcceso.ObtenerPokemones(pokemon!);
+
+            //        i++;
+
+            //    }
+            //}
+            //return true;
         }
 
         public async Task<bool> RellenarCartaSerie()
@@ -143,14 +169,12 @@ namespace Servicios.Servicios.Acceso
             {
                 var token = _common.GenerarJWT(usuario);
 
-                return new AutorizacionRespuestaDTO { Resultado = true, Msj = "Usuario Autorizado", Token = token };
+                return new AutorizacionRespuestaDTO { Resultado = true, Msj = "Usuario Autorizado", Token = token, Usuario = usuario };
             }
 
             throw new UnauthenticatedException("Credenciales invalidas");
 
         }
-
-
 
 
     }
