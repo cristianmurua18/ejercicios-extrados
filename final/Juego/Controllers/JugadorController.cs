@@ -18,12 +18,28 @@ namespace Juego.Controllers
 
         #region Métodos exclusivos para Jugadores
 
+        /// <summary>
+        /// Aqui el jugador puede ver todas las cartas
+        /// </summary>
+        [HttpGet("VerCartas")]
+        public async Task<IActionResult> VerCartas(int desdePagina, int cantRegistros)
+        {
+            var cartas = await _jugadorServicio.ObtenerPaginacionCartas(desdePagina, cantRegistros);
+
+            if (!cartas.IsNullOrEmpty())
+            {
+                return Ok(cartas);
+            }
+            throw new InvalidRequestException("No hay cartas disponibles.");
+
+        }
+
 
         /// <summary>
         /// Aqui el jugador crea una coleccion de cartas, con su correspondiente id de la carta
         /// </summary>
         [HttpPost("AgregarCartaAMiColeccion")]
-        public async Task<IActionResult> CrearColeccion(int idCarta)
+        public async Task<IActionResult> AgregarCartaAMiColeccion(int idCarta)
         {
             var res = await _jugadorServicio.CrearColeccion(idCarta);
             if (res > 0)
